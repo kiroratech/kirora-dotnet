@@ -8,11 +8,11 @@ Local main preserves baseline 659dad6, and chore/update-kirora-openapi preserves
 
 ## Repository audit and decisions
 
-The audit covers every reachable Git blob across all local refs and the current tracked paths. The original two commits contained two Finder metadata files: src/.DS_Store and src/Kirora/.DS_Store. They are removed from the current branch and ignored, but remain in preserved history. No build outputs, package archives, environment files or private-key files were found in that original history. Redacted heuristic audit results are stored under ignored artifacts/.
+The audit covers every reachable Git blob across all local refs and the current tracked paths. The original two commits contained two Finder metadata files: src/.DS_Store and src/Kirora/.DS_Store. They are removed from the current migration branch and ignored, but remain in the preserved baseline main tree and history. No build outputs, package archives, environment files or private-key files were found in that original history. Redacted heuristic audit results are stored under ignored artifacts/.
 
 Historical Finder metadata is an unresolved publication decision: preserving the exact baseline/migration commit IDs retains these blobs. Removing them from unpublished history requires separate approval for a targeted history rewrite, changes commit IDs, and requires rebuilding SourceLink packages. Nothing rewrites them automatically. Do not push until the maintainer accepts retained metadata or authorizes its removal.
 
-Heuristic and automated scanners do not prove absence of secrets. Reports never print raw matches; findings must be resolved before publication. No real Kirora credentials were supplied or read for validation. The SDK's MIT specification attribution remains included; an SDK license has not been selected, and the upstream spec license does not license the whole SDK.
+Heuristic and automated scanners do not prove absence of secrets. Reports never print raw matches; findings must be resolved before publication. No real Kirora credentials were supplied or used for validation. The SDK's MIT specification attribution remains included; an SDK license has not been selected, and the upstream spec license does not license the whole SDK.
 
 ## Repository metadata and CI
 
@@ -30,7 +30,7 @@ Email is restricted in code to unique sdk-integration-*@example.com recipients a
 
 ## Technical validation
 
-Final results and any toolchain limitations are appended after local validation. No live API calls will be made. The Native AOT smoke and independent package consumer both use fake HTTP and exercise the new brand-kit and journey activation-check models and transactional delivery union.
+Final results and any toolchain limitations are appended after local validation. No live Kirora API calls were made. The Native AOT smoke and independent package consumer both use fake HTTP and exercise the new brand-kit and journey activation-check models and transactional delivery union.
 
 ## Exact next Git commands — approval required
 
@@ -69,3 +69,18 @@ Dependency advisory lookup is separate from strictly offline checks: `python3 to
 dotnet publish examples/Kirora.NativeAotSmoke --configuration Release --runtime osx-x64 -p:PublishAot=true -p:TrimmerSingleWarn=false -p:EnableTrimAnalyzer=true -p:EnableAotAnalyzer=true --output artifacts/aot-readiness
 artifacts/aot-readiness/Kirora.NativeAotSmoke --require-native
 ```
+
+## Final evidence and readiness
+
+- Release restore/build succeeded; ordinary build has zero warnings/errors. The final offline suite passes 1,638 SDK tests and 27 integration-gate/safety tests (1,665 total); five live tests skipped. Seven Python drift-checker tests passed.
+- Generation/API checks passed unchanged: 184/184 pinned operations, 1,090 models/unions, 204 fixtures and the exact migrated 7,203-signature API baseline. No SDK public API changes were introduced during preparation.
+- NuGet and symbols packages were created and validated. A separate .NET 8 application installed the exact local package into an isolated fresh cache, with no project references, then exercised brand-kit, journey activation-check, the delivery union and optional social links through fake HTTP.
+- Reproducibility passed: DLL and portable PDB were identical across two isolated build paths under SDK 8.0.404.
+- Actual PDB SourceLink validation passed after a confirmed defect was fixed: a manually set PathMap had normalized document paths to /_/ while SourceLink retained physical keys, leaving all 1,644 documents unmapped. Dedicated checkouts now use SDK deterministic SourceRoot mapping consistently. All 1,644 documents are covered: 1,600 embedded and 44 Git-backed. The PDB mapping and package repository commit agree (validated at ca56a7574fcd1c2892eb8fb770f251729aee9734). URLs remain unavailable remotely until an approved push. A history rewrite requires rebuilding these artifacts.
+- Native AOT osx-x64 publish and --require-native execution passed with reflection JSON disabled and dynamic-code support unavailable. The expanded fake-HTTP smoke covers the new endpoints and structured delivery input. The known framework System.Net.Quic IL3000 warning and Apple -ld_classic deprecation remain; no SDK serialization/trimming/AOT warnings were reported. This does not establish live API interoperability, QUIC behavior, or Linux/Windows AOT support.
+- NuGet advisory audit passed for all seven projects, with no reported vulnerable direct/transitive packages. All three GitHub workflow files passed actionlint; GitHub-hosted execution and environment protection configuration remain unverified.
+- Secret audit: checksum-verified official Gitleaks 8.30.1 scanned all initial/preparation history and raised six generic-key candidates. They are three exact public upstream response examples (two webhook secrets and one embed-session token), duplicated in the spec and generated fixtures. The whole-blob heuristic found those twelve occurrences across two spec/fixture revisions plus one intentional invalid-URL fixture. Exact digests, permitted paths and official JSON pointers are recorded in eng/secret-audit-examples.json; the audit verifies them against the pinned spec and reports them separately. Nothing blankets out files/rules, and Gitleaks findings remain in the redacted raw report. No unexplained credential candidates remain; live validity of upstream examples was not tested. Neither scanner proves absence of all possible secrets.
+- The two Finder metadata blobs remain in the preserved baseline main tree and history. Current migration-branch tracked files contain no .DS_Store, credentials/environment files, build outputs, packages, test reports or cache directories. No history was rewritten.
+- Release-only validators intentionally remain blocked: maintainer approval and SDK SPDX license are unset. Repository URL/SourceLink now validate; package ownership and GitHub publication reviewer protections still require maintainer confirmation/configuration. No publication gate was bypassed.
+
+Readiness: suitable for maintainer review and separately authorized local smoke testing. Not approved for a first push or alpha publication until the historical metadata decision and the applicable approval/configuration steps are resolved. Validation logs and redacted scan reports are ignored local artifacts under artifacts/; no Kirora live tests, GitHub push, branch merge, GitHub release or NuGet publication was executed.

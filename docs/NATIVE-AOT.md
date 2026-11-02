@@ -31,3 +31,7 @@ The local native publish emitted:
 No SDK-origin IL2026/IL3050 warnings remained after the static metadata changes and the documented JIT-only guard. Both upstream/toolchain warnings remain disclosed; verification is not described as warning-free.
 
 The installed SDK selects its known .NET 8 runtime/compiler packs (8.0.11). This is an offline compatibility probe, not a recommendation to deploy that older bundled runtime. CI selects an available serviced 8.0.x SDK. Runtime/OS servicing and platform certification remain release responsibilities. The library itself still targets net8.0 and does not declare blanket IsAotCompatible support based on a single smoke.
+
+## New-contract readiness validation
+
+The smoke was repeated after migration to upstream commit 30043317efd68ffceeab882019431e57b7463018, using .NET SDK 8.0.404 and Apple clang 21 on osx-x64. Native publish and --require-native execution passed. The harness now also calls the new brand-kit and journey activation-check endpoints and serializes structured transactional delivery, using fake HTTP only. Reflection JSON is disabled and the native-mode assertion checks dynamic code support is unavailable. The same framework IL3000 and Apple linker warnings remain. No live Native AOT network test or broader-platform verification is claimed. See REPOSITORY-READINESS.md for logs/check commands and other release blockers.

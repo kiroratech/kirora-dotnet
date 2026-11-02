@@ -19,3 +19,7 @@ The initial NuGet scan found high-severity advisories for **System.Net.Http 4.3.
 xUnit v2 is in security-maintenance mode; a future v3 migration can be reviewed independently. The SDK's Microsoft.Extensions.Http 8.0.1 dependency and .NET 8 target are preserved. API signature tests protect both Phase 2 and Phase 3 baselines; nullable metadata and behavior still require human review.
 
 The public alpha checklist is in RELEASE-CHECKLIST.md. Local technical validation does not itself authorize publication.
+
+## Official repository preparation update
+
+The canonical SDK URL is now https://github.com/kiroratech/kirora-dotnet, configured as origin and package metadata. Dedicated checkouts enable built-in SourceLink with consistent deterministic SourceRoot paths. Actual portable PDB document coverage and package commit metadata were validated; GitHub source URLs await the approved push. SDK licensing, ownership approval and protected publication settings remain open. See REPOSITORY-READINESS.md for current results and historical Finder metadata findings. Historical Phase 4 statements about the missing repository/disabled SourceLink describe the earlier state.
