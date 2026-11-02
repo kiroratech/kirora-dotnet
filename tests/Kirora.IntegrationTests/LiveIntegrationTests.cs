@@ -120,29 +120,10 @@ public sealed class LiveIntegrationTests
             }
         }
         finally { if (contactId is { } id) await CleanupContact(client, id); }
-    });
+    }, requireSender: true);
 
-    private static async Task Run(Func<KiroraClient, CancellationToken, Task> test)
-    {
-        // Recheck at execution time as well as discovery. No network operation precedes this gate.
-        if (new LiveFactAttribute().Skip is not null) throw new XunitException("Live authorization is no longer present.");
-        using var handler = new SocketsHttpHandler { AllowAutoRedirect = false, UseCookies = false };
-        using var http = new HttpClient(handler) { Timeout = Timeout.InfiniteTimeSpan };
-        var client = new KiroraClient(http, new KiroraOptions { ApiKey = Environment.GetEnvironmentVariable("KIRORA_API_KEY")!, MaxRetries = 1 });
-        using var timeout = new CancellationTokenSource(TimeSpan.FromMinutes(2));
-        try
-        {
-            var caller = await client.GetMeAsync(timeout.Token);
-            Assert.Equal(Guid.Parse(Environment.GetEnvironmentVariable("KIRORA_INTEGRATION_WORKSPACE_ID")!), caller.Workspace.Id);
-            await test(client, timeout.Token);
-        }
-        catch (KiroraApiException error)
-        {
-            // Do not include server messages, credentials, request bodies or exception objects in test output.
-            throw new XunitException($"Live API failure: HTTP {(int)error.StatusCode}; code {error.Code}; request {error.RequestId}.");
-        }
-        catch (Exception) { throw new XunitException("Live integration failed. Check workspace configuration and cleanup state; sensitive diagnostics are omitted."); }
-    }
+    private static Task Run(Func<KiroraClient, CancellationToken, Task> test, bool requireSender = false) =>
+        LiveSession.Run(Environment.GetEnvironmentVariable, test, mutations: true, requireSender: requireSender);
 
     private static async Task CleanupContact(KiroraClient client, Guid id)
     {
@@ -155,20 +136,5 @@ public sealed class LiveIntegrationTests
         using var timeout = new CancellationTokenSource(TimeSpan.FromSeconds(30));
         try { await client.Lists.DeleteAsync(id.ToString(), cancellationToken: timeout.Token); }
         catch (KiroraNotFoundException) { }
-    }
-}
-
-internal static class LiveGate
-{
-    internal static string? Reason(Func<string, string?> read, bool requireSender = false)
-    {
-        if (read("KIRORA_RUN_INTEGRATION") != "1" ||
-            read("KIRORA_INTEGRATION_AUTHORIZATION") != "I_AUTHORIZE_LIVE_TESTS" ||
-            string.IsNullOrWhiteSpace(read("KIRORA_API_KEY")) ||
-            !Guid.TryParse(read("KIRORA_INTEGRATION_WORKSPACE_ID"), out _))
-            return "Live tests require explicit authorization, credentials and a dedicated workspace ID.";
-        if (requireSender && string.IsNullOrWhiteSpace(read("KIRORA_TEST_FROM")))
-            return "Transactional integration needs KIRORA_TEST_FROM on a verified sending domain.";
-        return null;
     }
 }

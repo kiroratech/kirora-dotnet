@@ -1,5 +1,25 @@
+using System.Reflection.Metadata;
 using System.Reflection;
 using System.Runtime.Loader;
+
+if (args.Length == 3 && args[0] == "--source-link")
+{
+    using var stream = File.OpenRead(args[1]);
+    using var provider = MetadataReaderProvider.FromPortablePdbStream(stream);
+    var reader = provider.GetMetadataReader();
+    foreach (var handle in reader.CustomDebugInformation)
+    {
+        var info = reader.GetCustomDebugInformation(handle);
+        if (reader.GetGuid(info.Kind) == new Guid("CC110556-A091-4D38-9FEC-25AB9A351A6A"))
+        {
+            File.WriteAllBytes(args[2], reader.GetBlobBytes(info.Value));
+            Console.WriteLine("Extracted SourceLink from the portable PDB.");
+            return 0;
+        }
+    }
+    Console.Error.WriteLine("Portable PDB has no SourceLink information.");
+    return 1;
+}
 
 if (args.Length != 2) { Console.Error.WriteLine("Usage: <assembly path> <snapshot path>"); return 1; }
 var context = new AssemblyLoadContext("ApiSnapshot", true);

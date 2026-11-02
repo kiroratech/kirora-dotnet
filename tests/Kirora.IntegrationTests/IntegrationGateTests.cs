@@ -8,12 +8,15 @@ public sealed class IntegrationGateTests
         ["KIRORA_INTEGRATION_AUTHORIZATION"] = "I_AUTHORIZE_LIVE_TESTS",
         ["KIRORA_API_KEY"] = "fake-unit-test-credential",
         ["KIRORA_INTEGRATION_WORKSPACE_ID"] = "0192f3a1-7c2e-7d4b-9a10-3e5f6a7b8c9d",
-        ["KIRORA_TEST_FROM"] = "sender@example.com"
+        ["KIRORA_TEST_FROM"] = "sender@example.com",
+        ["KIRORA_INTEGRATION_ISOLATION"] = "I_CONFIRM_EXCLUSIVE_EMPTY_WORKSPACE",
+        ["KIRORA_TEST_RECIPIENT_APPROVAL"] = "SDK_GENERATED_EXAMPLE_COM_ONLY"
     };
 
     [Theory]
     [InlineData("KIRORA_RUN_INTEGRATION")]
     [InlineData("KIRORA_INTEGRATION_AUTHORIZATION")]
+    [InlineData("KIRORA_INTEGRATION_ISOLATION")]
     [InlineData("KIRORA_API_KEY")]
     [InlineData("KIRORA_INTEGRATION_WORKSPACE_ID")]
     public void MissingRequirementAlwaysSkips(string missing)

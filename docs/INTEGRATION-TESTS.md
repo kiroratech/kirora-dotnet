@@ -1,60 +1,62 @@
-# Opt-in live integration tests
+# Local-only live integration validation
 
-The default suite uses fake HTTP handlers. The separate Kirora.IntegrationTests project discovers four live workflows but skips them unless every authorization requirement is present. Validation for this phase explicitly sets KIRORA_RUN_INTEGRATION=0; **no live API tests were executed**.
+No live Kirora calls were executed during preparation. All normal validation uses fake handlers and explicitly disables both live opt-ins. Five live tests are discovered: one read-only smoke and four mutation workflows. They are skipped by default, recheck gates at execution, and refuse CI/GITHUB_ACTIONS/TF_BUILD/GITLAB_CI/JENKINS_URL/BUILD_BUILDID runners even with all opt-ins present. The checked-in GitHub workflows set both live run flags to 0 and never load Kirora credentials.
 
-## Authorization and configuration
+## Secure common configuration
 
-Use a dedicated staging workspace, never a production workspace with real engagement automations. The test runner first checks GET /v1/me and compares the returned workspace ID to KIRORA_INTEGRATION_WORKSPACE_ID before creating any resource.
+Only after explicit approval for the selected run, securely export KIRORA_API_KEY in the local terminal without putting its value into chat, shell history, command arguments, test settings files or source control. Disable shell tracing and HTTP/debug collectors. KIRORA_INTEGRATION_WORKSPACE_ID must be the approved workspace UUID. Never use environment-printing or diagnostic test loggers around credentials. None of the commands below supplies or prints a key.
 
-Explicit requirements:
+## Read-only authentication/connectivity smoke
 
-- KIRORA_RUN_INTEGRATION=1.
-- KIRORA_INTEGRATION_AUTHORIZATION=I_AUTHORIZE_LIVE_TESTS.
-- KIRORA_API_KEY supplied through the environment or the CI secret store.
-- KIRORA_INTEGRATION_WORKSPACE_ID containing the expected staging workspace UUID.
-- For the email workflow only, KIRORA_TEST_FROM containing an address on your verified sending domain.
+The smoke sends only GET /v1/me and confirms the authenticated workspace ID. It creates no contact, list, event or message and does not require mutation/isolation approval. Required variables: KIRORA_API_KEY, KIRORA_INTEGRATION_WORKSPACE_ID, plus its own KIRORA_RUN_SMOKE=1 and KIRORA_SMOKE_AUTHORIZATION=I_AUTHORIZE_READ_ONLY_SMOKE. Mutation flags do not authorize it.
 
-These are instructions for a future explicitly authorized run, not authorization granted by creating the suite. The implementation session did not set these values or run live calls. Do not print environment variables in CI, enable shell tracing around secrets, or pass keys as command-line arguments.
-
-After a maintainer authorizes a live run and securely configures those variables, use:
+After approval and secure credential setup:
 
 ```sh
-dotnet test tests/Kirora.IntegrationTests --configuration Release --filter Category=LiveIntegration
+KIRORA_RUN_INTEGRATION=0 KIRORA_RUN_SMOKE=1 KIRORA_SMOKE_AUTHORIZATION=I_AUTHORIZE_READ_ONLY_SMOKE dotnet test tests/Kirora.IntegrationTests/Kirora.IntegrationTests.csproj --configuration Release --filter 'Category=LiveSmoke'
 ```
 
-To verify the project and skip behavior without contacting Kirora:
+## State-changing workflows
+
+Every mutation run additionally requires KIRORA_RUN_INTEGRATION=1, KIRORA_INTEGRATION_AUTHORIZATION=I_AUTHORIZE_LIVE_TESTS and KIRORA_INTEGRATION_ISOLATION=I_CONFIRM_EXCLUSIVE_EMPTY_WORKSPACE. Use an exclusively controlled disposable workspace with no journeys or campaigns, including drafts, paused/ended and archived records. Preflight checks GET /v1/me and enumerates all journeys and nonarchived/archived campaigns before every workflow. Any record, authorization failure or malformed response blocks the mutation callback. Additional read scopes: journeys:read and campaigns:read.
+
+These read checks cannot lock server state. Exclusive operator control is necessary: no person, scheduled task or other integration may create/activate automations during the run. A unique event name alone does not establish safety because broad or segment-based triggers may exist. The tests never pause/delete other automations or claim an undocumented server sandbox flag. If exclusivity cannot be guaranteed, do not run mutation tests.
+
+Prepared workflows and exact FullyQualifiedName suffixes:
+
+- ContactCreationAndRetrieval: creates a unique sdk-integration contact and retrieves it by external ID; deletes its returned ID in finally.
+- ListCreationAndMembershipManagement: creates a unique contact/list, adds/checks/removes membership; deletes returned list/contact IDs in nested finally blocks.
+- EventTracking: creates a unique contact, tracks a unique SDK Integration event with a stable per-call idempotency key, deletes that event name and contact in finally.
+- TransactionalEmailToDocumentedTestAddress: creates a unique sdk-integration-<guid>@example.com contact, sends inline email, checks message details, and deletes the contact. Queued messages are not deleted or claimed cancelled; the retained message record is expected.
+
+For the email test only, also configure KIRORA_TEST_FROM on an approved verified sending domain and KIRORA_TEST_RECIPIENT_APPROVAL=SDK_GENERATED_EXAMPLE_COM_ONLY. This explicitly approves only the generated sdk-integration-*@example.com namespace. Recipient addresses are constructed in code; no real address override exists. Kirora's quickstart/staging guidance designates example.com addresses as nondelivering test recipients. Approval of read-only smoke or contact/event testing does not approve email sending.
+
+Required resource scopes by workflow: contacts:read/write/delete; lists:write for list creation, membership changes and deletion; events:write/delete for event testing; transactional:send and messages:read for email. Consult the pinned operation scopes for the selected workflow; the server enforces key permissions.
+
+After separate mutation approval and secure common configuration, contact/list/event tests without email:
 
 ```sh
-KIRORA_RUN_INTEGRATION=0 dotnet test tests/Kirora.IntegrationTests --configuration Release
+KIRORA_RUN_SMOKE=0 KIRORA_RUN_INTEGRATION=1 KIRORA_INTEGRATION_AUTHORIZATION=I_AUTHORIZE_LIVE_TESTS KIRORA_INTEGRATION_ISOLATION=I_CONFIRM_EXCLUSIVE_EMPTY_WORKSPACE dotnet test tests/Kirora.IntegrationTests/Kirora.IntegrationTests.csproj --configuration Release --filter 'Category=LiveIntegration&FullyQualifiedName!~TransactionalEmailToDocumentedTestAddress'
 ```
 
-Six ordinary tests verify the gates with fake in-memory configuration. They never make HTTP calls and are not live integration results.
+After separate email approval and secure KIRORA_TEST_FROM setup:
 
-## Prepared workflows
+```sh
+KIRORA_RUN_SMOKE=0 KIRORA_RUN_INTEGRATION=1 KIRORA_INTEGRATION_AUTHORIZATION=I_AUTHORIZE_LIVE_TESTS KIRORA_INTEGRATION_ISOLATION=I_CONFIRM_EXCLUSIVE_EMPTY_WORKSPACE KIRORA_TEST_RECIPIENT_APPROVAL=SDK_GENERATED_EXAMPLE_COM_ONLY dotnet test tests/Kirora.IntegrationTests/Kirora.IntegrationTests.csproj --configuration Release --filter 'Category=LiveIntegration&FullyQualifiedName~TransactionalEmailToDocumentedTestAddress'
+```
 
-1. Contact identification and retrieval by external ID, followed by contact deletion.
-2. List creation, contact membership add/read/remove, followed by list/contact deletion.
-3. Event tracking with a stable key, followed by deletion of the uniquely named test event and contact.
-4. Inline transactional email to a unique address at example.com, followed by message-detail retrieval and contact cleanup.
+For a single workflow, use `--filter 'FullyQualifiedName=Kirora.IntegrationTests.LiveIntegrationTests.EventTracking'` (or another exact suffix above) with the same required authorization variables. To run all four, use `--filter 'Category=LiveIntegration'` with email approval configured. A skipped test is not a successful live validation; check actual passed/skipped counts.
 
-The email recipient domain is fixed in code and cannot be replaced by a real recipient through configuration. Kirora's [quickstart](https://kirora.io/docs/api/quickstart) and [staging guidance](https://kirora.io/docs/api/staging) document example.com/example.net/example.org as nondelivering test addresses. A verified sender and other normal send checks still apply. These tests assert API acceptance and a documented message read; they do not assert inbox delivery or invent a server test-mode flag. Server state transitions are not assumed to be instantaneous.
+## Cleanup, failure output and offline checks
 
-Use a staging key with contacts:read/write/delete, lists:write, events:write/delete, transactional:send and messages:read scopes as required by the selected workflows. The server determines authorization; an invalid/revoked key fails an explicitly opted-in run rather than being reported as passing.
+Cleanup uses separate bounded 30-second cancellation tokens and only returned resource IDs or the unique event name. A 404 is treated as already gone. Interrupted/ambiguous creations can leave orphan data; event deletion may be asynchronous and active sends may block contact deletion. Cleanup failures fail the run; inspect isolated records rather than broadening deletion. No cleanup can undo an already processed event or message.
 
-## Isolation and cleanup
+Integration failure output includes only fixed text and HTTP status, never server error codes/messages/request IDs, response bodies, exception objects, credentials or request content. Tests verify that even a malicious server echoing a fake credential cannot leak it through test exceptions. The SDK preserves structured exceptions for application use; consumers must avoid logging raw exception data, headers or diagnostics. No universal promise is made about external profilers or user-configured logging.
 
-Every workflow creates unique sdk-integration-prefixed external IDs, names and idempotency keys. Cleanup targets only resources whose IDs were returned by that workflow, plus its uniquely named event. It runs in finally blocks with separate bounded cancellation tokens and treats a cleanup 404 as already gone. It never deletes resources found under a shared business name.
+All gates, workspace mismatches, automation refusal, empty-workspace checks and redaction are tested with fake HTTP. Run them safely with:
 
-A process crash or an ambiguous response before an ID was returned can leave an isolated resource behind. A contact may temporarily refuse deletion while a send is active. Such cleanup failures fail the workflow and need inspection of the staging workspace; do not broaden deletion to unrelated data. Event-name deletion can be asynchronous. Keep the staging workspace separate because even test events can trigger journeys configured there.
+```sh
+KIRORA_RUN_INTEGRATION=0 KIRORA_RUN_SMOKE=0 dotnet test tests/Kirora.IntegrationTests/Kirora.IntegrationTests.csproj --configuration Release
+```
 
-API failures are reported using status, error code and request ID. Raw server messages, credentials and request bodies are omitted from integration output. No HTTP body/header logging is configured by the suite.
-
-## Phase 4 operator checklist
-
-- Confirm explicit authorization for this run and a dedicated workspace with production automations disabled.
-- Confirm the key scopes and expected workspace UUID; the suite checks `/v1/me` before mutations.
-- Supply credentials through environment/secret storage, never command-line arguments or log output.
-- Review the four workflow bodies and fixed nondelivering `example.com` recipient. The verified sender remains separately configured.
-- Set both opt-in flags only after approval. Run the integration project with the LiveIntegration trait filter.
-- Record four actual outcomes separately from the six offline authorization-gate tests. Check finally-block cleanup and any isolated orphan records after ambiguous failures.
-- Remove live opt-in flags/temporary credentials from the runner afterward. No live workflow was executed during Phase 4 validation.
+Unset live opt-ins and remove temporary credentials from the local environment after an approved run. Do not enable these tests on CI.

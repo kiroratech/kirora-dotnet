@@ -22,7 +22,9 @@ var contact = await client.Contacts.IdentifyAsync(new IdentifyContactInput { Ext
 if (contact.Data.Id == Guid.Empty) throw new InvalidOperationException("Required contact data missing.");
 await client.Events.TrackAsync(new TrackEventInputByExternalId { ExternalId = "aot-smoke", Name = "SDK Smoke" });
 SendTransactionalInputEmail email = new SendTransactionalInputEmailStoredTemplate { Template = "order-receipt" };
-await client.Transactional.SendAsync(new SendTransactionalInput { To = new TransactionalRecipientInputByExternalId { ExternalId = "aot-smoke" }, Email = email });
+await client.Transactional.SendAsync(new SendTransactionalInput { To = new TransactionalRecipientInputByExternalId { ExternalId = "aot-smoke" }, Email = email, Deliver = (TransactionalDeliverInput)new TransactionalDeliverFirstInput { First = ["email"] } });
+await client.Templates.GetBrandKitAsync();
+await client.Journeys.GetActivationCheckAsync("0192f3a1-7c2e-7d4b-9a10-3e5f6a7b8c9d");
 await client.Reports.GetRfmSummaryAsync();
 await client.Templates.GetAsync("0192f3a1-7c2e-7d4b-9a10-3e5f6a7b8c9d");
 await client.Campaigns.GetAsync("0192f3a1-7c2e-7d4b-9a10-3e5f6a7b8c9d");
@@ -47,6 +49,8 @@ sealed class OfflineHandler(JsonArray fixtures) : HttpMessageHandler
             return Task.FromResult(new HttpResponseMessage(HttpStatusCode.NotFound) { Content = new StringContent("""{"error":{"code":"NOT_FOUND","message":"Missing","details":{"source":"smoke"}}}""") });
         var operation = path switch
         {
+            "/v1/brand-kit" => "getBrandKit",
+            "/v1/journeys/0192f3a1-7c2e-7d4b-9a10-3e5f6a7b8c9d/activation-check" => "getJourneyActivationCheck",
             "/v1/me" => "getMe", "/v1/contacts/identify" => "identifyContact", "/v1/contacts" => "listContacts",
             "/v1/events/track" => "trackEvent", "/v1/transactional/messages" => "sendTransactionalMessage",
             "/v1/reports/rfm" => "getRfmSummary", "/v1/assets" => "uploadAsset",

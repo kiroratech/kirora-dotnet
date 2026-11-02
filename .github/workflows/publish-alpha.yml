@@ -13,6 +13,7 @@ concurrency:
   cancel-in-progress: false
 env:
   KIRORA_RUN_INTEGRATION: '0'
+  KIRORA_RUN_SMOKE: '0'
   DOTNET_NOLOGO: '1'
   DOTNET_CLI_TELEMETRY_OPTOUT: '1'
 jobs:

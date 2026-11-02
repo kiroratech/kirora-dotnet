@@ -182,3 +182,7 @@ All default tests and the Native AOT smoke use fake HTTP. Four live workflows re
 The authoritative specification repository is [kiroratech/openapi](https://github.com/kiroratech/openapi). This SDK pins commit [`30043317efd68ffceeab882019431e57b7463018`](https://github.com/kiroratech/openapi/commit/30043317efd68ffceeab882019431e57b7463018), with its checksum recorded in `spec/source.json`. Coverage claims refer to that immutable pin. See [upstream verification](docs/UPSTREAM-VERIFICATION.md) for the newer official contract differences and migration recommendation. The upstream MIT license is retained in `spec/LICENSE` and distributed in `THIRD-PARTY-NOTICES.txt`; SDK licensing remains a separate maintainer decision.
 
 The pre-release contract migration intentionally changes generated model types and removes the obsolete brand-theme route. See [migration guidance and exact API changes](docs/OPENAPI-MIGRATION.md).
+
+## Official repository and validation
+
+Source: [kiroratech/kirora-dotnet](https://github.com/kiroratech/kirora-dotnet). `main` is the intended default branch; the OpenAPI migration is reviewed on `chore/update-kirora-openapi`. Native AOT and standalone package checks use fake HTTP only. [Live validation instructions](docs/INTEGRATION-TESTS.md) separate read-only authentication smoke from state-changing tests and require local opt-in; CI refuses both. See [release readiness](docs/REPOSITORY-READINESS.md) for validation evidence, historical artifact findings, SourceLink status and the approval-dependent push commands.

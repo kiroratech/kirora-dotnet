@@ -8,3 +8,9 @@ TestResults/
 **/__pycache__/
 *.pyc
 .DS_Store
+
+.env.*
+*.pfx
+*.p12
+*.pem
+*.key

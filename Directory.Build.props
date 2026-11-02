@@ -10,7 +10,9 @@
     <NuGetLockFilePath Condition="'$(PublishAot)' == 'true'">$(MSBuildProjectDirectory)/obj/$(RuntimeIdentifier)/packages.aot.lock.json</NuGetLockFilePath>
     <NuGetAudit>true</NuGetAudit>
     <NuGetAuditMode>all</NuGetAuditMode>
-    <!-- Do not infer metadata from an unrelated parent checkout. Release CI opts in after verifying the dedicated Git root. -->
+    <KiroraRepositoryUrl Condition="'$(KiroraRepositoryUrl)' == ''">https://github.com/kiroratech/kirora-dotnet</KiroraRepositoryUrl>
+    <!-- Enable built-in SDK SourceLink only for a dedicated checkout; copied/repro sources have no Git provenance. -->
+    <KiroraEnableSourceLink Condition="'$(KiroraEnableSourceLink)' == '' and Exists('$(MSBuildThisFileDirectory).git')">true</KiroraEnableSourceLink>
     <EnableSourceControlManagerQueries Condition="'$(KiroraEnableSourceLink)' != 'true'">false</EnableSourceControlManagerQueries>
     <PathMap>$(MSBuildThisFileDirectory)=/_/</PathMap>
   </PropertyGroup>
