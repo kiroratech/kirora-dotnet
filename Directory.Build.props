@@ -14,6 +14,8 @@
     <!-- Enable built-in SDK SourceLink only for a dedicated checkout; copied/repro sources have no Git provenance. -->
     <KiroraEnableSourceLink Condition="'$(KiroraEnableSourceLink)' == '' and Exists('$(MSBuildThisFileDirectory).git')">true</KiroraEnableSourceLink>
     <EnableSourceControlManagerQueries Condition="'$(KiroraEnableSourceLink)' != 'true'">false</EnableSourceControlManagerQueries>
-    <PathMap>$(MSBuildThisFileDirectory)=/_/</PathMap>
+    <ContinuousIntegrationBuild Condition="'$(ContinuousIntegrationBuild)' == '' and '$(KiroraEnableSourceLink)' == 'true'">true</ContinuousIntegrationBuild>
+    <!-- SDK SourceRoot mapping must own both PDB paths and SourceLink keys in a dedicated checkout. -->
+    <PathMap Condition="'$(KiroraEnableSourceLink)' != 'true'">$(MSBuildThisFileDirectory)=/_/</PathMap>
   </PropertyGroup>
 </Project>

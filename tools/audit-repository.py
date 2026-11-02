@@ -6,7 +6,16 @@ root=Path(__file__).resolve().parents[1]
 p=argparse.ArgumentParser();p.add_argument('--output',default='artifacts/repository-audit.json');a=p.parse_args()
 def git(*args):return subprocess.check_output(['git',*args],cwd=root)
 tracked=git('ls-files','-z').decode().strip('\0').split('\0')
-objects=git('rev-list','--objects','--all').decode().splitlines();findings=[];blobs=0;seen=set();historical_artifacts=[]
+objects=git('rev-list','--objects','--all').decode().splitlines();findings=[];reviewed=[];blobs=0;seen=set();historical_artifacts=[]
+import hashlib
+examples=json.loads((root/'eng/secret-audit-examples.json').read_text())
+pinned=json.loads((root/'spec/openapi.json').read_text())
+for example in examples:
+ if 'upstreamPointer' not in example:continue
+ value=pinned
+ for segment in example['upstreamPointer'].split('/')[1:]:
+  key=segment.replace('~1','/').replace('~0','~');value=value[int(key)] if isinstance(value,list) else value[key]
+ if not isinstance(value,str) or hashlib.sha256(value.encode()).hexdigest()!=example['sha256']:raise SystemExit('Reviewed example digest no longer matches the pinned official example')
 for entry in objects:
  oid,_,path=entry.partition(' ')
  if oid in seen or git('cat-file','-t',oid).strip()!=b'blob':continue
@@ -26,9 +35,13 @@ for entry in objects:
    value=match.group(1) if match.lastindex else match.group()
    # Assignments made only of a repeated placeholder are not high-entropy credentials.
    if rule=='high-entropy-key-assignment' and len(set(value))<10:continue
-   findings.append({'blob':oid,'path':path,'line':raw[:match.start()].count(b'\n')+1,'rule':rule})
+   finding={'blob':oid,'path':path,'line':raw[:match.start()].count(b'\n')+1,'rule':rule}
+   digest=hashlib.sha256(value).hexdigest()
+   known=next((e for e in examples if e['sha256']==digest and e['rule']==rule and path in e['paths']),None)
+   if known:reviewed.append(dict(finding,sha256=digest,reason=known['reason']))
+   else:findings.append(finding)
 current_artifacts=[path for path in tracked if re.search(r'(^|/)(bin|obj|artifacts|TestResults|__pycache__)(/|$)|(^|/)\.env($|\.)|\.(pfx|p12|pem|key|nupkg|snupkg|dll|pdb)$|(^|/)\.DS_Store$',path,re.I)]
-report={'scope':'all refs and current tracked paths','commits':len(git('rev-list','--all').splitlines()),'trackedFiles':len(tracked),'reachableBlobs':blobs,'candidateSecrets':findings,'historicalArtifacts':historical_artifacts,'currentArtifacts':current_artifacts,'limitations':'Heuristic rules do not prove absence of secrets. No raw matches are printed. Historical artifacts are reported, never removed or rewritten automatically.'}
+report={'scope':'all refs and current tracked paths','commits':len(git('rev-list','--all').splitlines()),'trackedFiles':len(tracked),'reachableBlobs':blobs,'candidateSecrets':findings,'reviewedExampleMatches':reviewed,'historicalArtifacts':historical_artifacts,'currentArtifacts':current_artifacts,'limitations':'Heuristic rules do not prove absence of secrets. No raw matches are printed. Historical artifacts are reported, never removed or rewritten automatically.'}
 out=root/a.output;out.parent.mkdir(parents=True,exist_ok=True);out.write_text(json.dumps(report,indent=2)+'\n')
-print(f"Audited {report['commits']} commits, {blobs} reachable blobs, {len(tracked)} tracked files; {len(findings)} secret candidates, {len(current_artifacts)} current artifacts, {len(historical_artifacts)} historical artifacts. Redacted report: {a.output}")
+print(f"Audited {report['commits']} commits, {blobs} reachable blobs, {len(tracked)} tracked files; {len(findings)} unexplained secret candidates, {len(reviewed)} exact documented example matches, {len(current_artifacts)} current artifacts, {len(historical_artifacts)} historical artifacts. Redacted report: {a.output}")
 if findings or current_artifacts:raise SystemExit(1)

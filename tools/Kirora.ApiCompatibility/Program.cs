@@ -2,7 +2,7 @@ using System.Reflection.Metadata;
 using System.Reflection;
 using System.Runtime.Loader;
 
-if (args.Length == 3 && args[0] == "--source-link")
+if (args.Length is 3 or 4 && args[0] == "--source-link")
 {
     using var stream = File.OpenRead(args[1]);
     using var provider = MetadataReaderProvider.FromPortablePdbStream(stream);
@@ -13,6 +13,8 @@ if (args.Length == 3 && args[0] == "--source-link")
         if (reader.GetGuid(info.Kind) == new Guid("CC110556-A091-4D38-9FEC-25AB9A351A6A"))
         {
             File.WriteAllBytes(args[2], reader.GetBlobBytes(info.Value));
+            if (args.Length == 4)
+                File.WriteAllText(args[3], System.Text.Json.JsonSerializer.Serialize(reader.Documents.Select(h => new { name = reader.GetString(reader.GetDocument(h).Name), embedded = reader.GetCustomDebugInformation(h).Any(c => reader.GetGuid(reader.GetCustomDebugInformation(c).Kind) == new Guid("0E8A571B-6926-466E-B4AD-8AB04611F5FE")) }).ToArray()));
             Console.WriteLine("Extracted SourceLink from the portable PDB.");
             return 0;
         }
