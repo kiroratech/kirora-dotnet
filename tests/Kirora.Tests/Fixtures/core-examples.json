@@ -19,9 +19,9 @@
           "email": "amaka@example.com",
           "firstName": "Amaka",
           "lastName": "Obi",
-          "phone": "+2348031234567",
-          "timezone": "Africa/Lagos",
-          "country": "NG",
+          "phone": "+447700900123",
+          "timezone": "Europe/London",
+          "country": "GB",
           "locale": "en-NG",
           "rfm": {
             "group": "loyal",
@@ -83,8 +83,8 @@
       "email": "amaka@example.com",
       "firstName": "Amaka",
       "lastName": "Obi",
-      "phone": "+2348031234567",
-      "timezone": "Africa/Lagos",
+      "phone": "+447700900123",
+      "timezone": "Europe/London",
       "dates": {
         "birthday": "1992-03-14"
       },
@@ -109,9 +109,9 @@
         "email": "amaka@example.com",
         "firstName": "Amaka",
         "lastName": "Obi",
-        "phone": "+2348031234567",
-        "timezone": "Africa/Lagos",
-        "country": "NG",
+        "phone": "+447700900123",
+        "timezone": "Europe/London",
+        "country": "GB",
         "locale": "en-NG",
         "rfm": {
           "group": "loyal",
@@ -179,9 +179,9 @@
         "email": "amaka@example.com",
         "firstName": "Amaka",
         "lastName": "Obi",
-        "phone": "+2348031234567",
-        "timezone": "Africa/Lagos",
-        "country": "NG",
+        "phone": "+447700900123",
+        "timezone": "Europe/London",
+        "country": "GB",
         "locale": "en-NG",
         "rfm": {
           "group": "loyal",
@@ -246,9 +246,9 @@
         "email": "amaka@example.com",
         "firstName": "Amaka",
         "lastName": "Obi",
-        "phone": "+2348031234567",
-        "timezone": "Africa/Lagos",
-        "country": "NG",
+        "phone": "+447700900123",
+        "timezone": "Europe/London",
+        "country": "GB",
         "locale": "en-NG",
         "rfm": {
           "group": "loyal",
@@ -334,9 +334,9 @@
               "email": "amaka@example.com",
               "firstName": "Amaka",
               "lastName": "Obi",
-              "phone": "+2348031234567",
-              "timezone": "Africa/Lagos",
-              "country": "NG",
+              "phone": "+447700900123",
+              "timezone": "Europe/London",
+              "country": "GB",
               "locale": "en-NG",
               "rfm": {
                 "group": "loyal",
@@ -420,9 +420,9 @@
         "email": "amaka@example.com",
         "firstName": "Amaka",
         "lastName": "Obi",
-        "phone": "+2348031234567",
-        "timezone": "Africa/Lagos",
-        "country": "NG",
+        "phone": "+447700900123",
+        "timezone": "Europe/London",
+        "country": "GB",
         "locale": "en-NG",
         "rfm": {
           "group": "loyal",
@@ -486,9 +486,9 @@
         "email": "amaka@example.com",
         "firstName": "Amaka",
         "lastName": "Obi",
-        "phone": "+2348031234567",
-        "timezone": "Africa/Lagos",
-        "country": "NG",
+        "phone": "+447700900123",
+        "timezone": "Europe/London",
+        "country": "GB",
         "locale": "en-NG",
         "rfm": {
           "group": "loyal",
@@ -607,9 +607,9 @@
         "email": "amaka@example.com",
         "firstName": "Amaka",
         "lastName": "Obi",
-        "phone": "+2348031234567",
-        "timezone": "Africa/Lagos",
-        "country": "NG",
+        "phone": "+447700900123",
+        "timezone": "Europe/London",
+        "country": "GB",
         "locale": "en-NG",
         "rfm": {
           "group": "loyal",
@@ -731,9 +731,9 @@
           "email": "amaka@example.com",
           "firstName": "Amaka",
           "lastName": "Obi",
-          "phone": "+2348031234567",
-          "timezone": "Africa/Lagos",
-          "country": "NG",
+          "phone": "+447700900123",
+          "timezone": "Europe/London",
+          "country": "GB",
           "locale": "en-NG",
           "rfm": {
             "group": "loyal",
@@ -1061,7 +1061,8 @@
           },
           "source": "web",
           "occurredAt": "2026-10-01T09:30:00.000Z",
-          "receivedAt": "2026-10-01T09:30:01.204Z"
+          "receivedAt": "2026-10-01T09:30:01.204Z",
+          "expiresAt": "2027-10-01T09:30:00.000Z"
         },
         {
           "id": "0192f3c0-2b3c-7d4e-9f50-6b7c8d9e0f1a",
@@ -1076,7 +1077,8 @@
           "context": null,
           "source": "api",
           "occurredAt": "2026-09-30T17:05:00.000Z",
-          "receivedAt": "2026-09-30T17:05:00.312Z"
+          "receivedAt": "2026-09-30T17:05:00.312Z",
+          "expiresAt": "2027-09-30T17:05:00.000Z"
         }
       ],
       "meta": {
@@ -1338,7 +1340,8 @@
     "response": {
       "data": {
         "id": "0192f3c0-1a2b-7c3d-8e4f-5a6b7c8d9e0f",
-        "occurredAt": "2026-10-01T09:30:00.000Z"
+        "occurredAt": "2026-10-01T09:30:00.000Z",
+        "expiresAt": "2027-10-01T09:30:00.000Z"
       }
     }
   },
@@ -1373,7 +1376,8 @@
     "response": {
       "data": {
         "id": "0192f3c0-1a2b-7c3d-8e4f-5a6b7c8d9e0f",
-        "occurredAt": "2026-10-01T09:30:00.000Z"
+        "occurredAt": "2026-10-01T09:30:00.000Z",
+        "expiresAt": "2027-10-01T09:30:00.000Z"
       }
     }
   },
@@ -1395,7 +1399,8 @@
     "response": {
       "data": {
         "id": "0192f3c0-1a2b-7c3d-8e4f-5a6b7c8d9e0f",
-        "occurredAt": "2026-10-01T09:30:00.000Z"
+        "occurredAt": "2026-10-01T09:30:00.000Z",
+        "expiresAt": "2027-10-01T09:30:00.000Z"
       }
     }
   },
@@ -1448,7 +1453,8 @@
             "replayed": false,
             "event": {
               "id": "0192f3c0-1a2b-7c3d-8e4f-5a6b7c8d9e0f",
-              "occurredAt": "2026-10-01T09:30:00.000Z"
+              "occurredAt": "2026-10-01T09:30:00.000Z",
+              "expiresAt": "2027-10-01T09:30:00.000Z"
             }
           },
           {
@@ -1456,7 +1462,8 @@
             "replayed": false,
             "event": {
               "id": "0192f3c0-2b3c-7d4e-9f50-6b7c8d9e0f1a",
-              "occurredAt": "2026-10-01T09:30:00.000Z"
+              "occurredAt": "2026-10-01T09:30:00.000Z",
+              "expiresAt": "2027-10-01T09:30:00.000Z"
             }
           }
         ]
@@ -1502,7 +1509,8 @@
             "replayed": false,
             "event": {
               "id": "0192f3c0-1a2b-7c3d-8e4f-5a6b7c8d9e0f",
-              "occurredAt": "2026-10-01T09:30:00.000Z"
+              "occurredAt": "2026-10-01T09:30:00.000Z",
+              "expiresAt": "2027-10-01T09:30:00.000Z"
             }
           },
           {
@@ -1546,12 +1554,12 @@
           },
           "error": {
             "code": "VALIDATION_ERROR",
-            "message": "Request validation failed",
+            "message": "Some request values are invalid. Check the field errors.",
             "errors": [
               {
                 "in": "body",
                 "field": "email",
-                "message": "Invalid email address"
+                "message": "Enter an email address, like name@example.com."
               }
             ]
           }
@@ -1581,7 +1589,8 @@
           },
           "source": "web",
           "occurredAt": "2026-10-01T09:30:00.000Z",
-          "receivedAt": "2026-10-01T09:30:01.204Z"
+          "receivedAt": "2026-10-01T09:30:01.204Z",
+          "expiresAt": "2027-10-01T09:30:00.000Z"
         }
       ],
       "meta": {
@@ -1699,6 +1708,17 @@
                 "EUR"
               ],
               "seenIn": 410
+            },
+            {
+              "key": "deliver_by",
+              "types": [
+                "date"
+              ],
+              "samples": [
+                "2026-10-03",
+                "2026-10-05"
+              ],
+              "seenIn": 388
             }
           ]
         },
@@ -2060,8 +2080,11 @@
             "name": "Newsletter sign-up"
           }
         ],
+        "goals": [],
         "journeys": [],
         "segments": [],
+        "templates": [],
+        "sharedBlocks": [],
         "hasMore": false
       }
     }
@@ -2205,7 +2228,7 @@
     "multipart": false,
     "csv": false,
     "request": {
-      "name": "Engaged or pro",
+      "name": "Engaged or premium",
       "rules": {
         "any": [
           {
@@ -2219,7 +2242,7 @@
                 "type": "attribute",
                 "field": "attributes.plan",
                 "operator": "equals",
-                "value": "pro"
+                "value": "premium"
               }
             ]
           },
@@ -2235,7 +2258,7 @@
     "response": {
       "data": {
         "id": "0192f3a3-3d5e-7a70-8c43-6b8c9d0e1f2b",
-        "name": "Engaged or pro",
+        "name": "Engaged or premium",
         "description": null,
         "rules": {
           "any": [
@@ -2250,7 +2273,7 @@
                   "type": "attribute",
                   "field": "attributes.plan",
                   "operator": "equals",
-                  "value": "pro"
+                  "value": "premium"
                 }
               ]
             },
@@ -2472,9 +2495,9 @@
           "email": "amaka@example.com",
           "firstName": "Amaka",
           "lastName": "Obi",
-          "phone": "+2348031234567",
-          "timezone": "Africa/Lagos",
-          "country": "NG",
+          "phone": "+447700900123",
+          "timezone": "Europe/London",
+          "country": "GB",
           "locale": "en-NG",
           "rfm": {
             "group": "loyal",
@@ -2546,9 +2569,9 @@
           "email": "amaka@example.com",
           "firstName": "Amaka",
           "lastName": "Obi",
-          "phone": "+2348031234567",
-          "timezone": "Africa/Lagos",
-          "country": "NG",
+          "phone": "+447700900123",
+          "timezone": "Europe/London",
+          "country": "GB",
           "locale": "en-NG",
           "rfm": {
             "group": "loyal",
@@ -2689,7 +2712,11 @@
           "description": "Discounts and bundles, once a week",
           "mode": "opt_out",
           "createdAt": "2026-09-01T10:00:00.000Z",
-          "updatedAt": "2026-09-01T10:00:00.000Z"
+          "updatedAt": "2026-09-01T10:00:00.000Z",
+          "counts": {
+            "in": 11842,
+            "left": 316
+          }
         }
       ],
       "meta": {
@@ -2723,7 +2750,11 @@
         "description": "Discounts and bundles, once a week",
         "mode": "opt_out",
         "createdAt": "2026-09-01T10:00:00.000Z",
-        "updatedAt": "2026-09-01T10:00:00.000Z"
+        "updatedAt": "2026-09-01T10:00:00.000Z",
+        "counts": {
+          "in": 12158,
+          "left": 0
+        }
       }
     }
   },
@@ -2748,7 +2779,11 @@
         "description": "Discounts and bundles, once a week",
         "mode": "opt_out",
         "createdAt": "2026-09-01T10:00:00.000Z",
-        "updatedAt": "2026-09-01T10:00:00.000Z"
+        "updatedAt": "2026-09-01T10:00:00.000Z",
+        "counts": {
+          "in": 11842,
+          "left": 316
+        }
       }
     }
   },
@@ -2775,7 +2810,11 @@
         "description": "Discounts and bundles, once a week",
         "mode": "opt_out",
         "createdAt": "2026-09-01T10:00:00.000Z",
-        "updatedAt": "2026-10-02T11:00:00.000Z"
+        "updatedAt": "2026-10-02T11:00:00.000Z",
+        "counts": {
+          "in": 11842,
+          "left": 316
+        }
       }
     }
   },
@@ -3076,9 +3115,11 @@
             "status": "queued",
             "correlationId": "order-1001",
             "createdAt": "2026-11-17T08:30:00.000Z",
-            "sendAt": null
+            "sendAt": null,
+            "fallbackFor": null
           }
-        ]
+        ],
+        "skippedChannels": []
       }
     }
   },
@@ -3117,9 +3158,11 @@
             "status": "queued",
             "correlationId": null,
             "createdAt": "2026-11-17T08:30:00.000Z",
-            "sendAt": null
+            "sendAt": null,
+            "fallbackFor": null
           }
-        ]
+        ],
+        "skippedChannels": []
       }
     }
   },
@@ -3162,7 +3205,8 @@
             "status": "queued",
             "correlationId": "delivery-7731",
             "createdAt": "2026-11-17T08:30:00.000Z",
-            "sendAt": null
+            "sendAt": null,
+            "fallbackFor": null
           },
           {
             "id": "0192f3b0-1a2b-7c3d-8e4f-5a6b7c8d9e0f",
@@ -3170,9 +3214,73 @@
             "status": "queued",
             "correlationId": "delivery-7731",
             "createdAt": "2026-11-17T08:30:00.000Z",
-            "sendAt": null
+            "sendAt": null,
+            "fallbackFor": null
           }
+        ],
+        "skippedChannels": []
+      }
+    }
+  },
+  {
+    "operationId": "sendTransactionalMessage",
+    "example": "pushThenEmail",
+    "method": "POST",
+    "path": "/v1/transactional/messages",
+    "pathValues": {},
+    "query": {},
+    "acceptsKey": true,
+    "multipart": false,
+    "csv": false,
+    "request": {
+      "to": {
+        "contactId": "0192f3a1-7c2e-7d4b-9a10-3e5f6a7b8c9d"
+      },
+      "sensitive": true,
+      "data": {
+        "code": "739204"
+      },
+      "push": {
+        "pushProjectId": "0192f3a1-91d4-7b2a-8c3e-4d5e6f7a8b9c",
+        "title": "Your sign-in code",
+        "body": "{{ data.code }}"
+      },
+      "email": {
+        "subject": "Your sign-in code",
+        "from": "Juniper Kitchen <security@juniperkitchen.com>",
+        "html": "<p>Your code is <strong>{{ data.code }}</strong>.</p>"
+      },
+      "deliver": {
+        "first": [
+          "push",
+          "email"
         ]
+      }
+    },
+    "status": 202,
+    "response": {
+      "data": {
+        "messages": [
+          {
+            "id": "0192f3b0-2b3c-7d4e-9f50-6b7c8d9e0f1a",
+            "channel": "push",
+            "status": "queued",
+            "correlationId": null,
+            "createdAt": "2026-11-17T08:30:00.000Z",
+            "sendAt": null,
+            "fallbackFor": null
+          },
+          {
+            "id": "0192f3b0-1a2b-7c3d-8e4f-5a6b7c8d9e0f",
+            "channel": "email",
+            "status": "queued",
+            "correlationId": null,
+            "createdAt": "2026-11-17T08:30:00.000Z",
+            "sendAt": null,
+            "fallbackFor": "0192f3b0-2b3c-7d4e-9f50-6b7c8d9e0f1a"
+          }
+        ],
+        "skippedChannels": []
       }
     }
   },
@@ -3207,9 +3315,11 @@
             "status": "queued",
             "correlationId": null,
             "createdAt": "2026-11-17T08:30:00.000Z",
-            "sendAt": "2026-11-17T09:00:00.000Z"
+            "sendAt": "2026-11-17T09:00:00.000Z",
+            "fallbackFor": null
           }
-        ]
+        ],
+        "skippedChannels": []
       }
     }
   },
@@ -3275,9 +3385,11 @@
                 "status": "queued",
                 "correlationId": "order-1001",
                 "createdAt": "2026-11-17T08:30:00.000Z",
-                "sendAt": null
+                "sendAt": null,
+                "fallbackFor": null
               }
-            ]
+            ],
+            "skippedChannels": []
           },
           {
             "idempotencyKey": "order-1002-receipt",
@@ -3289,9 +3401,11 @@
                 "status": "queued",
                 "correlationId": "order-1002",
                 "createdAt": "2026-11-17T08:30:00.000Z",
-                "sendAt": null
+                "sendAt": null,
+                "fallbackFor": null
               }
-            ]
+            ],
+            "skippedChannels": []
           }
         ]
       }
@@ -3359,9 +3473,11 @@
                 "status": "queued",
                 "correlationId": "order-1003",
                 "createdAt": "2026-11-17T08:30:00.000Z",
-                "sendAt": null
+                "sendAt": null,
+                "fallbackFor": null
               }
-            ]
+            ],
+            "skippedChannels": []
           },
           {
             "idempotencyKey": "order-1004-receipt",
@@ -4190,6 +4306,7 @@
           }
         ],
         "contentWarnings": [],
+        "abTestSplit": null,
         "abTestWarnings": []
       }
     }
@@ -4328,7 +4445,7 @@
     "request": {
       "type": "local_time",
       "localDateTime": "2026-11-03T08:00",
-      "timezoneIfUnknown": "Africa/Lagos",
+      "timezoneIfUnknown": "Europe/London",
       "ifTimeHasPassed": "skip"
     },
     "status": 200,
@@ -4391,7 +4508,7 @@
         "schedule": {
           "type": "local_time",
           "localDateTime": "2026-11-03T08:00",
-          "timezoneIfUnknown": "Africa/Lagos",
+          "timezoneIfUnknown": "Europe/London",
           "ifTimeHasPassed": "skip",
           "startsAt": "2026-11-02T18:00:00.000Z"
         },
@@ -5212,6 +5329,7 @@
           "clicked": 341,
           "clickedByMachine": 29,
           "unsubscribed": 6,
+          "simulated": 0,
           "total": 2455,
           "byStatus": {
             "queued": 0,
@@ -5223,6 +5341,25 @@
             "bounced": 38,
             "complained": 2
           }
+        },
+        "deliverabilityHealth": {
+          "band": "healthy",
+          "limits": {
+            "watch": {
+              "bounceRatio": 0.02,
+              "complaintRatio": 0.0005
+            },
+            "critical": {
+              "bounceRatio": 0.03,
+              "complaintRatio": 0.0008
+            }
+          },
+          "bounceRatio": 0.004,
+          "complaintRatio": 0,
+          "sampleSize": 2455,
+          "minimumSampleSize": 100,
+          "feedbackCoverage": 0.99,
+          "minimumFeedbackCoverage": 0.95
         },
         "push": null,
         "skippedByReason": {
@@ -6230,7 +6367,8 @@
           "openedByMachine": 38,
           "clicked": 29,
           "clickedByMachine": 3,
-          "unsubscribed": 1
+          "unsubscribed": 1,
+          "simulated": 0
         },
         "push": {
           "created": 0,
@@ -6347,7 +6485,8 @@
               "openedByMachine": 18,
               "clicked": 19,
               "clickedByMachine": 2,
-              "unsubscribed": 1
+              "unsubscribed": 1,
+              "simulated": 0
             },
             "conversions": [
               {
@@ -6363,6 +6502,39 @@
                 "revenueWithheld": false
               }
             ]
+          }
+        ]
+      }
+    }
+  },
+  {
+    "operationId": "getJourneyActivationCheck",
+    "example": "noBody",
+    "method": "GET",
+    "path": "/v1/journeys/{id}/activation-check",
+    "pathValues": {
+      "id": "0192f3a1-7c2e-7d4b-9a10-3e5f6a7b8c9d"
+    },
+    "query": {},
+    "acceptsKey": false,
+    "multipart": false,
+    "csv": false,
+    "request": null,
+    "status": 200,
+    "response": {
+      "data": {
+        "issues": [
+          {
+            "field": "steps.1.content.templateSnapshot",
+            "code": "DRAFT_INCOMPLETE",
+            "message": "This is required.",
+            "stepId": "welcome-email"
+          },
+          {
+            "field": "steps.3.content.from",
+            "code": "SENDING_DOMAIN_UNVERIFIED",
+            "message": "news.juniperkitchen.com is not a verified sending domain",
+            "stepId": "reminder-email"
           }
         ]
       }
@@ -7564,22 +7736,43 @@
             {
               "id": "footer-note",
               "type": "text",
-              "text": "Acme Shop, 12 Market Street, Lagos. Questions? Reply to this email.",
+              "text": "Juniper Kitchen, 12 Market Street, London. Questions? Reply to this email.",
               "align": "center"
             }
           ]
         },
-        "brandTheme": {
-          "bodyFontFamily": "Arial, sans-serif",
-          "headingFontFamily": "Georgia, serif",
-          "cardBackgroundColor": "#ffffff",
-          "canvasBackgroundColor": "#f4f1ec",
-          "textColor": "#1f2933",
-          "accentColor": "#b4461f",
-          "linkColor": "#b4461f",
-          "cardWidth": "600px",
-          "cardBorderRadius": "6px",
-          "buttonStyle": "solid"
+        "brandKit": {
+          "name": "Acme Shop",
+          "theme": {
+            "bodyFontFamily": "Arial, sans-serif",
+            "headingFontFamily": "Georgia, serif",
+            "cardBackgroundColor": "#ffffff",
+            "canvasBackgroundColor": "#f4f1ec",
+            "textColor": "#1f2933",
+            "accentColor": "#b4461f",
+            "linkColor": "#b4461f",
+            "cardWidth": "600px",
+            "cardBorderRadius": "6px",
+            "buttonStyle": "solid",
+            "headingColor": "#1f2933",
+            "baseFontSize": "16px"
+          },
+          "logo": {
+            "assetId": "0192f3d2-4d5e-7f60-9b72-8d9e0f1a2b3c",
+            "url": "https://assets.kirora.io/images/0192f3d2-4d5e-7f60-9b72-8d9e0f1a2b3c.png",
+            "alt": null,
+            "width": "140px"
+          },
+          "socialLinks": [
+            {
+              "label": "Instagram",
+              "href": "https://instagram.com/acmeshop"
+            },
+            {
+              "label": "LinkedIn",
+              "href": "https://www.linkedin.com/company/acmeshop"
+            }
+          ]
         }
       }
     }
@@ -7752,10 +7945,10 @@
     }
   },
   {
-    "operationId": "getBrandTheme",
+    "operationId": "getBrandKit",
     "example": "noBody",
     "method": "GET",
-    "path": "/v1/brand-theme",
+    "path": "/v1/brand-kit",
     "pathValues": {},
     "query": {},
     "acceptsKey": false,
@@ -7765,16 +7958,40 @@
     "status": 200,
     "response": {
       "data": {
-        "bodyFontFamily": "Arial, sans-serif",
-        "headingFontFamily": "Georgia, serif",
-        "cardBackgroundColor": "#ffffff",
-        "canvasBackgroundColor": "#f4f1ec",
-        "textColor": "#1f2933",
-        "accentColor": "#b4461f",
-        "linkColor": "#b4461f",
-        "cardWidth": "600px",
-        "cardBorderRadius": "6px",
-        "buttonStyle": "solid"
+        "name": "Acme Shop",
+        "theme": {
+          "bodyFontFamily": "Arial, sans-serif",
+          "headingFontFamily": "Georgia, serif",
+          "cardBackgroundColor": "#ffffff",
+          "canvasBackgroundColor": "#f4f1ec",
+          "textColor": "#1f2933",
+          "accentColor": "#b4461f",
+          "linkColor": "#b4461f",
+          "cardWidth": "600px",
+          "cardBorderRadius": "6px",
+          "buttonStyle": "solid",
+          "headingColor": "#1f2933",
+          "baseFontSize": "16px"
+        },
+        "logo": {
+          "assetId": "0192f3d2-4d5e-7f60-9b72-8d9e0f1a2b3c",
+          "url": "https://assets.kirora.io/images/0192f3d2-4d5e-7f60-9b72-8d9e0f1a2b3c.png",
+          "alt": null,
+          "width": "140px"
+        },
+        "socialLinks": [
+          {
+            "label": "Instagram",
+            "href": "https://instagram.com/acmeshop"
+          },
+          {
+            "label": "LinkedIn",
+            "href": "https://www.linkedin.com/company/acmeshop"
+          }
+        ],
+        "defaultHeaderId": null,
+        "defaultFooterId": null,
+        "updatedAt": "2026-10-01T09:30:00.000Z"
       }
     }
   },
@@ -7824,7 +8041,7 @@
         {
           "id": "footer-note",
           "type": "text",
-          "text": "Acme Shop, 12 Market Street, Lagos. Questions? Reply to this email.",
+          "text": "Juniper Kitchen, 12 Market Street, London. Questions? Reply to this email.",
           "align": "center"
         }
       ]
@@ -7838,7 +8055,7 @@
           {
             "id": "footer-note",
             "type": "text",
-            "text": "Acme Shop, 12 Market Street, Lagos. Questions? Reply to this email.",
+            "text": "Juniper Kitchen, 12 Market Street, London. Questions? Reply to this email.",
             "align": "center"
           }
         ],
@@ -7869,7 +8086,7 @@
           {
             "id": "footer-note",
             "type": "text",
-            "text": "Acme Shop, 12 Market Street, Lagos. Questions? Reply to this email.",
+            "text": "Juniper Kitchen, 12 Market Street, London. Questions? Reply to this email.",
             "align": "center"
           }
         ],
@@ -7902,7 +8119,7 @@
           {
             "id": "footer-note",
             "type": "text",
-            "text": "Acme Shop, 12 Market Street, Lagos. Questions? Reply to this email.",
+            "text": "Juniper Kitchen, 12 Market Street, London. Questions? Reply to this email.",
             "align": "center"
           }
         ],
@@ -7962,6 +8179,7 @@
             "name": "Welcome series"
           }
         ],
+        "brandKit": false,
         "hasMore": false
       }
     }
@@ -8142,7 +8360,7 @@
         "journeys": [],
         "journeysWithEnrollments": [],
         "messages": [],
-        "brandTheme": false,
+        "brandKit": false,
         "hasMore": false
       }
     }
@@ -8189,6 +8407,7 @@
             "https://acme-shop.com"
           ],
           "doubleOptIn": true,
+          "notifyUserIds": [],
           "captcha": null,
           "acceptingSubmissions": true,
           "closesAt": null,
@@ -8251,6 +8470,7 @@
         "https://acme-shop.com"
       ],
       "doubleOptIn": true,
+      "notifyUserIds": [],
       "theme": {
         "accentColor": "#b4461f",
         "fontFamily": "sans",
@@ -8311,6 +8531,7 @@
         ],
         "refusedOrigins": [],
         "doubleOptIn": true,
+        "notifyUserIds": [],
         "theme": {
           "accentColor": "#b4461f",
           "fontFamily": "sans",
@@ -8393,6 +8614,7 @@
         ],
         "refusedOrigins": [],
         "doubleOptIn": true,
+        "notifyUserIds": [],
         "theme": {
           "accentColor": "#b4461f",
           "fontFamily": "sans",
@@ -8477,6 +8699,7 @@
         ],
         "refusedOrigins": [],
         "doubleOptIn": true,
+        "notifyUserIds": [],
         "theme": {
           "accentColor": "#b4461f",
           "fontFamily": "sans",
@@ -8633,6 +8856,7 @@
         ],
         "refusedOrigins": [],
         "doubleOptIn": true,
+        "notifyUserIds": [],
         "theme": {
           "accentColor": "#b4461f",
           "fontFamily": "sans",
@@ -8715,6 +8939,7 @@
         ],
         "refusedOrigins": [],
         "doubleOptIn": true,
+        "notifyUserIds": [],
         "theme": {
           "accentColor": "#b4461f",
           "fontFamily": "sans",
@@ -8797,6 +9022,7 @@
         ],
         "refusedOrigins": [],
         "doubleOptIn": true,
+        "notifyUserIds": [],
         "theme": {
           "accentColor": "#b4461f",
           "fontFamily": "sans",
@@ -8879,6 +9105,7 @@
         ],
         "refusedOrigins": [],
         "doubleOptIn": true,
+        "notifyUserIds": [],
         "theme": {
           "accentColor": "#b4461f",
           "fontFamily": "sans",
@@ -8958,7 +9185,7 @@
         "window": {
           "from": "2026-09-07T23:00:00.000Z",
           "to": "2026-10-07T23:00:00.000Z",
-          "timezone": "Africa/Lagos"
+          "timezone": "Europe/London"
         }
       }
     }
@@ -10071,7 +10298,7 @@
         "nextAttemptAt": "2026-10-02T14:05:00.000Z",
         "responseStatus": 503,
         "failureReason": null,
-        "requestBody": "{\"eventId\":\"01a0f2cf-4444-7555-8666-777788889999\",\"eventType\":\"contact.unsubscribed\",\"occurredAt\":\"2026-10-01T09:30:00.000Z\",\"data\":{\"contact\":{\"id\":\"0192f3a1-7c2e-7d4b-9a10-3e5f6a7b8c9d\",\"externalId\":\"customer-4821\",\"email\":\"amaka@example.com\",\"firstName\":\"Amaka\",\"lastName\":\"Obi\",\"phone\":\"+2348031234567\",\"timezone\":\"Africa/Lagos\",\"country\":\"NG\",\"locale\":\"en-NG\",\"rfm\":{\"group\":\"loyal\",\"recency\":3,\"frequency\":4,\"monetary\":5,\"purchaseCount\":6,\"totalSpent\":{\"currency\":\"USD\",\"value\":412.5},\"lastPurchasedAt\":\"2026-03-02T18:20:00.000Z\"},\"dates\":{\"birthday\":\"1992-03-14\"},\"attributes\":{\"plan\":\"pro\",\"favourite_spice\":\"smoked paprika\",\"orders\":3},\"consent\":{\"email\":false,\"push\":false},\"createdAt\":\"2026-09-12T08:15:00.000Z\",\"updatedAt\":\"2026-10-01T09:30:00.000Z\"},\"channel\":\"email\",\"messageId\":\"0192f3b0-1a2b-7c3d-8e4f-5a6b7c8d9e0f\",\"campaignId\":\"0192f3d3-5e6f-7071-8c83-9e0f1a2b3c4d\",\"topicId\":null}}",
+        "requestBody": "{\"eventId\":\"01a0f2cf-4444-7555-8666-777788889999\",\"eventType\":\"contact.unsubscribed\",\"occurredAt\":\"2026-10-01T09:30:00.000Z\",\"data\":{\"contact\":{\"id\":\"0192f3a1-7c2e-7d4b-9a10-3e5f6a7b8c9d\",\"externalId\":\"customer-4821\",\"email\":\"amaka@example.com\",\"firstName\":\"Amaka\",\"lastName\":\"Obi\",\"phone\":\"+447700900123\",\"timezone\":\"Europe/London\",\"country\":\"GB\",\"locale\":\"en-NG\",\"rfm\":{\"group\":\"loyal\",\"recency\":3,\"frequency\":4,\"monetary\":5,\"purchaseCount\":6,\"totalSpent\":{\"currency\":\"USD\",\"value\":412.5},\"lastPurchasedAt\":\"2026-03-02T18:20:00.000Z\"},\"dates\":{\"birthday\":\"1992-03-14\"},\"attributes\":{\"plan\":\"pro\",\"favourite_spice\":\"smoked paprika\",\"orders\":3},\"consent\":{\"email\":false,\"push\":false},\"createdAt\":\"2026-09-12T08:15:00.000Z\",\"updatedAt\":\"2026-10-01T09:30:00.000Z\"},\"channel\":\"email\",\"messageId\":\"0192f3b0-1a2b-7c3d-8e4f-5a6b7c8d9e0f\",\"campaignId\":\"0192f3d3-5e6f-7071-8c83-9e0f1a2b3c4d\",\"topicId\":null}}",
         "responseBody": "Service Unavailable",
         "createdAt": "2026-10-02T14:05:00.000Z",
         "deliveredAt": null
@@ -10108,9 +10335,9 @@
                 "email": "amaka@example.com",
                 "firstName": "Amaka",
                 "lastName": "Obi",
-                "phone": "+2348031234567",
-                "timezone": "Africa/Lagos",
-                "country": "NG",
+                "phone": "+447700900123",
+                "timezone": "Europe/London",
+                "country": "GB",
                 "locale": "en-NG",
                 "rfm": {
                   "group": "loyal",
@@ -10211,7 +10438,7 @@
         "window": {
           "from": "2026-09-07T23:00:00.000Z",
           "to": "2026-10-07T23:00:00.000Z",
-          "timezone": "Africa/Lagos"
+          "timezone": "Europe/London"
         }
       }
     }
@@ -10231,7 +10458,7 @@
     "response": {
       "data": {
         "generatedAt": "2026-10-08T12:00:00.000Z",
-        "timezone": "Africa/Lagos",
+        "timezone": "Europe/London",
         "from": "2026-09-30T23:00:00.000Z",
         "to": "2026-10-07T23:00:00.000Z",
         "previousPeriod": {
@@ -10245,8 +10472,10 @@
             "opened": 1640,
             "openedByMachine": 480,
             "clicked": 384,
+            "simulated": 0,
             "feedbackObserved": 4000,
             "failed": 12,
+            "failedBeforeSending": 8,
             "skipped": 80,
             "bounced": 48,
             "complained": 4,
@@ -10258,8 +10487,10 @@
             "opened": 1230,
             "openedByMachine": 360,
             "clicked": 288,
+            "simulated": 0,
             "feedbackObserved": 3000,
             "failed": 9,
+            "failedBeforeSending": 6,
             "skipped": 60,
             "bounced": 36,
             "complained": 3,
@@ -10271,8 +10502,10 @@
             "opened": 410,
             "openedByMachine": 120,
             "clicked": 96,
+            "simulated": 0,
             "feedbackObserved": 1000,
             "failed": 3,
+            "failedBeforeSending": 2,
             "skipped": 20,
             "bounced": 12,
             "complained": 1,
@@ -10330,14 +10563,16 @@
           "band": "healthy",
           "limits": {
             "watch": {
-              "bounceRatio": 0.04,
-              "complaintRatio": 0.0008
+              "bounceRatio": 0.02,
+              "complaintRatio": 0.0005
             },
             "critical": {
-              "bounceRatio": 0.1,
-              "complaintRatio": 0.0015
+              "bounceRatio": 0.03,
+              "complaintRatio": 0.0008
             }
           },
+          "bounceRatio": 0.012,
+          "complaintRatio": 0.00025,
           "sampleSize": 4000,
           "minimumSampleSize": 100,
           "feedbackCoverage": 1,
@@ -10352,8 +10587,10 @@
               "opened": 410,
               "openedByMachine": 120,
               "clicked": 96,
+              "simulated": 0,
               "feedbackObserved": 1000,
               "failed": 3,
+              "failedBeforeSending": 2,
               "skipped": 20,
               "bounced": 12,
               "complained": 1,
@@ -10381,8 +10618,10 @@
               "opened": 410,
               "openedByMachine": 120,
               "clicked": 96,
+              "simulated": 0,
               "feedbackObserved": 1000,
               "failed": 3,
+              "failedBeforeSending": 2,
               "skipped": 20,
               "bounced": 12,
               "complained": 1,
@@ -10416,7 +10655,7 @@
     "response": {
       "data": {
         "generatedAt": "2026-10-08T12:00:00.000Z",
-        "timezone": "Africa/Lagos",
+        "timezone": "Europe/London",
         "from": "2026-09-30T23:00:00.000Z",
         "to": "2026-10-07T23:00:00.000Z",
         "previousPeriod": {
@@ -10546,7 +10785,7 @@
     "status": 200,
     "response": {
       "data": {
-        "timezone": "Africa/Lagos",
+        "timezone": "Europe/London",
         "from": "2026-08-31T23:00:00.000Z",
         "to": "2026-09-30T23:00:00.000Z",
         "withinDays": 7,
@@ -10651,9 +10890,9 @@
         {
           "id": "0192f3c1-1a2b-7c3d-8e4f-5a6b7c8d9e0f",
           "externalId": "tenant-lagos-01",
-          "name": "Acme Shop Lagos",
-          "country": "NG",
-          "timezone": "Africa/Lagos",
+          "name": "Juniper Kitchen London",
+          "country": "GB",
+          "timezone": "Europe/London",
           "status": "active",
           "suspendedAt": null,
           "deletionRequestedAt": null,
@@ -10680,19 +10919,19 @@
     "multipart": false,
     "csv": false,
     "request": {
-      "name": "Acme Shop Lagos",
+      "name": "Juniper Kitchen London",
       "externalId": "tenant-lagos-01",
-      "country": "NG",
-      "timezone": "Africa/Lagos"
+      "country": "GB",
+      "timezone": "Europe/London"
     },
     "status": 201,
     "response": {
       "data": {
         "id": "0192f3c1-1a2b-7c3d-8e4f-5a6b7c8d9e0f",
         "externalId": "tenant-lagos-01",
-        "name": "Acme Shop Lagos",
-        "country": "NG",
-        "timezone": "Africa/Lagos",
+        "name": "Juniper Kitchen London",
+        "country": "GB",
+        "timezone": "Europe/London",
         "status": "active",
         "suspendedAt": null,
         "deletionRequestedAt": null,
@@ -10719,9 +10958,9 @@
       "data": {
         "id": "0192f3c1-1a2b-7c3d-8e4f-5a6b7c8d9e0f",
         "externalId": "tenant-lagos-01",
-        "name": "Acme Shop Lagos",
-        "country": "NG",
-        "timezone": "Africa/Lagos",
+        "name": "Juniper Kitchen London",
+        "country": "GB",
+        "timezone": "Europe/London",
         "status": "active",
         "suspendedAt": null,
         "deletionRequestedAt": null,
@@ -10743,16 +10982,16 @@
     "multipart": false,
     "csv": false,
     "request": {
-      "name": "Acme Shop Nigeria"
+      "name": "Juniper Kitchen UK"
     },
     "status": 200,
     "response": {
       "data": {
         "id": "0192f3c1-1a2b-7c3d-8e4f-5a6b7c8d9e0f",
         "externalId": "tenant-lagos-01",
-        "name": "Acme Shop Nigeria",
-        "country": "NG",
-        "timezone": "Africa/Lagos",
+        "name": "Juniper Kitchen UK",
+        "country": "GB",
+        "timezone": "Europe/London",
         "status": "active",
         "suspendedAt": null,
         "deletionRequestedAt": null,
@@ -10779,9 +11018,9 @@
       "data": {
         "id": "0192f3c1-1a2b-7c3d-8e4f-5a6b7c8d9e0f",
         "externalId": "tenant-lagos-01",
-        "name": "Acme Shop Lagos",
-        "country": "NG",
-        "timezone": "Africa/Lagos",
+        "name": "Juniper Kitchen London",
+        "country": "GB",
+        "timezone": "Europe/London",
         "status": "deleting",
         "suspendedAt": null,
         "deletionRequestedAt": "2026-10-02T14:05:00.000Z",
@@ -10808,9 +11047,9 @@
       "data": {
         "id": "0192f3c1-1a2b-7c3d-8e4f-5a6b7c8d9e0f",
         "externalId": "tenant-lagos-01",
-        "name": "Acme Shop Lagos",
-        "country": "NG",
-        "timezone": "Africa/Lagos",
+        "name": "Juniper Kitchen London",
+        "country": "GB",
+        "timezone": "Europe/London",
         "status": "suspended",
         "suspendedAt": "2026-10-02T14:05:00.000Z",
         "deletionRequestedAt": null,
@@ -10837,9 +11076,9 @@
       "data": {
         "id": "0192f3c1-1a2b-7c3d-8e4f-5a6b7c8d9e0f",
         "externalId": "tenant-lagos-01",
-        "name": "Acme Shop Lagos",
-        "country": "NG",
-        "timezone": "Africa/Lagos",
+        "name": "Juniper Kitchen London",
+        "country": "GB",
+        "timezone": "Europe/London",
         "status": "active",
         "suspendedAt": null,
         "deletionRequestedAt": null,
@@ -10866,9 +11105,9 @@
       "data": {
         "id": "0192f3c1-1a2b-7c3d-8e4f-5a6b7c8d9e0f",
         "externalId": "tenant-lagos-01",
-        "name": "Acme Shop Lagos",
-        "country": "NG",
-        "timezone": "Africa/Lagos",
+        "name": "Juniper Kitchen London",
+        "country": "GB",
+        "timezone": "Europe/London",
         "status": "active",
         "suspendedAt": null,
         "deletionRequestedAt": null,

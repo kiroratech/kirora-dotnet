@@ -1,4 +1,4 @@
-module,operationId,httpMethod,path,phase2,phase3,dotnetMethod,nodeDedicatedTyped,goDedicatedTyped,requiredScope,keyKinds,retryPolicy,supportsHeaderKey
+module,operationId,httpMethod,path,phase2,current,dotnetMethod,nodeDedicatedTyped,goDedicatedTyped,requiredScope,keyKinds,retryPolicy,supportsHeaderKey
 contacts,listContacts,GET,/v1/contacts,implemented,implemented,Contacts.ListAsync,true,true,contacts:read,"integration,agent,partner",read,false
 contacts,identifyContact,POST,/v1/contacts/identify,implemented,implemented,Contacts.IdentifyAsync,true,true,contacts:write,"integration,partner",converges,true
 contacts,identifyContactsBatch,POST,/v1/contacts/batch,implemented,implemented,Contacts.IdentifyBatchAsync,true,true,contacts:write,"integration,partner",converges,true
@@ -94,6 +94,7 @@ journeys,endJourney,POST,/v1/journeys/{id}/end,missing,implemented,Journeys.EndA
 journeys,duplicateJourney,POST,/v1/journeys/{id}/duplicate,missing,implemented,Journeys.DuplicateAsync,false,false,journeys:write,"integration,agent,partner",unsafe,true
 journeys,getJourneyMetrics,GET,/v1/journeys/{id}/metrics,missing,implemented,Journeys.GetMetricsAsync,false,false,journeys:read,"integration,agent,partner",read,false
 journeys,getJourneyStepMetrics,GET,/v1/journeys/{id}/step-metrics,missing,implemented,Journeys.GetStepMetricsAsync,false,false,journeys:read,"integration,agent,partner",read,false
+journeys,getJourneyActivationCheck,GET,/v1/journeys/{id}/activation-check,missing,implemented,Journeys.GetActivationCheckAsync,false,false,journeys:read,"integration,agent,partner",read,false
 conversion-goals,listConversionGoals,GET,/v1/conversion-goals,missing,implemented,ConversionGoals.ListAsync,false,false,conversion-goals:read,"integration,agent,partner",read,false
 conversion-goals,createConversionGoal,POST,/v1/conversion-goals,missing,implemented,ConversionGoals.CreateAsync,false,false,conversion-goals:write,"integration,agent,partner",unique,true
 conversion-goals,updateConversionGoal,PATCH,/v1/conversion-goals/{id},missing,implemented,ConversionGoals.UpdateAsync,false,false,conversion-goals:write,"integration,agent,partner",converges,false
@@ -113,7 +114,7 @@ templates,listTemplateVersions,GET,/v1/templates/{id}/versions,missing,implement
 templates,getTemplateVersion,GET,/v1/templates/{id}/versions/{version},missing,implemented,Templates.GetVersionAsync,false,false,templates:read,"integration,agent,partner",read,false
 templates,restoreTemplateVersion,POST,/v1/templates/{id}/versions/{version}/restore,missing,implemented,Templates.RestoreVersionAsync,false,false,templates:write,"integration,partner",converges,true
 templates,duplicateTemplate,POST,/v1/templates/{id}/duplicate,missing,implemented,Templates.DuplicateAsync,false,false,templates:write,"integration,agent,partner",unsafe,true
-templates,getBrandTheme,GET,/v1/brand-theme,missing,implemented,Templates.GetBrandThemeAsync,false,false,templates:read,"integration,agent,partner",read,false
+templates,getBrandKit,GET,/v1/brand-kit,missing,implemented,Templates.GetBrandKitAsync,false,false,templates:read,"integration,agent,partner",read,false
 shared-blocks,listSharedBlocks,GET,/v1/shared-blocks,missing,implemented,SharedBlocks.ListAsync,false,false,templates:read,"integration,agent,partner",read,false
 shared-blocks,createSharedBlock,POST,/v1/shared-blocks,missing,implemented,SharedBlocks.CreateAsync,false,false,templates:write,"integration,partner",unsafe,true
 shared-blocks,getSharedBlock,GET,/v1/shared-blocks/{id},missing,implemented,SharedBlocks.GetAsync,false,false,templates:read,"integration,agent,partner",read,false

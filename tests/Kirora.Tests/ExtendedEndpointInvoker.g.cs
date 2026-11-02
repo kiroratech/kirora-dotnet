@@ -111,6 +111,7 @@ internal static class ExtendedEndpointInvoker
             case "duplicateJourney": return await client.Journeys.DuplicateAsync(Path("id"), Read<DuplicateJourneyInput>(), options, cancellationToken);
             case "getJourneyMetrics": return await client.Journeys.GetMetricsAsync(Path("id"), Query<GetJourneyMetricsQuery>(), options, cancellationToken);
             case "getJourneyStepMetrics": return await client.Journeys.GetStepMetricsAsync(Path("id"), Query<GetJourneyStepMetricsQuery>(), options, cancellationToken);
+            case "getJourneyActivationCheck": return await client.Journeys.GetActivationCheckAsync(Path("id"), options, cancellationToken);
             case "listConversionGoals": return await client.ConversionGoals.ListAsync(Query<ListConversionGoalsQuery>(), options, cancellationToken);
             case "createConversionGoal": return await client.ConversionGoals.CreateAsync(Read<CreateConversionGoalInput>(), options, cancellationToken);
             case "updateConversionGoal": return await client.ConversionGoals.UpdateAsync(Path("id"), Read<UpdateConversionGoalInput>(), options, cancellationToken);
@@ -130,7 +131,7 @@ internal static class ExtendedEndpointInvoker
             case "getTemplateVersion": return await client.Templates.GetVersionAsync(Path("id"), Path("version"), options, cancellationToken);
             case "restoreTemplateVersion": return await client.Templates.RestoreVersionAsync(Path("id"), Path("version"), options, cancellationToken);
             case "duplicateTemplate": return await client.Templates.DuplicateAsync(Path("id"), Read<DuplicateTemplateInput>(), options, cancellationToken);
-            case "getBrandTheme": return await client.Templates.GetBrandThemeAsync(options, cancellationToken);
+            case "getBrandKit": return await client.Templates.GetBrandKitAsync(options, cancellationToken);
             case "listSharedBlocks": return await client.SharedBlocks.ListAsync(Query<ListSharedBlocksQuery>(), options, cancellationToken);
             case "createSharedBlock": return await client.SharedBlocks.CreateAsync(Read<CreateSharedBlockInput>(), options, cancellationToken);
             case "getSharedBlock": return await client.SharedBlocks.GetAsync(Path("id"), options, cancellationToken);

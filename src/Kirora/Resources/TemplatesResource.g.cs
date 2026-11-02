@@ -91,8 +91,8 @@ public sealed class TemplatesResource
     public Task<DuplicateTemplateResponse> DuplicateAsync(string id, DuplicateTemplateInput? body = null, KiroraRequestOptions? options = null, CancellationToken cancellationToken = default) =>
         transport.SendAsync<DuplicateTemplateResponse>(Operations.DuplicateTemplate, $"/v1/templates/{ResourceHelpers.Segment(id)}/duplicate", body, null, options, cancellationToken);
 
-    /// <summary>Retrieve the workspace brand theme. Operation: getBrandTheme.</summary>
+    /// <summary>Retrieve the workspace brand kit. Operation: getBrandKit.</summary>
     /// <remarks>Scope: templates:read. Retry policy: read. See the operation contract for key-kind restrictions.</remarks>
-    public Task<GetBrandThemeResponse> GetBrandThemeAsync(KiroraRequestOptions? options = null, CancellationToken cancellationToken = default) =>
-        transport.SendAsync<GetBrandThemeResponse>(Operations.GetBrandTheme, "/v1/brand-theme", null, null, options, cancellationToken);
+    public Task<GetBrandKitResponse> GetBrandKitAsync(KiroraRequestOptions? options = null, CancellationToken cancellationToken = default) =>
+        transport.SendAsync<GetBrandKitResponse>(Operations.GetBrandKit, "/v1/brand-kit", null, null, options, cancellationToken);
 }

@@ -1,0 +1,603 @@
+{
+  "previousCommit": "d4e38cb942645976d01e3e109ed586c8d8783feb",
+  "targetCommit": "30043317efd68ffceeab882019431e57b7463018",
+  "structurallyChangedSchemas": [
+    "AssetUsage",
+    "CampaignEligibility",
+    "CampaignMessageCounts",
+    "CampaignMetrics",
+    "ContactFieldCondition",
+    "ContactFieldConditionInput",
+    "CreateFormInput",
+    "EmailBlockStyle",
+    "EmailBlockStyleInput",
+    "EmailTheme",
+    "EmailThemeInput",
+    "Event",
+    "EventCondition",
+    "EventConditionInput",
+    "EventSummary",
+    "Form",
+    "FormListItem",
+    "JourneyEmailCounts",
+    "JourneySimulation",
+    "ListUsage",
+    "Overview",
+    "OverviewCounts",
+    "SegmentRuleGroup",
+    "SegmentRuleGroupInput",
+    "SegmentRules",
+    "SegmentRulesInput",
+    "SendTransactionalInput",
+    "SendTransactionalMessagesBatchResult",
+    "SharedBlockUsage",
+    "SocialBlock",
+    "SocialBlockInput",
+    "TemplateVersion",
+    "Topic",
+    "TrackedEvent",
+    "TransactionalMessage",
+    "TransactionalSendResult",
+    "UpdateFormInput"
+  ],
+  "removedSignatures": {
+    "public-api-phase2.txt": [
+      "P:Kirora.Models.SendTransactionalInput:Kirora.Serialization.Optional`1[System.String]:Deliver:get=True:set=True"
+    ],
+    "public-api-phase3.txt": [
+      "C:Kirora.Models.GetBrandThemeResponse:Void .ctor()",
+      "C:Kirora.Models.OverviewDeliverabilityHealth:Void .ctor()",
+      "C:Kirora.Models.OverviewDeliverabilityHealthLimits:Void .ctor()",
+      "C:Kirora.Models.OverviewDeliverabilityHealthLimitsCritical:Void .ctor()",
+      "C:Kirora.Models.OverviewDeliverabilityHealthLimitsWatch:Void .ctor()",
+      "M:Kirora.Resources.TemplatesResource:System.Threading.Tasks.Task`1[Kirora.Models.GetBrandThemeResponse] GetBrandThemeAsync(Kirora.KiroraRequestOptions, System.Threading.CancellationToken)",
+      "P:Kirora.Models.AssetUsage:System.Boolean:BrandTheme:get=True:set=True",
+      "P:Kirora.Models.GetBrandThemeResponse:Kirora.Models.EmailTheme:Data:get=True:set=True",
+      "P:Kirora.Models.Overview:Kirora.Models.OverviewDeliverabilityHealth:DeliverabilityHealth:get=True:set=True",
+      "P:Kirora.Models.OverviewDeliverabilityHealth:Kirora.Models.OverviewDeliverabilityHealthLimits:Limits:get=True:set=True",
+      "P:Kirora.Models.OverviewDeliverabilityHealth:System.Decimal:MinimumFeedbackCoverage:get=True:set=True",
+      "P:Kirora.Models.OverviewDeliverabilityHealth:System.Decimal:MinimumSampleSize:get=True:set=True",
+      "P:Kirora.Models.OverviewDeliverabilityHealth:System.Int64:SampleSize:get=True:set=True",
+      "P:Kirora.Models.OverviewDeliverabilityHealth:System.Nullable`1[System.Decimal]:FeedbackCoverage:get=True:set=True",
+      "P:Kirora.Models.OverviewDeliverabilityHealth:System.String:Band:get=True:set=True",
+      "P:Kirora.Models.OverviewDeliverabilityHealthLimits:Kirora.Models.OverviewDeliverabilityHealthLimitsCritical:Critical:get=True:set=True",
+      "P:Kirora.Models.OverviewDeliverabilityHealthLimits:Kirora.Models.OverviewDeliverabilityHealthLimitsWatch:Watch:get=True:set=True",
+      "P:Kirora.Models.OverviewDeliverabilityHealthLimitsCritical:System.Decimal:BounceRatio:get=True:set=True",
+      "P:Kirora.Models.OverviewDeliverabilityHealthLimitsCritical:System.Decimal:ComplaintRatio:get=True:set=True",
+      "P:Kirora.Models.OverviewDeliverabilityHealthLimitsWatch:System.Decimal:BounceRatio:get=True:set=True",
+      "P:Kirora.Models.OverviewDeliverabilityHealthLimitsWatch:System.Decimal:ComplaintRatio:get=True:set=True",
+      "P:Kirora.Models.SendTransactionalInput:Kirora.Serialization.Optional`1[System.String]:Deliver:get=True:set=True",
+      "P:Kirora.Models.SocialBlock:System.Collections.Generic.IReadOnlyList`1[Kirora.Models.SocialBlockLinksItem]:Links:get=True:set=True",
+      "P:Kirora.Models.SocialBlockInput:System.Collections.Generic.IReadOnlyList`1[Kirora.Models.SocialBlockInputLinksItem]:Links:get=True:set=True",
+      "P:Kirora.Models.TemplateVersion:Kirora.Models.EmailTheme:BrandTheme:get=True:set=True",
+      "T:Kirora.Models.GetBrandThemeResponse:System.Object:True:False",
+      "T:Kirora.Models.OverviewDeliverabilityHealth:System.Object:True:False",
+      "T:Kirora.Models.OverviewDeliverabilityHealthLimits:System.Object:True:False",
+      "T:Kirora.Models.OverviewDeliverabilityHealthLimitsCritical:System.Object:True:False",
+      "T:Kirora.Models.OverviewDeliverabilityHealthLimitsWatch:System.Object:True:False"
+    ]
+  },
+  "addedSignaturesComparedWithPhase3": [
+    "C:Kirora.Models.BrandKit:Void .ctor()",
+    "C:Kirora.Models.BrandKitLogo:Void .ctor()",
+    "C:Kirora.Models.BrandKitSocialLinksItem:Void .ctor()",
+    "C:Kirora.Models.CampaignEligibilityAbTestSplit:Void .ctor()",
+    "C:Kirora.Models.DeliverabilityHealth:Void .ctor()",
+    "C:Kirora.Models.DeliverabilityLimits:Void .ctor()",
+    "C:Kirora.Models.DeliverabilityLimitsCritical:Void .ctor()",
+    "C:Kirora.Models.DeliverabilityLimitsWatch:Void .ctor()",
+    "C:Kirora.Models.EmailBlockStyleInputMobilePadding:Void .ctor()",
+    "C:Kirora.Models.EmailBlockStyleMobilePadding:Void .ctor()",
+    "C:Kirora.Models.GetBrandKitResponse:Void .ctor()",
+    "C:Kirora.Models.GetJourneyActivationCheckResponse:Void .ctor()",
+    "C:Kirora.Models.JourneyActivationCheck:Void .ctor()",
+    "C:Kirora.Models.JourneyActivationIssue:Void .ctor()",
+    "C:Kirora.Models.ListUsageGoalsItem:Void .ctor()",
+    "C:Kirora.Models.ListUsageSharedBlocksItem:Void .ctor()",
+    "C:Kirora.Models.ListUsageTemplatesItem:Void .ctor()",
+    "C:Kirora.Models.TemplateVersionBrandKit:Void .ctor()",
+    "C:Kirora.Models.TemplateVersionBrandKitLogo:Void .ctor()",
+    "C:Kirora.Models.TemplateVersionBrandKitSocialLinksItem:Void .ctor()",
+    "C:Kirora.Models.TopicCondition:Void .ctor()",
+    "C:Kirora.Models.TopicConditionInput:Void .ctor()",
+    "C:Kirora.Models.TopicCounts:Void .ctor()",
+    "C:Kirora.Models.TransactionalDeliverFirstInput:Void .ctor()",
+    "C:Kirora.Models.TransactionalSkippedChannel:Void .ctor()",
+    "M:Kirora.Models.SegmentRuleGroupInputMatchAllAllItem:Kirora.Models.SegmentRuleGroupInputMatchAllAllItem op_Implicit(Kirora.Models.TopicConditionInput)",
+    "M:Kirora.Models.SegmentRuleGroupInputMatchAnyAnyItem:Kirora.Models.SegmentRuleGroupInputMatchAnyAnyItem op_Implicit(Kirora.Models.TopicConditionInput)",
+    "M:Kirora.Models.SegmentRuleGroupMatchAllAllItem:Kirora.Models.SegmentRuleGroupMatchAllAllItem op_Implicit(Kirora.Models.TopicCondition)",
+    "M:Kirora.Models.SegmentRuleGroupMatchAnyAnyItem:Kirora.Models.SegmentRuleGroupMatchAnyAnyItem op_Implicit(Kirora.Models.TopicCondition)",
+    "M:Kirora.Models.SegmentRulesInputMatchAllAllItemVariant1:Kirora.Models.SegmentRulesInputMatchAllAllItemVariant1 op_Implicit(Kirora.Models.TopicConditionInput)",
+    "M:Kirora.Models.SegmentRulesInputMatchAnyAnyItemVariant1:Kirora.Models.SegmentRulesInputMatchAnyAnyItemVariant1 op_Implicit(Kirora.Models.TopicConditionInput)",
+    "M:Kirora.Models.SegmentRulesMatchAllAllItemVariant1:Kirora.Models.SegmentRulesMatchAllAllItemVariant1 op_Implicit(Kirora.Models.TopicCondition)",
+    "M:Kirora.Models.SegmentRulesMatchAnyAnyItemVariant1:Kirora.Models.SegmentRulesMatchAnyAnyItemVariant1 op_Implicit(Kirora.Models.TopicCondition)",
+    "M:Kirora.Models.TransactionalDeliverInput:Kirora.Models.TransactionalDeliverInput op_Implicit(Kirora.Models.TransactionalDeliverFirstInput)",
+    "M:Kirora.Models.TransactionalDeliverInput:Kirora.Models.TransactionalDeliverInput op_Implicit(System.String)",
+    "M:Kirora.Models.TransactionalDeliverInput:T As[T]()",
+    "M:Kirora.Resources.JourneysResource:System.Threading.Tasks.Task`1[Kirora.Models.GetJourneyActivationCheckResponse] GetActivationCheckAsync(System.String, Kirora.KiroraRequestOptions, System.Threading.CancellationToken)",
+    "M:Kirora.Resources.TemplatesResource:System.Threading.Tasks.Task`1[Kirora.Models.GetBrandKitResponse] GetBrandKitAsync(Kirora.KiroraRequestOptions, System.Threading.CancellationToken)",
+    "P:Kirora.Models.AssetUsage:System.Boolean:BrandKit:get=True:set=True",
+    "P:Kirora.Models.BrandKit:Kirora.Models.BrandKitLogo:Logo:get=True:set=True",
+    "P:Kirora.Models.BrandKit:Kirora.Models.EmailTheme:Theme:get=True:set=True",
+    "P:Kirora.Models.BrandKit:System.Collections.Generic.IReadOnlyList`1[Kirora.Models.BrandKitSocialLinksItem]:SocialLinks:get=True:set=True",
+    "P:Kirora.Models.BrandKit:System.Nullable`1[System.DateTimeOffset]:UpdatedAt:get=True:set=True",
+    "P:Kirora.Models.BrandKit:System.Nullable`1[System.Guid]:DefaultFooterId:get=True:set=True",
+    "P:Kirora.Models.BrandKit:System.Nullable`1[System.Guid]:DefaultHeaderId:get=True:set=True",
+    "P:Kirora.Models.BrandKit:System.String:Name:get=True:set=True",
+    "P:Kirora.Models.BrandKitLogo:System.Guid:AssetId:get=True:set=True",
+    "P:Kirora.Models.BrandKitLogo:System.String:Alt:get=True:set=True",
+    "P:Kirora.Models.BrandKitLogo:System.String:Url:get=True:set=True",
+    "P:Kirora.Models.BrandKitLogo:System.String:Width:get=True:set=True",
+    "P:Kirora.Models.BrandKitSocialLinksItem:System.String:Href:get=True:set=True",
+    "P:Kirora.Models.BrandKitSocialLinksItem:System.String:Label:get=True:set=True",
+    "P:Kirora.Models.CampaignEligibility:Kirora.Models.CampaignEligibilityAbTestSplit:AbTestSplit:get=True:set=True",
+    "P:Kirora.Models.CampaignEligibilityAbTestSplit:System.Decimal:ExpectedPerVersion:get=True:set=True",
+    "P:Kirora.Models.CampaignEligibilityAbTestSplit:System.Decimal:ExpectedRest:get=True:set=True",
+    "P:Kirora.Models.CampaignMessageCounts:System.Int64:Simulated:get=True:set=True",
+    "P:Kirora.Models.CampaignMetrics:Kirora.Models.DeliverabilityHealth:DeliverabilityHealth:get=True:set=True",
+    "P:Kirora.Models.CreateFormInput:Kirora.Serialization.Optional`1[System.Collections.Generic.IReadOnlyList`1[System.Guid]]:NotifyUserIds:get=True:set=True",
+    "P:Kirora.Models.DeliverabilityHealth:Kirora.Models.DeliverabilityLimits:Limits:get=True:set=True",
+    "P:Kirora.Models.DeliverabilityHealth:System.Decimal:MinimumFeedbackCoverage:get=True:set=True",
+    "P:Kirora.Models.DeliverabilityHealth:System.Int64:MinimumSampleSize:get=True:set=True",
+    "P:Kirora.Models.DeliverabilityHealth:System.Int64:SampleSize:get=True:set=True",
+    "P:Kirora.Models.DeliverabilityHealth:System.Nullable`1[System.Decimal]:BounceRatio:get=True:set=True",
+    "P:Kirora.Models.DeliverabilityHealth:System.Nullable`1[System.Decimal]:ComplaintRatio:get=True:set=True",
+    "P:Kirora.Models.DeliverabilityHealth:System.Nullable`1[System.Decimal]:FeedbackCoverage:get=True:set=True",
+    "P:Kirora.Models.DeliverabilityHealth:System.String:Band:get=True:set=True",
+    "P:Kirora.Models.DeliverabilityLimits:Kirora.Models.DeliverabilityLimitsCritical:Critical:get=True:set=True",
+    "P:Kirora.Models.DeliverabilityLimits:Kirora.Models.DeliverabilityLimitsWatch:Watch:get=True:set=True",
+    "P:Kirora.Models.DeliverabilityLimitsCritical:System.Decimal:BounceRatio:get=True:set=True",
+    "P:Kirora.Models.DeliverabilityLimitsCritical:System.Decimal:ComplaintRatio:get=True:set=True",
+    "P:Kirora.Models.DeliverabilityLimitsWatch:System.Decimal:BounceRatio:get=True:set=True",
+    "P:Kirora.Models.DeliverabilityLimitsWatch:System.Decimal:ComplaintRatio:get=True:set=True",
+    "P:Kirora.Models.EmailBlockStyle:Kirora.Serialization.Optional`1[Kirora.Models.EmailBlockStyleMobilePadding]:MobilePadding:get=True:set=True",
+    "P:Kirora.Models.EmailBlockStyleInput:Kirora.Serialization.Optional`1[Kirora.Models.EmailBlockStyleInputMobilePadding]:MobilePadding:get=True:set=True",
+    "P:Kirora.Models.EmailBlockStyleInputMobilePadding:Kirora.Serialization.Optional`1[System.Int64]:Bottom:get=True:set=True",
+    "P:Kirora.Models.EmailBlockStyleInputMobilePadding:Kirora.Serialization.Optional`1[System.Int64]:Left:get=True:set=True",
+    "P:Kirora.Models.EmailBlockStyleInputMobilePadding:Kirora.Serialization.Optional`1[System.Int64]:Right:get=True:set=True",
+    "P:Kirora.Models.EmailBlockStyleInputMobilePadding:Kirora.Serialization.Optional`1[System.Int64]:Top:get=True:set=True",
+    "P:Kirora.Models.EmailBlockStyleMobilePadding:Kirora.Serialization.Optional`1[System.Int64]:Bottom:get=True:set=True",
+    "P:Kirora.Models.EmailBlockStyleMobilePadding:Kirora.Serialization.Optional`1[System.Int64]:Left:get=True:set=True",
+    "P:Kirora.Models.EmailBlockStyleMobilePadding:Kirora.Serialization.Optional`1[System.Int64]:Right:get=True:set=True",
+    "P:Kirora.Models.EmailBlockStyleMobilePadding:Kirora.Serialization.Optional`1[System.Int64]:Top:get=True:set=True",
+    "P:Kirora.Models.EmailTheme:Kirora.Serialization.Optional`1[System.String]:BaseFontSize:get=True:set=True",
+    "P:Kirora.Models.EmailTheme:Kirora.Serialization.Optional`1[System.String]:ButtonTextColor:get=True:set=True",
+    "P:Kirora.Models.EmailTheme:Kirora.Serialization.Optional`1[System.String]:HeadingColor:get=True:set=True",
+    "P:Kirora.Models.EmailThemeInput:Kirora.Serialization.Optional`1[System.String]:BaseFontSize:get=True:set=True",
+    "P:Kirora.Models.EmailThemeInput:Kirora.Serialization.Optional`1[System.String]:ButtonTextColor:get=True:set=True",
+    "P:Kirora.Models.EmailThemeInput:Kirora.Serialization.Optional`1[System.String]:HeadingColor:get=True:set=True",
+    "P:Kirora.Models.EventAccepted:System.DateTimeOffset:ExpiresAt:get=True:set=True",
+    "P:Kirora.Models.Form:System.Collections.Generic.IReadOnlyList`1[System.Guid]:NotifyUserIds:get=True:set=True",
+    "P:Kirora.Models.FormListItem:System.Collections.Generic.IReadOnlyList`1[System.Guid]:NotifyUserIds:get=True:set=True",
+    "P:Kirora.Models.GetBrandKitResponse:Kirora.Models.BrandKit:Data:get=True:set=True",
+    "P:Kirora.Models.GetJourneyActivationCheckResponse:Kirora.Models.JourneyActivationCheck:Data:get=True:set=True",
+    "P:Kirora.Models.JourneyActivationCheck:System.Collections.Generic.IReadOnlyList`1[Kirora.Models.JourneyActivationIssue]:Issues:get=True:set=True",
+    "P:Kirora.Models.JourneyActivationIssue:Kirora.Serialization.Optional`1[System.String]:StepId:get=True:set=True",
+    "P:Kirora.Models.JourneyActivationIssue:System.String:Code:get=True:set=True",
+    "P:Kirora.Models.JourneyActivationIssue:System.String:Field:get=True:set=True",
+    "P:Kirora.Models.JourneyActivationIssue:System.String:Message:get=True:set=True",
+    "P:Kirora.Models.JourneyEmailCounts:System.Int64:Simulated:get=True:set=True",
+    "P:Kirora.Models.JourneySimulationPathItem:Kirora.Serialization.Optional`1[System.Collections.Generic.IReadOnlyList`1[Kirora.Models.JourneyActivationIssue]]:Issues:get=True:set=True",
+    "P:Kirora.Models.ListUsage:System.Collections.Generic.IReadOnlyList`1[Kirora.Models.ListUsageGoalsItem]:Goals:get=True:set=True",
+    "P:Kirora.Models.ListUsage:System.Collections.Generic.IReadOnlyList`1[Kirora.Models.ListUsageSharedBlocksItem]:SharedBlocks:get=True:set=True",
+    "P:Kirora.Models.ListUsage:System.Collections.Generic.IReadOnlyList`1[Kirora.Models.ListUsageTemplatesItem]:Templates:get=True:set=True",
+    "P:Kirora.Models.ListUsageGoalsItem:System.Guid:Id:get=True:set=True",
+    "P:Kirora.Models.ListUsageGoalsItem:System.String:Name:get=True:set=True",
+    "P:Kirora.Models.ListUsageSharedBlocksItem:System.Guid:Id:get=True:set=True",
+    "P:Kirora.Models.ListUsageSharedBlocksItem:System.String:Name:get=True:set=True",
+    "P:Kirora.Models.ListUsageTemplatesItem:System.Guid:Id:get=True:set=True",
+    "P:Kirora.Models.ListUsageTemplatesItem:System.String:Name:get=True:set=True",
+    "P:Kirora.Models.Overview:Kirora.Models.DeliverabilityHealth:DeliverabilityHealth:get=True:set=True",
+    "P:Kirora.Models.OverviewCounts:System.Int64:FailedBeforeSending:get=True:set=True",
+    "P:Kirora.Models.OverviewCounts:System.Int64:Simulated:get=True:set=True",
+    "P:Kirora.Models.SendTransactionalInput:Kirora.Serialization.Optional`1[Kirora.Models.TransactionalDeliverInput]:Deliver:get=True:set=True",
+    "P:Kirora.Models.SendTransactionalMessagesBatchResultResultsItemAccepted:System.Collections.Generic.IReadOnlyList`1[Kirora.Models.TransactionalSkippedChannel]:SkippedChannels:get=True:set=True",
+    "P:Kirora.Models.SharedBlockUsage:System.Boolean:BrandKit:get=True:set=True",
+    "P:Kirora.Models.SocialBlock:Kirora.Serialization.Optional`1[System.Collections.Generic.IReadOnlyList`1[Kirora.Models.SocialBlockLinksItem]]:Links:get=True:set=True",
+    "P:Kirora.Models.SocialBlockInput:Kirora.Serialization.Optional`1[System.Collections.Generic.IReadOnlyList`1[Kirora.Models.SocialBlockInputLinksItem]]:Links:get=True:set=True",
+    "P:Kirora.Models.TemplateVersion:Kirora.Models.TemplateVersionBrandKit:BrandKit:get=True:set=True",
+    "P:Kirora.Models.TemplateVersionBrandKit:Kirora.Models.EmailTheme:Theme:get=True:set=True",
+    "P:Kirora.Models.TemplateVersionBrandKit:Kirora.Models.TemplateVersionBrandKitLogo:Logo:get=True:set=True",
+    "P:Kirora.Models.TemplateVersionBrandKit:System.Collections.Generic.IReadOnlyList`1[Kirora.Models.TemplateVersionBrandKitSocialLinksItem]:SocialLinks:get=True:set=True",
+    "P:Kirora.Models.TemplateVersionBrandKit:System.String:Name:get=True:set=True",
+    "P:Kirora.Models.TemplateVersionBrandKitLogo:System.Guid:AssetId:get=True:set=True",
+    "P:Kirora.Models.TemplateVersionBrandKitLogo:System.String:Alt:get=True:set=True",
+    "P:Kirora.Models.TemplateVersionBrandKitLogo:System.String:Url:get=True:set=True",
+    "P:Kirora.Models.TemplateVersionBrandKitLogo:System.String:Width:get=True:set=True",
+    "P:Kirora.Models.TemplateVersionBrandKitSocialLinksItem:System.String:Href:get=True:set=True",
+    "P:Kirora.Models.TemplateVersionBrandKitSocialLinksItem:System.String:Label:get=True:set=True",
+    "P:Kirora.Models.Topic:Kirora.Models.TopicCounts:Counts:get=True:set=True",
+    "P:Kirora.Models.TopicCondition:Kirora.Serialization.Optional`1[System.String]:Channel:get=True:set=True",
+    "P:Kirora.Models.TopicCondition:System.Boolean:Subscribed:get=True:set=True",
+    "P:Kirora.Models.TopicCondition:System.Guid:TopicId:get=True:set=True",
+    "P:Kirora.Models.TopicCondition:System.String:Type:get=True:set=True",
+    "P:Kirora.Models.TopicConditionInput:Kirora.Serialization.Optional`1[System.String]:Channel:get=True:set=True",
+    "P:Kirora.Models.TopicConditionInput:System.Boolean:Subscribed:get=True:set=True",
+    "P:Kirora.Models.TopicConditionInput:System.Guid:TopicId:get=True:set=True",
+    "P:Kirora.Models.TopicConditionInput:System.String:Type:get=True:set=True",
+    "P:Kirora.Models.TopicCounts:System.Int64:In:get=True:set=True",
+    "P:Kirora.Models.TopicCounts:System.Int64:Left:get=True:set=True",
+    "P:Kirora.Models.TrackedEvent:System.DateTimeOffset:ExpiresAt:get=True:set=True",
+    "P:Kirora.Models.TransactionalDeliverFirstInput:System.Collections.Generic.IReadOnlyList`1[System.String]:First:get=True:set=True",
+    "P:Kirora.Models.TransactionalDeliverInput:System.Object:Value:get=True:set=False",
+    "P:Kirora.Models.TransactionalMessage:System.Nullable`1[System.Guid]:FallbackFor:get=True:set=True",
+    "P:Kirora.Models.TransactionalSendResult:System.Collections.Generic.IReadOnlyList`1[Kirora.Models.TransactionalSkippedChannel]:SkippedChannels:get=True:set=True",
+    "P:Kirora.Models.TransactionalSkippedChannel:System.String:Channel:get=True:set=True",
+    "P:Kirora.Models.TransactionalSkippedChannel:System.String:Code:get=True:set=True",
+    "P:Kirora.Models.TransactionalSkippedChannel:System.String:Message:get=True:set=True",
+    "P:Kirora.Models.UpdateFormInput:Kirora.Serialization.Optional`1[System.Collections.Generic.IReadOnlyList`1[System.Guid]]:NotifyUserIds:get=True:set=True",
+    "T:Kirora.Models.BrandKit:System.Object:True:False",
+    "T:Kirora.Models.BrandKitLogo:System.Object:True:False",
+    "T:Kirora.Models.BrandKitSocialLinksItem:System.Object:True:False",
+    "T:Kirora.Models.CampaignEligibilityAbTestSplit:System.Object:True:False",
+    "T:Kirora.Models.DeliverabilityHealth:System.Object:True:False",
+    "T:Kirora.Models.DeliverabilityLimits:System.Object:True:False",
+    "T:Kirora.Models.DeliverabilityLimitsCritical:System.Object:True:False",
+    "T:Kirora.Models.DeliverabilityLimitsWatch:System.Object:True:False",
+    "T:Kirora.Models.EmailBlockStyleInputMobilePadding:System.Object:True:False",
+    "T:Kirora.Models.EmailBlockStyleMobilePadding:System.Object:True:False",
+    "T:Kirora.Models.GetBrandKitResponse:System.Object:True:False",
+    "T:Kirora.Models.GetJourneyActivationCheckResponse:System.Object:True:False",
+    "T:Kirora.Models.JourneyActivationCheck:System.Object:True:False",
+    "T:Kirora.Models.JourneyActivationIssue:System.Object:True:False",
+    "T:Kirora.Models.ListUsageGoalsItem:System.Object:True:False",
+    "T:Kirora.Models.ListUsageSharedBlocksItem:System.Object:True:False",
+    "T:Kirora.Models.ListUsageTemplatesItem:System.Object:True:False",
+    "T:Kirora.Models.TemplateVersionBrandKit:System.Object:True:False",
+    "T:Kirora.Models.TemplateVersionBrandKitLogo:System.Object:True:False",
+    "T:Kirora.Models.TemplateVersionBrandKitSocialLinksItem:System.Object:True:False",
+    "T:Kirora.Models.TopicCondition:System.Object:True:False",
+    "T:Kirora.Models.TopicConditionInput:System.Object:True:False",
+    "T:Kirora.Models.TopicCounts:System.Object:True:False",
+    "T:Kirora.Models.TransactionalDeliverFirstInput:System.Object:True:False",
+    "T:Kirora.Models.TransactionalDeliverInput:System.Object:True:False",
+    "T:Kirora.Models.TransactionalSkippedChannel:System.Object:True:False"
+  ],
+  "modelMemberChanges": [
+    {
+      "type": "AssetUsage",
+      "property": "BrandKit",
+      "before": null,
+      "after": {
+        "required": true,
+        "type": "bool"
+      }
+    },
+    {
+      "type": "AssetUsage",
+      "property": "BrandTheme",
+      "before": {
+        "required": true,
+        "type": "bool"
+      },
+      "after": null
+    },
+    {
+      "type": "CampaignEligibility",
+      "property": "AbTestSplit",
+      "before": null,
+      "after": {
+        "required": true,
+        "type": "CampaignEligibilityAbTestSplit?"
+      }
+    },
+    {
+      "type": "CampaignMessageCounts",
+      "property": "Simulated",
+      "before": null,
+      "after": {
+        "required": true,
+        "type": "long"
+      }
+    },
+    {
+      "type": "CampaignMetrics",
+      "property": "DeliverabilityHealth",
+      "before": null,
+      "after": {
+        "required": true,
+        "type": "DeliverabilityHealth?"
+      }
+    },
+    {
+      "type": "CreateFormInput",
+      "property": "NotifyUserIds",
+      "before": null,
+      "after": {
+        "required": false,
+        "type": "Optional<IReadOnlyList<Guid>>"
+      }
+    },
+    {
+      "type": "EmailBlockStyle",
+      "property": "MobilePadding",
+      "before": null,
+      "after": {
+        "required": false,
+        "type": "Optional<EmailBlockStyleMobilePadding>"
+      }
+    },
+    {
+      "type": "EmailBlockStyleInput",
+      "property": "MobilePadding",
+      "before": null,
+      "after": {
+        "required": false,
+        "type": "Optional<EmailBlockStyleInputMobilePadding>"
+      }
+    },
+    {
+      "type": "EmailTheme",
+      "property": "BaseFontSize",
+      "before": null,
+      "after": {
+        "required": false,
+        "type": "Optional<string>"
+      }
+    },
+    {
+      "type": "EmailTheme",
+      "property": "ButtonTextColor",
+      "before": null,
+      "after": {
+        "required": false,
+        "type": "Optional<string>"
+      }
+    },
+    {
+      "type": "EmailTheme",
+      "property": "HeadingColor",
+      "before": null,
+      "after": {
+        "required": false,
+        "type": "Optional<string>"
+      }
+    },
+    {
+      "type": "EmailThemeInput",
+      "property": "BaseFontSize",
+      "before": null,
+      "after": {
+        "required": false,
+        "type": "Optional<string>"
+      }
+    },
+    {
+      "type": "EmailThemeInput",
+      "property": "ButtonTextColor",
+      "before": null,
+      "after": {
+        "required": false,
+        "type": "Optional<string>"
+      }
+    },
+    {
+      "type": "EmailThemeInput",
+      "property": "HeadingColor",
+      "before": null,
+      "after": {
+        "required": false,
+        "type": "Optional<string>"
+      }
+    },
+    {
+      "type": "EventAccepted",
+      "property": "ExpiresAt",
+      "before": null,
+      "after": {
+        "required": true,
+        "type": "DateTimeOffset"
+      }
+    },
+    {
+      "type": "Form",
+      "property": "NotifyUserIds",
+      "before": null,
+      "after": {
+        "required": true,
+        "type": "IReadOnlyList<Guid>"
+      }
+    },
+    {
+      "type": "FormListItem",
+      "property": "NotifyUserIds",
+      "before": null,
+      "after": {
+        "required": true,
+        "type": "IReadOnlyList<Guid>"
+      }
+    },
+    {
+      "type": "JourneyEmailCounts",
+      "property": "Simulated",
+      "before": null,
+      "after": {
+        "required": true,
+        "type": "long"
+      }
+    },
+    {
+      "type": "JourneySimulationPathItem",
+      "property": "Issues",
+      "before": null,
+      "after": {
+        "required": false,
+        "type": "Optional<IReadOnlyList<JourneyActivationIssue>>"
+      }
+    },
+    {
+      "type": "ListUsage",
+      "property": "Goals",
+      "before": null,
+      "after": {
+        "required": true,
+        "type": "IReadOnlyList<ListUsageGoalsItem>"
+      }
+    },
+    {
+      "type": "ListUsage",
+      "property": "SharedBlocks",
+      "before": null,
+      "after": {
+        "required": true,
+        "type": "IReadOnlyList<ListUsageSharedBlocksItem>"
+      }
+    },
+    {
+      "type": "ListUsage",
+      "property": "Templates",
+      "before": null,
+      "after": {
+        "required": true,
+        "type": "IReadOnlyList<ListUsageTemplatesItem>"
+      }
+    },
+    {
+      "type": "Overview",
+      "property": "DeliverabilityHealth",
+      "before": {
+        "required": true,
+        "type": "OverviewDeliverabilityHealth"
+      },
+      "after": {
+        "required": true,
+        "type": "DeliverabilityHealth"
+      }
+    },
+    {
+      "type": "OverviewCounts",
+      "property": "FailedBeforeSending",
+      "before": null,
+      "after": {
+        "required": true,
+        "type": "long"
+      }
+    },
+    {
+      "type": "OverviewCounts",
+      "property": "Simulated",
+      "before": null,
+      "after": {
+        "required": true,
+        "type": "long"
+      }
+    },
+    {
+      "type": "SendTransactionalInput",
+      "property": "Deliver",
+      "before": {
+        "required": false,
+        "type": "Optional<string>"
+      },
+      "after": {
+        "required": false,
+        "type": "Optional<TransactionalDeliverInput>"
+      }
+    },
+    {
+      "type": "SendTransactionalMessagesBatchResultResultsItemAccepted",
+      "property": "SkippedChannels",
+      "before": null,
+      "after": {
+        "required": true,
+        "type": "IReadOnlyList<TransactionalSkippedChannel>"
+      }
+    },
+    {
+      "type": "SharedBlockUsage",
+      "property": "BrandKit",
+      "before": null,
+      "after": {
+        "required": true,
+        "type": "bool"
+      }
+    },
+    {
+      "type": "SocialBlock",
+      "property": "Links",
+      "before": {
+        "required": true,
+        "type": "IReadOnlyList<SocialBlockLinksItem>"
+      },
+      "after": {
+        "required": false,
+        "type": "Optional<IReadOnlyList<SocialBlockLinksItem>>"
+      }
+    },
+    {
+      "type": "SocialBlockInput",
+      "property": "Links",
+      "before": {
+        "required": true,
+        "type": "IReadOnlyList<SocialBlockInputLinksItem>"
+      },
+      "after": {
+        "required": false,
+        "type": "Optional<IReadOnlyList<SocialBlockInputLinksItem>>"
+      }
+    },
+    {
+      "type": "TemplateVersion",
+      "property": "BrandKit",
+      "before": null,
+      "after": {
+        "required": true,
+        "type": "TemplateVersionBrandKit"
+      }
+    },
+    {
+      "type": "TemplateVersion",
+      "property": "BrandTheme",
+      "before": {
+        "required": true,
+        "type": "EmailTheme"
+      },
+      "after": null
+    },
+    {
+      "type": "Topic",
+      "property": "Counts",
+      "before": null,
+      "after": {
+        "required": true,
+        "type": "TopicCounts"
+      }
+    },
+    {
+      "type": "TrackedEvent",
+      "property": "ExpiresAt",
+      "before": null,
+      "after": {
+        "required": true,
+        "type": "DateTimeOffset"
+      }
+    },
+    {
+      "type": "TransactionalMessage",
+      "property": "FallbackFor",
+      "before": null,
+      "after": {
+        "required": true,
+        "type": "Guid?"
+      }
+    },
+    {
+      "type": "TransactionalSendResult",
+      "property": "SkippedChannels",
+      "before": null,
+      "after": {
+        "required": true,
+        "type": "IReadOnlyList<TransactionalSkippedChannel>"
+      }
+    },
+    {
+      "type": "UpdateFormInput",
+      "property": "NotifyUserIds",
+      "before": null,
+      "after": {
+        "required": false,
+        "type": "Optional<IReadOnlyList<Guid>>"
+      }
+    }
+  ]
+}

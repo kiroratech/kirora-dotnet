@@ -99,6 +99,7 @@ internal static class Operations
     internal static readonly Operation DuplicateJourney = new("duplicateJourney", "POST", "unsafe", true, null);
     internal static readonly Operation GetJourneyMetrics = new("getJourneyMetrics", "GET", "read", false, null);
     internal static readonly Operation GetJourneyStepMetrics = new("getJourneyStepMetrics", "GET", "read", false, null);
+    internal static readonly Operation GetJourneyActivationCheck = new("getJourneyActivationCheck", "GET", "read", false, null);
     internal static readonly Operation ListConversionGoals = new("listConversionGoals", "GET", "read", false, null);
     internal static readonly Operation CreateConversionGoal = new("createConversionGoal", "POST", "unique", true, null);
     internal static readonly Operation UpdateConversionGoal = new("updateConversionGoal", "PATCH", "converges", false, null);
@@ -118,7 +119,7 @@ internal static class Operations
     internal static readonly Operation GetTemplateVersion = new("getTemplateVersion", "GET", "read", false, null);
     internal static readonly Operation RestoreTemplateVersion = new("restoreTemplateVersion", "POST", "converges", true, null);
     internal static readonly Operation DuplicateTemplate = new("duplicateTemplate", "POST", "unsafe", true, null);
-    internal static readonly Operation GetBrandTheme = new("getBrandTheme", "GET", "read", false, null);
+    internal static readonly Operation GetBrandKit = new("getBrandKit", "GET", "read", false, null);
     internal static readonly Operation ListSharedBlocks = new("listSharedBlocks", "GET", "read", false, null);
     internal static readonly Operation CreateSharedBlock = new("createSharedBlock", "POST", "unsafe", true, null);
     internal static readonly Operation GetSharedBlock = new("getSharedBlock", "GET", "read", false, null);

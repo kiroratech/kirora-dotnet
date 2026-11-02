@@ -75,4 +75,9 @@ public sealed class JourneysResource
     /// <remarks>Scope: journeys:read. Retry policy: read. See the operation contract for key-kind restrictions.</remarks>
     public Task<GetJourneyStepMetricsResponse> GetStepMetricsAsync(string id, GetJourneyStepMetricsQuery? query = null, KiroraRequestOptions? options = null, CancellationToken cancellationToken = default) =>
         transport.SendAsync<GetJourneyStepMetricsResponse>(Operations.GetJourneyStepMetrics, $"/v1/journeys/{ResourceHelpers.Segment(id)}/step-metrics", null, query, options, cancellationToken);
+
+    /// <summary>Check a journey before activating. Operation: getJourneyActivationCheck.</summary>
+    /// <remarks>Scope: journeys:read. Retry policy: read. See the operation contract for key-kind restrictions.</remarks>
+    public Task<GetJourneyActivationCheckResponse> GetActivationCheckAsync(string id, KiroraRequestOptions? options = null, CancellationToken cancellationToken = default) =>
+        transport.SendAsync<GetJourneyActivationCheckResponse>(Operations.GetJourneyActivationCheck, $"/v1/journeys/{ResourceHelpers.Segment(id)}/activation-check", null, null, options, cancellationToken);
 }

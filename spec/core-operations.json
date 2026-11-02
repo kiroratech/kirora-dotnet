@@ -1848,6 +1848,26 @@
     "csv": false
   },
   {
+    "id": "getJourneyActivationCheck",
+    "name": "GetJourneyActivationCheck",
+    "resource": "Journeys",
+    "method": "GET",
+    "path": "/v1/journeys/{id}/activation-check",
+    "querytype": null,
+    "bodytype": null,
+    "responsetype": "GetJourneyActivationCheckResponse",
+    "retry": "read",
+    "key": false,
+    "entries": null,
+    "paths": [
+      "id"
+    ],
+    "summary": "Check a journey before activating",
+    "methodName": "GetActivationCheck",
+    "multipart": false,
+    "csv": false
+  },
+  {
     "id": "listConversionGoals",
     "name": "ListConversionGoals",
     "resource": "ConversionGoals",
@@ -2216,20 +2236,20 @@
     "csv": false
   },
   {
-    "id": "getBrandTheme",
-    "name": "GetBrandTheme",
+    "id": "getBrandKit",
+    "name": "GetBrandKit",
     "resource": "Templates",
     "method": "GET",
-    "path": "/v1/brand-theme",
+    "path": "/v1/brand-kit",
     "querytype": null,
     "bodytype": null,
-    "responsetype": "GetBrandThemeResponse",
+    "responsetype": "GetBrandKitResponse",
     "retry": "read",
     "key": false,
     "entries": null,
     "paths": [],
-    "summary": "Retrieve the workspace brand theme",
-    "methodName": "GetBrandTheme",
+    "summary": "Retrieve the workspace brand kit",
+    "methodName": "GetBrandKit",
     "multipart": false,
     "csv": false
   },

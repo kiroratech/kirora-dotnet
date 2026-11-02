@@ -27,6 +27,8 @@
   <ItemGroup>
     <None Update="Fixtures/public-api-phase3.txt" CopyToOutputDirectory="PreserveNewest" />
     <None Update="Fixtures/public-api-phase2.txt" CopyToOutputDirectory="PreserveNewest" />
+    <None Update="Fixtures/migration-api-changes.json" CopyToOutputDirectory="PreserveNewest" />
+    <None Update="Fixtures/public-api-upstream-30043317.txt" CopyToOutputDirectory="PreserveNewest" />
     <None Update="Fixtures/core-examples.json" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 </Project>

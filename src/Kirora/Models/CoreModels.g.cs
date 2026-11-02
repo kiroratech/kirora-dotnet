@@ -1589,6 +1589,10 @@ public sealed partial class EventAccepted
     [JsonPropertyName("occurredAt")]
     public required DateTimeOffset OccurredAt { get; init; }
 
+    /// <summary>When retention deletes it: when it happened plus the days the plan kept events when it was stored. Fixed: a plan change moves only later events.</summary>
+    [JsonPropertyName("expiresAt")]
+    public required DateTimeOffset ExpiresAt { get; init; }
+
 }
 
 /// <summary>EventAcceptedContact Kirora API contract.</summary>
@@ -2021,11 +2025,11 @@ public sealed partial class OutboundMessage
     [JsonPropertyName("deliveredAt")]
     public required DateTimeOffset? DeliveredAt { get; init; }
 
-    /// <summary>First open, when tracked.</summary>
+    /// <summary>First open, when tracked: a person's first open or click, or a machine's open while only a machine has opened it.</summary>
     [JsonPropertyName("openedAt")]
     public required DateTimeOffset? OpenedAt { get; init; }
 
-    /// <summary>Only a machine has opened it so far: Apple Mail Privacy Protection fetches images whether or not the message is read. A click or a later open by a person clears it.</summary>
+    /// <summary>Only a machine has opened it so far: a mail app fetched its images with no reader (Apple Mail Privacy Protection, Gmail's prefetch on delivery) or a mail security scanner checked it. A click or a later open by a person clears it.</summary>
     [JsonPropertyName("openedByMachine")]
     public required bool OpenedByMachine { get; init; }
 
@@ -2164,7 +2168,7 @@ public sealed partial class OutboundMessageSkip
     [JsonPropertyName("occurredAt")]
     public required DateTimeOffset OccurredAt { get; init; }
 
-    /// <summary>Which guard stopped it before sending, such as `suppressed`, `consent_missing` or `cancelled`.</summary>
+    /// <summary>Which guard stopped it before sending, such as `suppressed`, `consent_missing` or `cancelled`; `fallback_not_needed`: a transactional `deliver.first` fallback whose first channel arrived; `plan_limit_reached`: a fallback the plan had no room for when it was due.</summary>
     [JsonPropertyName("reason")]
     public required string Reason { get; init; }
 
@@ -2672,6 +2676,10 @@ public sealed partial class TrackedEvent
     [JsonPropertyName("occurredAt")]
     public required DateTimeOffset OccurredAt { get; init; }
 
+    /// <summary>When retention deletes it: when it happened plus the days the plan kept events when it was stored. Fixed: a plan change moves only later events.</summary>
+    [JsonPropertyName("expiresAt")]
+    public required DateTimeOffset ExpiresAt { get; init; }
+
 }
 
 /// <summary>TrackEventsBatchInput Kirora API contract.</summary>
@@ -3094,7 +3102,7 @@ public sealed partial class EventSummarySamplePropertiesItem
     [JsonPropertyName("key")]
     public required string Key { get; init; }
 
-    /// <summary>The value types seen.</summary>
+    /// <summary>The value types seen. `date` is a string written as an ISO-8601 date or date and time, which segment date operators can read; a property whose values are mixed lists each type, such as `date` and `string`.</summary>
     [JsonPropertyName("types")]
     public required IReadOnlyList<string> Types { get; init; }
 
@@ -3563,6 +3571,10 @@ public sealed partial class ListUsage
     [JsonPropertyName("forms")]
     public required IReadOnlyList<ListUsageFormsItem> Forms { get; init; }
 
+    /// <summary>The documented goals value.</summary>
+    [JsonPropertyName("goals")]
+    public required IReadOnlyList<ListUsageGoalsItem> Goals { get; init; }
+
     /// <summary>The documented journeys value.</summary>
     [JsonPropertyName("journeys")]
     public required IReadOnlyList<ListUsageJourneysItem> Journeys { get; init; }
@@ -3570,6 +3582,14 @@ public sealed partial class ListUsage
     /// <summary>The documented segments value.</summary>
     [JsonPropertyName("segments")]
     public required IReadOnlyList<ListUsageSegmentsItem> Segments { get; init; }
+
+    /// <summary>The documented templates value.</summary>
+    [JsonPropertyName("templates")]
+    public required IReadOnlyList<ListUsageTemplatesItem> Templates { get; init; }
+
+    /// <summary>The documented sharedBlocks value.</summary>
+    [JsonPropertyName("sharedBlocks")]
+    public required IReadOnlyList<ListUsageSharedBlocksItem> SharedBlocks { get; init; }
 
     /// <summary>More use it than are listed: each list stops at 50.</summary>
     [JsonPropertyName("hasMore")]
@@ -3607,6 +3627,19 @@ public sealed partial class ListUsageFormsItem
 
 }
 
+/// <summary>ListUsageGoalsItem Kirora API contract.</summary>
+public sealed partial class ListUsageGoalsItem
+{
+    /// <summary>The documented id value.</summary>
+    [JsonPropertyName("id")]
+    public required Guid Id { get; init; }
+
+    /// <summary>The documented name value.</summary>
+    [JsonPropertyName("name")]
+    public required string Name { get; init; }
+
+}
+
 /// <summary>ListUsageJourneysItem Kirora API contract.</summary>
 public sealed partial class ListUsageJourneysItem
 {
@@ -3626,6 +3659,32 @@ public sealed partial class ListUsageJourneysItem
 
 /// <summary>ListUsageSegmentsItem Kirora API contract.</summary>
 public sealed partial class ListUsageSegmentsItem
+{
+    /// <summary>The documented id value.</summary>
+    [JsonPropertyName("id")]
+    public required Guid Id { get; init; }
+
+    /// <summary>The documented name value.</summary>
+    [JsonPropertyName("name")]
+    public required string Name { get; init; }
+
+}
+
+/// <summary>ListUsageTemplatesItem Kirora API contract.</summary>
+public sealed partial class ListUsageTemplatesItem
+{
+    /// <summary>The documented id value.</summary>
+    [JsonPropertyName("id")]
+    public required Guid Id { get; init; }
+
+    /// <summary>The documented name value.</summary>
+    [JsonPropertyName("name")]
+    public required string Name { get; init; }
+
+}
+
+/// <summary>ListUsageSharedBlocksItem Kirora API contract.</summary>
+public sealed partial class ListUsageSharedBlocksItem
 {
     /// <summary>The documented id value.</summary>
     [JsonPropertyName("id")]
@@ -3778,6 +3837,8 @@ public sealed class SegmentRulesMatchAllAllItemVariant1
     public static implicit operator SegmentRulesMatchAllAllItemVariant1(ListCondition value) => new(value ?? throw new ArgumentNullException(nameof(value)));
     /// <summary>Provides the documented operation.</summary>
     public static implicit operator SegmentRulesMatchAllAllItemVariant1(SegmentCondition value) => new(value ?? throw new ArgumentNullException(nameof(value)));
+    /// <summary>Provides the documented operation.</summary>
+    public static implicit operator SegmentRulesMatchAllAllItemVariant1(TopicCondition value) => new(value ?? throw new ArgumentNullException(nameof(value)));
 }
 
 /// <summary>AttributeCondition Kirora API contract.</summary>
@@ -3858,7 +3919,7 @@ public sealed partial class ContactFieldCondition
     [JsonPropertyName("type")]
     public required string Type { get; init; }
 
-    /// <summary>The contact column to test. Each takes these operators, and is refused with others: `email`: equals, notEquals, contains, startsWith, exists, notExists, in; `firstName`: equals, notEquals, contains, startsWith, exists, notExists, in; `lastName`: equals, notEquals, contains, startsWith, exists, notExists, in; `phone`: equals, notEquals, contains, startsWith, exists, notExists, in; `timezone`: equals, notEquals, contains, startsWith, exists, notExists, in; `externalId`: equals, notEquals, contains, startsWith, exists, notExists, in; `consent.email`: equals; `consent.push`: equals; `country`: equals, notEquals, in, exists, notExists; `locale`: equals, notEquals, startsWith, in, exists, notExists; `rfmGroup`: equals, notEquals, in, exists, notExists; `purchaseCount`: equals, gt, gte, lt, lte; `totalSpent`: equals, gt, gte, lt, lte; `lastPurchasedAt`: before, after, withinLastDays, moreThanDaysAgo, exists, notExists; `createdAt`: before, after, withinLastDays, moreThanDaysAgo. `phone` holds +country numbers: write `equals`, `notEquals` and `in` values with their country code. Consent takes `true` or `false`. `purchaseCount`, `totalSpent` (in the main currency) and `lastPurchasedAt` are a customer's totals of the workspace's purchase event (`purchaseEvent` in workspace settings: an order, a paid invoice, a booking), recomputed daily with `rfmGroup`; the contact's stored `totalSpent` </summary>
+    /// <summary>The contact column to test. Each takes these operators, and is refused with others: `email`: equals, notEquals, contains, startsWith, exists, notExists, in; `firstName`: equals, notEquals, contains, startsWith, exists, notExists, in; `lastName`: equals, notEquals, contains, startsWith, exists, notExists, in; `phone`: equals, notEquals, contains, startsWith, exists, notExists, in; `timezone`: equals, notEquals, contains, startsWith, exists, notExists, in; `externalId`: equals, notEquals, contains, startsWith, exists, notExists, in; `consent.email`: equals; `consent.push`: equals; `country`: equals, notEquals, in, exists, notExists; `locale`: equals, notEquals, startsWith, in, exists, notExists; `rfmGroup`: equals, notEquals, in, exists, notExists; `rfmRecency`: equals, notEquals, in, exists, notExists, gt, gte, lt, lte; `rfmFrequency`: equals, notEquals, in, exists, notExists, gt, gte, lt, lte; `rfmMonetary`: equals, notEquals, in, exists, notExists, gt, gte, lt, lte; `purchaseCount`: equals, gt, gte, lt, lte; `totalSpent`: equals, gt, gte, lt, lte; `lastPurchasedAt`: before, after, withinLastDays, moreThanDaysAgo, exists, notExists; `createdAt`: before, after, withinLastDays, moreThanDaysAgo. `phone` holds +country numbers: write `equals`, `notEquals` and `in` values with their country code. Consent takes `true` or `false`. Purchases: `purchaseCount`, `totalSpent` (in the main </summary>
     [JsonPropertyName("field")]
     public required string Field { get; init; }
 
@@ -3948,7 +4009,7 @@ public sealed partial class EventCondition
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
     public Optional<EventConditionCount> Count { get; init; }
 
-    /// <summary>Property conditions the event must meet, up to 5. Omit this field to leave it unspecified.</summary>
+    /// <summary>Property conditions the event must meet, up to 5; `count` counts only events meeting all of them. Omit this field to leave it unspecified.</summary>
     [JsonPropertyName("where")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
     public Optional<IReadOnlyList<EventConditionWhereItem>> Where { get; init; }
@@ -3975,11 +4036,11 @@ public sealed partial class EventConditionWhereItem
     [JsonPropertyName("property")]
     public required string Property { get; init; }
 
-    /// <summary>`notEquals` also matches an event without the property. `equals` and `notEquals` ignore case and accents in text.</summary>
+    /// <summary>`notEquals` also matches an event without the property. `equals` and `notEquals` ignore case and accents in text. The date operators read the property as a date, as attribute conditions do: UTC days, an ISO-8601 date is the start of that day, and a property that is missing or not an ISO-8601 date or date and time never matches. They read the property's own date; `withinDays` limits when the event happened. Membership moves with the calendar: a contact enters when the date comes into range, with no new event, and a journey triggered by entering the segment then starts for them.</summary>
     [JsonPropertyName("operator")]
     public required string Operator { get; init; }
 
-    /// <summary>The documented value value.</summary>
+    /// <summary>What to compare with: an ISO date for `before` and `after`; a whole number of days, 1 to 3650, for `withinLastDays`, `moreThanDaysAgo` and `inNextDays`.</summary>
     [JsonPropertyName("value")]
     public required EventConditionWhereItemValue Value { get; init; }
 
@@ -4009,7 +4070,7 @@ public sealed partial class ActivityCondition
     [JsonPropertyName("type")]
     public required string Type { get; init; }
 
-    /// <summary>`notOpened` and `notClicked`: sent, and not opened or clicked. Opens include machine opens (Apple Mail Privacy Protection).</summary>
+    /// <summary>`notOpened` and `notClicked`: sent, and not opened or clicked. Opens include machine opens (see `openedByMachine`).</summary>
     [JsonPropertyName("activity")]
     public required string Activity { get; init; }
 
@@ -4043,7 +4104,7 @@ public sealed partial class ActivityCondition
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
     public Optional<string> JourneyStepId { get; init; }
 
-    /// <summary>Only activity in the last this many days. Omit this field to leave it unspecified.</summary>
+    /// <summary>Only activity in the last this many days. For `notOpened` and `notClicked` it is a waiting time instead: only messages sent at least this many days ago count, so each has had that long to be opened or clicked. Omit this field to leave it unspecified.</summary>
     [JsonPropertyName("withinDays")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
     public Optional<long> WithinDays { get; init; }
@@ -4120,6 +4181,28 @@ public sealed partial class SegmentCondition
 
 }
 
+/// <summary>TopicCondition Kirora API contract.</summary>
+public sealed partial class TopicCondition
+{
+    /// <summary>The documented type value.</summary>
+    [JsonPropertyName("type")]
+    public required string Type { get; init; }
+
+    /// <summary>One of the workspace's topics when the rules are saved.</summary>
+    [JsonPropertyName("topicId")]
+    public required Guid TopicId { get; init; }
+
+    /// <summary>Reads the contact's choice for this channel, which overrides their topic-wide choice. Without it, the rule reads the topic-wide choice, which a contact's `subscribed` shows. Omit this field to leave it unspecified.</summary>
+    [JsonPropertyName("channel")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+    public Optional<string> Channel { get; init; }
+
+    /// <summary>True for contacts the topic reaches, false for those it does not.</summary>
+    [JsonPropertyName("subscribed")]
+    public required bool Subscribed { get; init; }
+
+}
+
 /// <summary>SegmentRuleGroup Kirora API contract.</summary>
 [JsonConverter(typeof(SegmentRuleGroupConverter))]
 public sealed class SegmentRuleGroup
@@ -4167,6 +4250,8 @@ public sealed class SegmentRuleGroupMatchAllAllItem
     public static implicit operator SegmentRuleGroupMatchAllAllItem(ListCondition value) => new(value ?? throw new ArgumentNullException(nameof(value)));
     /// <summary>Provides the documented operation.</summary>
     public static implicit operator SegmentRuleGroupMatchAllAllItem(SegmentCondition value) => new(value ?? throw new ArgumentNullException(nameof(value)));
+    /// <summary>Provides the documented operation.</summary>
+    public static implicit operator SegmentRuleGroupMatchAllAllItem(TopicCondition value) => new(value ?? throw new ArgumentNullException(nameof(value)));
 }
 
 /// <summary>SegmentRuleGroupMatchAny Kirora API contract.</summary>
@@ -4201,6 +4286,8 @@ public sealed class SegmentRuleGroupMatchAnyAnyItem
     public static implicit operator SegmentRuleGroupMatchAnyAnyItem(ListCondition value) => new(value ?? throw new ArgumentNullException(nameof(value)));
     /// <summary>Provides the documented operation.</summary>
     public static implicit operator SegmentRuleGroupMatchAnyAnyItem(SegmentCondition value) => new(value ?? throw new ArgumentNullException(nameof(value)));
+    /// <summary>Provides the documented operation.</summary>
+    public static implicit operator SegmentRuleGroupMatchAnyAnyItem(TopicCondition value) => new(value ?? throw new ArgumentNullException(nameof(value)));
 }
 
 /// <summary>SegmentRulesMatchAny Kirora API contract.</summary>
@@ -4250,6 +4337,8 @@ public sealed class SegmentRulesMatchAnyAnyItemVariant1
     public static implicit operator SegmentRulesMatchAnyAnyItemVariant1(ListCondition value) => new(value ?? throw new ArgumentNullException(nameof(value)));
     /// <summary>Provides the documented operation.</summary>
     public static implicit operator SegmentRulesMatchAnyAnyItemVariant1(SegmentCondition value) => new(value ?? throw new ArgumentNullException(nameof(value)));
+    /// <summary>Provides the documented operation.</summary>
+    public static implicit operator SegmentRulesMatchAnyAnyItemVariant1(TopicCondition value) => new(value ?? throw new ArgumentNullException(nameof(value)));
 }
 
 /// <summary>CreateSegmentInput Kirora API contract.</summary>
@@ -4337,6 +4426,8 @@ public sealed class SegmentRulesInputMatchAllAllItemVariant1
     public static implicit operator SegmentRulesInputMatchAllAllItemVariant1(ListConditionInput value) => new(value ?? throw new ArgumentNullException(nameof(value)));
     /// <summary>Provides the documented operation.</summary>
     public static implicit operator SegmentRulesInputMatchAllAllItemVariant1(SegmentConditionInput value) => new(value ?? throw new ArgumentNullException(nameof(value)));
+    /// <summary>Provides the documented operation.</summary>
+    public static implicit operator SegmentRulesInputMatchAllAllItemVariant1(TopicConditionInput value) => new(value ?? throw new ArgumentNullException(nameof(value)));
 }
 
 /// <summary>AttributeConditionInput Kirora API contract.</summary>
@@ -4417,7 +4508,7 @@ public sealed partial class ContactFieldConditionInput
     [JsonPropertyName("type")]
     public required string Type { get; init; }
 
-    /// <summary>The contact column to test. Each takes these operators, and is refused with others: `email`: equals, notEquals, contains, startsWith, exists, notExists, in; `firstName`: equals, notEquals, contains, startsWith, exists, notExists, in; `lastName`: equals, notEquals, contains, startsWith, exists, notExists, in; `phone`: equals, notEquals, contains, startsWith, exists, notExists, in; `timezone`: equals, notEquals, contains, startsWith, exists, notExists, in; `externalId`: equals, notEquals, contains, startsWith, exists, notExists, in; `consent.email`: equals; `consent.push`: equals; `country`: equals, notEquals, in, exists, notExists; `locale`: equals, notEquals, startsWith, in, exists, notExists; `rfmGroup`: equals, notEquals, in, exists, notExists; `purchaseCount`: equals, gt, gte, lt, lte; `totalSpent`: equals, gt, gte, lt, lte; `lastPurchasedAt`: before, after, withinLastDays, moreThanDaysAgo, exists, notExists; `createdAt`: before, after, withinLastDays, moreThanDaysAgo. `phone` holds +country numbers: write `equals`, `notEquals` and `in` values with their country code. Consent takes `true` or `false`. `purchaseCount`, `totalSpent` (in the main currency) and `lastPurchasedAt` are a customer's totals of the workspace's purchase event (`purchaseEvent` in workspace settings: an order, a paid invoice, a booking), recomputed daily with `rfmGroup`; the contact's stored `totalSpent` </summary>
+    /// <summary>The contact column to test. Each takes these operators, and is refused with others: `email`: equals, notEquals, contains, startsWith, exists, notExists, in; `firstName`: equals, notEquals, contains, startsWith, exists, notExists, in; `lastName`: equals, notEquals, contains, startsWith, exists, notExists, in; `phone`: equals, notEquals, contains, startsWith, exists, notExists, in; `timezone`: equals, notEquals, contains, startsWith, exists, notExists, in; `externalId`: equals, notEquals, contains, startsWith, exists, notExists, in; `consent.email`: equals; `consent.push`: equals; `country`: equals, notEquals, in, exists, notExists; `locale`: equals, notEquals, startsWith, in, exists, notExists; `rfmGroup`: equals, notEquals, in, exists, notExists; `rfmRecency`: equals, notEquals, in, exists, notExists, gt, gte, lt, lte; `rfmFrequency`: equals, notEquals, in, exists, notExists, gt, gte, lt, lte; `rfmMonetary`: equals, notEquals, in, exists, notExists, gt, gte, lt, lte; `purchaseCount`: equals, gt, gte, lt, lte; `totalSpent`: equals, gt, gte, lt, lte; `lastPurchasedAt`: before, after, withinLastDays, moreThanDaysAgo, exists, notExists; `createdAt`: before, after, withinLastDays, moreThanDaysAgo. `phone` holds +country numbers: write `equals`, `notEquals` and `in` values with their country code. Consent takes `true` or `false`. Purchases: `purchaseCount`, `totalSpent` (in the main </summary>
     [JsonPropertyName("field")]
     public required string Field { get; init; }
 
@@ -4507,7 +4598,7 @@ public sealed partial class EventConditionInput
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
     public Optional<EventConditionInputCount> Count { get; init; }
 
-    /// <summary>Property conditions the event must meet, up to 5. Omit this field to leave it unspecified.</summary>
+    /// <summary>Property conditions the event must meet, up to 5; `count` counts only events meeting all of them. Omit this field to leave it unspecified.</summary>
     [JsonPropertyName("where")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
     public Optional<IReadOnlyList<EventConditionInputWhereItem>> Where { get; init; }
@@ -4534,11 +4625,11 @@ public sealed partial class EventConditionInputWhereItem
     [JsonPropertyName("property")]
     public required string Property { get; init; }
 
-    /// <summary>`notEquals` also matches an event without the property. `equals` and `notEquals` ignore case and accents in text.</summary>
+    /// <summary>`notEquals` also matches an event without the property. `equals` and `notEquals` ignore case and accents in text. The date operators read the property as a date, as attribute conditions do: UTC days, an ISO-8601 date is the start of that day, and a property that is missing or not an ISO-8601 date or date and time never matches. They read the property's own date; `withinDays` limits when the event happened. Membership moves with the calendar: a contact enters when the date comes into range, with no new event, and a journey triggered by entering the segment then starts for them.</summary>
     [JsonPropertyName("operator")]
     public required string Operator { get; init; }
 
-    /// <summary>The documented value value.</summary>
+    /// <summary>What to compare with: an ISO date for `before` and `after`; a whole number of days, 1 to 3650, for `withinLastDays`, `moreThanDaysAgo` and `inNextDays`.</summary>
     [JsonPropertyName("value")]
     public required EventConditionInputWhereItemValue Value { get; init; }
 
@@ -4568,7 +4659,7 @@ public sealed partial class ActivityConditionInput
     [JsonPropertyName("type")]
     public required string Type { get; init; }
 
-    /// <summary>`notOpened` and `notClicked`: sent, and not opened or clicked. Opens include machine opens (Apple Mail Privacy Protection).</summary>
+    /// <summary>`notOpened` and `notClicked`: sent, and not opened or clicked. Opens include machine opens (see `openedByMachine`).</summary>
     [JsonPropertyName("activity")]
     public required string Activity { get; init; }
 
@@ -4602,7 +4693,7 @@ public sealed partial class ActivityConditionInput
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
     public Optional<string> JourneyStepId { get; init; }
 
-    /// <summary>Only activity in the last this many days. Omit this field to leave it unspecified.</summary>
+    /// <summary>Only activity in the last this many days. For `notOpened` and `notClicked` it is a waiting time instead: only messages sent at least this many days ago count, so each has had that long to be opened or clicked. Omit this field to leave it unspecified.</summary>
     [JsonPropertyName("withinDays")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
     public Optional<long> WithinDays { get; init; }
@@ -4679,6 +4770,28 @@ public sealed partial class SegmentConditionInput
 
 }
 
+/// <summary>TopicConditionInput Kirora API contract.</summary>
+public sealed partial class TopicConditionInput
+{
+    /// <summary>The documented type value.</summary>
+    [JsonPropertyName("type")]
+    public required string Type { get; init; }
+
+    /// <summary>One of the workspace's topics when the rules are saved.</summary>
+    [JsonPropertyName("topicId")]
+    public required Guid TopicId { get; init; }
+
+    /// <summary>Reads the contact's choice for this channel, which overrides their topic-wide choice. Without it, the rule reads the topic-wide choice, which a contact's `subscribed` shows. Omit this field to leave it unspecified.</summary>
+    [JsonPropertyName("channel")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+    public Optional<string> Channel { get; init; }
+
+    /// <summary>True for contacts the topic reaches, false for those it does not.</summary>
+    [JsonPropertyName("subscribed")]
+    public required bool Subscribed { get; init; }
+
+}
+
 /// <summary>SegmentRuleGroupInput Kirora API contract.</summary>
 [JsonConverter(typeof(SegmentRuleGroupInputConverter))]
 public sealed class SegmentRuleGroupInput
@@ -4726,6 +4839,8 @@ public sealed class SegmentRuleGroupInputMatchAllAllItem
     public static implicit operator SegmentRuleGroupInputMatchAllAllItem(ListConditionInput value) => new(value ?? throw new ArgumentNullException(nameof(value)));
     /// <summary>Provides the documented operation.</summary>
     public static implicit operator SegmentRuleGroupInputMatchAllAllItem(SegmentConditionInput value) => new(value ?? throw new ArgumentNullException(nameof(value)));
+    /// <summary>Provides the documented operation.</summary>
+    public static implicit operator SegmentRuleGroupInputMatchAllAllItem(TopicConditionInput value) => new(value ?? throw new ArgumentNullException(nameof(value)));
 }
 
 /// <summary>SegmentRuleGroupInputMatchAny Kirora API contract.</summary>
@@ -4760,6 +4875,8 @@ public sealed class SegmentRuleGroupInputMatchAnyAnyItem
     public static implicit operator SegmentRuleGroupInputMatchAnyAnyItem(ListConditionInput value) => new(value ?? throw new ArgumentNullException(nameof(value)));
     /// <summary>Provides the documented operation.</summary>
     public static implicit operator SegmentRuleGroupInputMatchAnyAnyItem(SegmentConditionInput value) => new(value ?? throw new ArgumentNullException(nameof(value)));
+    /// <summary>Provides the documented operation.</summary>
+    public static implicit operator SegmentRuleGroupInputMatchAnyAnyItem(TopicConditionInput value) => new(value ?? throw new ArgumentNullException(nameof(value)));
 }
 
 /// <summary>SegmentRulesInputMatchAny Kirora API contract.</summary>
@@ -4809,6 +4926,8 @@ public sealed class SegmentRulesInputMatchAnyAnyItemVariant1
     public static implicit operator SegmentRulesInputMatchAnyAnyItemVariant1(ListConditionInput value) => new(value ?? throw new ArgumentNullException(nameof(value)));
     /// <summary>Provides the documented operation.</summary>
     public static implicit operator SegmentRulesInputMatchAnyAnyItemVariant1(SegmentConditionInput value) => new(value ?? throw new ArgumentNullException(nameof(value)));
+    /// <summary>Provides the documented operation.</summary>
+    public static implicit operator SegmentRulesInputMatchAnyAnyItemVariant1(TopicConditionInput value) => new(value ?? throw new ArgumentNullException(nameof(value)));
 }
 
 /// <summary>CreateSegmentResponse Kirora API contract.</summary>
@@ -5238,6 +5357,23 @@ public sealed partial class Topic
     [JsonPropertyName("updatedAt")]
     public required DateTimeOffset UpdatedAt { get; init; }
 
+    /// <summary>Counted now, as the topic rule without `channel` reads it; a contact's channel choice can still differ on that channel.</summary>
+    [JsonPropertyName("counts")]
+    public required TopicCounts Counts { get; init; }
+
+}
+
+/// <summary>TopicCounts Kirora API contract.</summary>
+public sealed partial class TopicCounts
+{
+    /// <summary>Contacts the topic reaches topic-wide: for `opt_out` everyone who has not left, for `opt_in` those who joined.</summary>
+    [JsonPropertyName("in")]
+    public required long In { get; init; }
+
+    /// <summary>Contacts who left the topic.</summary>
+    [JsonPropertyName("left")]
+    public required long Left { get; init; }
+
 }
 
 /// <summary>CreateTopicInput Kirora API contract.</summary>
@@ -5623,15 +5759,15 @@ public sealed partial class SendTransactionalInput
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
     public Optional<TransactionalPushInput> Push { get; init; }
 
-    /// <summary>When to send, up to 90 days ahead, with its UTC offset. Suppression and push reachability are checked when the request is accepted and again when it goes; `deliver: first` picks its channel when accepted. Omit this field to leave it unspecified.</summary>
+    /// <summary>When to send, up to 90 days ahead, with its UTC offset. Suppression and push reachability are checked when the request is accepted and again when it goes. A `deliver.first` fallback keeps this time but goes only after the message before it fails, is skipped or bounces. Omit this field to leave it unspecified.</summary>
     [JsonPropertyName("sendAt")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
     public Optional<DateTimeOffset> SendAt { get; init; }
 
-    /// <summary>With both `push` and `email`: `all` sends each the contact can receive; `first` sends push when the contact has a reachable device, else email. Omit this field to leave it unspecified.</summary>
+    /// <summary>With both `push` and `email`: `all` (the default) sends each the contact can receive; `{ "first": ["email", "push"] }` sends the first in that order the contact can receive, and the next only if it fails, is skipped or bounces. Omit this field to leave it unspecified.</summary>
     [JsonPropertyName("deliver")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
-    public Optional<string> Deliver { get; init; }
+    public Optional<TransactionalDeliverInput> Deliver { get; init; }
 
 }
 
@@ -6200,6 +6336,30 @@ public sealed partial class TransactionalPushInputOverridesWebButtonsItem
 
 }
 
+/// <summary>TransactionalDeliverInput Kirora API contract.</summary>
+[JsonConverter(typeof(TransactionalDeliverInputConverter))]
+public sealed class TransactionalDeliverInput
+{
+    /// <summary>Provides the documented configuration or response value.</summary>
+    public object Value { get; }
+    private TransactionalDeliverInput(object value) => Value = value;
+    /// <summary>Provides the documented operation.</summary>
+    public T As<T>() => Value is T value ? value : throw new InvalidOperationException("The union holds another variant.");
+    /// <summary>Provides the documented operation.</summary>
+    public static implicit operator TransactionalDeliverInput(string value) => new(value ?? throw new ArgumentNullException(nameof(value)));
+    /// <summary>Provides the documented operation.</summary>
+    public static implicit operator TransactionalDeliverInput(TransactionalDeliverFirstInput value) => new(value ?? throw new ArgumentNullException(nameof(value)));
+}
+
+/// <summary>TransactionalDeliverFirstInput Kirora API contract.</summary>
+public sealed partial class TransactionalDeliverFirstInput
+{
+    /// <summary>Every channel given, each once, in the order to try them. The first the contact can receive is sent; when sending it fails, it is skipped or it bounces, the next is sent.</summary>
+    [JsonPropertyName("first")]
+    public required IReadOnlyList<string> First { get; init; }
+
+}
+
 /// <summary>SendTransactionalMessageResponse Kirora API contract.</summary>
 public sealed partial class SendTransactionalMessageResponse
 {
@@ -6215,6 +6375,10 @@ public sealed partial class TransactionalSendResult
     /// <summary>The documented messages value.</summary>
     [JsonPropertyName("messages")]
     public required IReadOnlyList<TransactionalMessage> Messages { get; init; }
+
+    /// <summary>Channels given that were not sent, each with the reason: the contact cannot receive it, or the plan has no room for it.</summary>
+    [JsonPropertyName("skippedChannels")]
+    public required IReadOnlyList<TransactionalSkippedChannel> SkippedChannels { get; init; }
 
 }
 
@@ -6244,6 +6408,27 @@ public sealed partial class TransactionalMessage
     /// <summary>When a timed message goes out; null when it went at once.</summary>
     [JsonPropertyName("sendAt")]
     public required DateTimeOffset? SendAt { get; init; }
+
+    /// <summary>With `deliver.first`: the message this one stands in for. It waits as `queued` until that one ends: sent when it failed, was skipped or bounced, else skipped with reason `fallback_not_needed`. Null otherwise.</summary>
+    [JsonPropertyName("fallbackFor")]
+    public required Guid? FallbackFor { get; init; }
+
+}
+
+/// <summary>TransactionalSkippedChannel Kirora API contract.</summary>
+public sealed partial class TransactionalSkippedChannel
+{
+    /// <summary>The documented channel value.</summary>
+    [JsonPropertyName("channel")]
+    public required string Channel { get; init; }
+
+    /// <summary>Its error code, such as `SUPPRESSED`.</summary>
+    [JsonPropertyName("code")]
+    public required string Code { get; init; }
+
+    /// <summary>The documented message value.</summary>
+    [JsonPropertyName("message")]
+    public required string Message { get; init; }
 
 }
 
@@ -6317,6 +6502,10 @@ public sealed partial class SendTransactionalMessagesBatchResultResultsItemAccep
     /// <summary>The documented messages value.</summary>
     [JsonPropertyName("messages")]
     public required IReadOnlyList<TransactionalMessage> Messages { get; init; }
+
+    /// <summary>Channels given that were not sent, each with the reason: the contact cannot receive it, or the plan has no room for it.</summary>
+    [JsonPropertyName("skippedChannels")]
+    public required IReadOnlyList<TransactionalSkippedChannel> SkippedChannels { get; init; }
 
 }
 
@@ -6897,12 +7086,12 @@ public sealed partial class HeaderBlockInput
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
     public Optional<string> ShowOn { get; init; }
 
-    /// <summary>The logo image's URL. Omit this field to leave it unspecified.</summary>
+    /// <summary>The logo image's URL; without one, the brand kit's logo. Omit this field to leave it unspecified.</summary>
     [JsonPropertyName("src")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
     public Optional<string> Src { get; init; }
 
-    /// <summary>The logo's alt text. Without `src`, it shows as a wordmark in the heading font; gallery samples set it to `{{ org.name }}`. Omit this field to leave it unspecified.</summary>
+    /// <summary>The logo's alt text. Without `src` or a brand kit logo, it shows as a wordmark in the heading font; gallery samples set it to `{{ org.name }}`. Omit this field to leave it unspecified.</summary>
     [JsonPropertyName("alt")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
     public Optional<string> Alt { get; init; }
@@ -6945,7 +7134,7 @@ public sealed partial class EmailBlockStyleInput
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
     public Optional<long> FontSize { get; init; }
 
-    /// <summary>Text size in px on phones (screens up to 620px), 12 to 72. Omit this field to leave it unspecified.</summary>
+    /// <summary>Text size in px on phones (screens up to 620px), 12 to 72. Email apps that ignore mobile styles use `fontSize`. Omit this field to leave it unspecified.</summary>
     [JsonPropertyName("mobileFontSize")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
     public Optional<long> MobileFontSize { get; init; }
@@ -6954,6 +7143,11 @@ public sealed partial class EmailBlockStyleInput
     [JsonPropertyName("padding")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
     public Optional<EmailBlockStyleInputPadding> Padding { get; init; }
+
+    /// <summary>Space inside the block in px on phones (screens up to 620px), 0 to 100 per side; omitted sides keep the block's `padding` (or its default). Email apps that ignore mobile styles use `padding`. Omit this field to leave it unspecified.</summary>
+    [JsonPropertyName("mobilePadding")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+    public Optional<EmailBlockStyleInputMobilePadding> MobilePadding { get; init; }
 
     /// <summary>Border thickness in px; 0 for none. Omit this field to leave it unspecified.</summary>
     [JsonPropertyName("borderWidth")]
@@ -7024,6 +7218,31 @@ public sealed partial class EmailBlockStyleInput
 
 /// <summary>EmailBlockStyleInputPadding Kirora API contract.</summary>
 public sealed partial class EmailBlockStyleInputPadding
+{
+    /// <summary>The documented top value. Omit this field to leave it unspecified.</summary>
+    [JsonPropertyName("top")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+    public Optional<long> Top { get; init; }
+
+    /// <summary>The documented right value. Omit this field to leave it unspecified.</summary>
+    [JsonPropertyName("right")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+    public Optional<long> Right { get; init; }
+
+    /// <summary>The documented bottom value. Omit this field to leave it unspecified.</summary>
+    [JsonPropertyName("bottom")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+    public Optional<long> Bottom { get; init; }
+
+    /// <summary>The documented left value. Omit this field to leave it unspecified.</summary>
+    [JsonPropertyName("left")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+    public Optional<long> Left { get; init; }
+
+}
+
+/// <summary>EmailBlockStyleInputMobilePadding Kirora API contract.</summary>
+public sealed partial class EmailBlockStyleInputMobilePadding
 {
     /// <summary>The documented top value. Omit this field to leave it unspecified.</summary>
     [JsonPropertyName("top")]
@@ -7917,9 +8136,10 @@ public sealed partial class SocialBlockInput
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
     public Optional<string> Align { get; init; }
 
-    /// <summary>The documented links value.</summary>
+    /// <summary>The profiles to show; without any, the brand kit's social links. Omit this field to leave it unspecified.</summary>
     [JsonPropertyName("links")]
-    public required IReadOnlyList<SocialBlockInputLinksItem> Links { get; init; }
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+    public Optional<IReadOnlyList<SocialBlockInputLinksItem>> Links { get; init; }
 
     /// <summary>Each link as its network's icon (the default), the icon and its label, or the label alone. The network is read from the link's address; any other address shows a globe. Omit this field to leave it unspecified.</summary>
     [JsonPropertyName("display")]
@@ -8271,6 +8491,21 @@ public sealed partial class EmailThemeInput
     [JsonPropertyName("linkColor")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
     public Optional<string> LinkColor { get; init; }
+
+    /// <summary>Heading colour, as hex; unset, headings take `textColor`. Omit this field to leave it unspecified.</summary>
+    [JsonPropertyName("headingColor")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+    public Optional<string> HeadingColor { get; init; }
+
+    /// <summary>Label colour of solid buttons in `accentColor`, as hex; unset, white or near-black, whichever reads on it. Omit this field to leave it unspecified.</summary>
+    [JsonPropertyName("buttonTextColor")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+    public Optional<string> ButtonTextColor { get; init; }
+
+    /// <summary>Body text size; headings and buttons scale with it. Unset is `16px`. Omit this field to leave it unspecified.</summary>
+    [JsonPropertyName("baseFontSize")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+    public Optional<string> BaseFontSize { get; init; }
 
     /// <summary>Width of the email card on wide screens. Omit this field to leave it unspecified.</summary>
     [JsonPropertyName("cardWidth")]
@@ -8662,7 +8897,7 @@ public sealed partial class AbTestSettingsInput
     [JsonPropertyName("testPercent")]
     public required long TestPercent { get; init; }
 
-    /// <summary>How the winner is picked: the version with the highest click or open rate over its delivered messages (as the campaign's own rates; over sent until any version has a delivery), or the highest share of its sent messages that reached the campaign's conversion goal (`conversionGoalId`). Opens overcount: Apple Mail opens every message it receives. A push test is decided by clicks (a tap the app reports with a link to follow, so the push needs an `actionUrl`) or conversions, not opens. A tie goes to the lower version. Omit this field to leave it unspecified.</summary>
+    /// <summary>How the winner is picked: the version with the highest click or open rate over its delivered messages (as the campaign's own rates; over sent until any version has a delivery), or the highest share of its sent messages that reached the campaign's conversion goal (`conversionGoalId`). Opens overcount: machine opens (Apple Mail Privacy Protection, Gmail's prefetch, mail scanners) count unread email as opened. A push test is decided by clicks (a tap the app reports with a link to follow, so the push needs an `actionUrl`) or conversions, not opens. A tie goes to the lower version. Omit this field to leave it unspecified.</summary>
     [JsonPropertyName("winnerBy")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
     public Optional<string> WinnerBy { get; init; }
@@ -9096,12 +9331,12 @@ public sealed partial class HeaderBlock
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
     public Optional<string> ShowOn { get; init; }
 
-    /// <summary>The logo image's URL. Omit this field to leave it unspecified.</summary>
+    /// <summary>The logo image's URL; without one, the brand kit's logo. Omit this field to leave it unspecified.</summary>
     [JsonPropertyName("src")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
     public Optional<string> Src { get; init; }
 
-    /// <summary>The logo's alt text. Without `src`, it shows as a wordmark in the heading font; gallery samples set it to `{{ org.name }}`. Omit this field to leave it unspecified.</summary>
+    /// <summary>The logo's alt text. Without `src` or a brand kit logo, it shows as a wordmark in the heading font; gallery samples set it to `{{ org.name }}`. Omit this field to leave it unspecified.</summary>
     [JsonPropertyName("alt")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
     public Optional<string> Alt { get; init; }
@@ -9144,7 +9379,7 @@ public sealed partial class EmailBlockStyle
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
     public Optional<long> FontSize { get; init; }
 
-    /// <summary>Text size in px on phones (screens up to 620px), 12 to 72. Omit this field to leave it unspecified.</summary>
+    /// <summary>Text size in px on phones (screens up to 620px), 12 to 72. Email apps that ignore mobile styles use `fontSize`. Omit this field to leave it unspecified.</summary>
     [JsonPropertyName("mobileFontSize")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
     public Optional<long> MobileFontSize { get; init; }
@@ -9153,6 +9388,11 @@ public sealed partial class EmailBlockStyle
     [JsonPropertyName("padding")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
     public Optional<EmailBlockStylePadding> Padding { get; init; }
+
+    /// <summary>Space inside the block in px on phones (screens up to 620px), 0 to 100 per side; omitted sides keep the block's `padding` (or its default). Email apps that ignore mobile styles use `padding`. Omit this field to leave it unspecified.</summary>
+    [JsonPropertyName("mobilePadding")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+    public Optional<EmailBlockStyleMobilePadding> MobilePadding { get; init; }
 
     /// <summary>Border thickness in px; 0 for none. Omit this field to leave it unspecified.</summary>
     [JsonPropertyName("borderWidth")]
@@ -9223,6 +9463,31 @@ public sealed partial class EmailBlockStyle
 
 /// <summary>EmailBlockStylePadding Kirora API contract.</summary>
 public sealed partial class EmailBlockStylePadding
+{
+    /// <summary>The documented top value. Omit this field to leave it unspecified.</summary>
+    [JsonPropertyName("top")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+    public Optional<long> Top { get; init; }
+
+    /// <summary>The documented right value. Omit this field to leave it unspecified.</summary>
+    [JsonPropertyName("right")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+    public Optional<long> Right { get; init; }
+
+    /// <summary>The documented bottom value. Omit this field to leave it unspecified.</summary>
+    [JsonPropertyName("bottom")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+    public Optional<long> Bottom { get; init; }
+
+    /// <summary>The documented left value. Omit this field to leave it unspecified.</summary>
+    [JsonPropertyName("left")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+    public Optional<long> Left { get; init; }
+
+}
+
+/// <summary>EmailBlockStyleMobilePadding Kirora API contract.</summary>
+public sealed partial class EmailBlockStyleMobilePadding
 {
     /// <summary>The documented top value. Omit this field to leave it unspecified.</summary>
     [JsonPropertyName("top")]
@@ -10116,9 +10381,10 @@ public sealed partial class SocialBlock
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
     public Optional<string> Align { get; init; }
 
-    /// <summary>The documented links value.</summary>
+    /// <summary>The profiles to show; without any, the brand kit's social links. Omit this field to leave it unspecified.</summary>
     [JsonPropertyName("links")]
-    public required IReadOnlyList<SocialBlockLinksItem> Links { get; init; }
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+    public Optional<IReadOnlyList<SocialBlockLinksItem>> Links { get; init; }
 
     /// <summary>Each link as its network's icon (the default), the icon and its label, or the label alone. The network is read from the link's address; any other address shows a globe. Omit this field to leave it unspecified.</summary>
     [JsonPropertyName("display")]
@@ -10470,6 +10736,21 @@ public sealed partial class EmailTheme
     [JsonPropertyName("linkColor")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
     public Optional<string> LinkColor { get; init; }
+
+    /// <summary>Heading colour, as hex; unset, headings take `textColor`. Omit this field to leave it unspecified.</summary>
+    [JsonPropertyName("headingColor")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+    public Optional<string> HeadingColor { get; init; }
+
+    /// <summary>Label colour of solid buttons in `accentColor`, as hex; unset, white or near-black, whichever reads on it. Omit this field to leave it unspecified.</summary>
+    [JsonPropertyName("buttonTextColor")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+    public Optional<string> ButtonTextColor { get; init; }
+
+    /// <summary>Body text size; headings and buttons scale with it. Unset is `16px`. Omit this field to leave it unspecified.</summary>
+    [JsonPropertyName("baseFontSize")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+    public Optional<string> BaseFontSize { get; init; }
 
     /// <summary>Width of the email card on wide screens. Omit this field to leave it unspecified.</summary>
     [JsonPropertyName("cardWidth")]
@@ -10874,7 +11155,7 @@ public sealed partial class CampaignAbTest
     [JsonPropertyName("testPercent")]
     public required long TestPercent { get; init; }
 
-    /// <summary>How the winner is picked: the version with the highest click or open rate over its delivered messages (as the campaign's own rates; over sent until any version has a delivery), or the highest share of its sent messages that reached the campaign's conversion goal (`conversionGoalId`). Opens overcount: Apple Mail opens every message it receives. A push test is decided by clicks (a tap the app reports with a link to follow, so the push needs an `actionUrl`) or conversions, not opens. A tie goes to the lower version.</summary>
+    /// <summary>How the winner is picked: the version with the highest click or open rate over its delivered messages (as the campaign's own rates; over sent until any version has a delivery), or the highest share of its sent messages that reached the campaign's conversion goal (`conversionGoalId`). Opens overcount: machine opens (Apple Mail Privacy Protection, Gmail's prefetch, mail scanners) count unread email as opened. A push test is decided by clicks (a tap the app reports with a link to follow, so the push needs an `actionUrl`) or conversions, not opens. A tie goes to the lower version.</summary>
     [JsonPropertyName("winnerBy")]
     public required string WinnerBy { get; init; }
 
@@ -11589,7 +11870,11 @@ public sealed partial class CampaignEligibility
     [JsonPropertyName("contentWarnings")]
     public required IReadOnlyList<CampaignEligibilityContentWarningsItem> ContentWarnings { get; init; }
 
-    /// <summary>Cautions about the A/B test that do not stop it: `small_versions`, fewer than 1,000 eligible recipients per version, too few for a reliable winner; `opens_measure`, opens decide, and Apple Mail counts every message it receives as opened.</summary>
+    /// <summary>The A/B test's expected split of the eligible recipients of the tested channel; `null` without a test. A version that reaches nobody scores 0, a tie goes to the lowest version, and the winner is sent to the rest even when the test reached nobody (version 1 then).</summary>
+    [JsonPropertyName("abTestSplit")]
+    public required CampaignEligibilityAbTestSplit? AbTestSplit { get; init; }
+
+    /// <summary>Cautions about the A/B test that do not stop it: `empty_versions`, under one eligible recipient expected per version, so a version will likely reach nobody (always returned with `small_versions`, which it implies: show the stronger one); `small_versions`, fewer than 1,000 eligible recipients per version, too few for a reliable winner; `opens_measure`, opens decide, and machine opens (Apple Mail Privacy Protection, Gmail's prefetch, mail scanners) count unread email as opened.</summary>
     [JsonPropertyName("abTestWarnings")]
     public required IReadOnlyList<string> AbTestWarnings { get; init; }
 
@@ -11792,6 +12077,19 @@ public sealed partial class CampaignEligibilityContentWarningsItem
     /// <summary>What to change, in plain words.</summary>
     [JsonPropertyName("message")]
     public required string Message { get; init; }
+
+}
+
+/// <summary>CampaignEligibilityAbTestSplit Kirora API contract.</summary>
+public sealed partial class CampaignEligibilityAbTestSplit
+{
+    /// <summary>Eligible recipients each version is expected to reach in the test: the test share split evenly. Each contact is drawn on its own, so the real count varies around it, and a version can reach nobody: likely under 1, possible at a few.</summary>
+    [JsonPropertyName("expectedPerVersion")]
+    public required decimal ExpectedPerVersion { get; init; }
+
+    /// <summary>Eligible recipients expected to wait for the winner: an expectation, like `expectedPerVersion`, drawn the same way.</summary>
+    [JsonPropertyName("expectedRest")]
+    public required decimal ExpectedRest { get; init; }
 
 }
 
@@ -12127,6 +12425,10 @@ public sealed partial class CampaignMetrics
     [JsonPropertyName("email")]
     public required CampaignMessageCounts? Email { get; init; }
 
+    /// <summary>Advisory bounce and complaint health of the campaign's email, judged on the same lines and minimums as `deliverabilityHealth` on `getOverviewReport`; `null` when the campaign sends no email. It reads real sends only: test sends (`email.simulated`) are left out, though `email.bounced` and `email.complained`, counted by status, include them.</summary>
+    [JsonPropertyName("deliverabilityHealth")]
+    public required DeliverabilityHealth? DeliverabilityHealth { get; init; }
+
     /// <summary>Push message counters; `null` when the campaign sends no push.</summary>
     [JsonPropertyName("push")]
     public required CampaignPushMessageCounts? Push { get; init; }
@@ -12168,11 +12470,11 @@ public sealed partial class CampaignMessageCounts
     [JsonPropertyName("delivered")]
     public required long Delivered { get; init; }
 
-    /// <summary>Messages the recipient server rejected.</summary>
+    /// <summary>Messages in status `bounced`, test sends to `bounce@example.com` included (see `simulated`); `deliverabilityHealth` counts recorded bounces of real sends only.</summary>
     [JsonPropertyName("bounced")]
     public required long Bounced { get; init; }
 
-    /// <summary>Messages the recipient marked as spam.</summary>
+    /// <summary>Messages in status `complained`, test sends to `complaint@example.com` included (see `simulated`).</summary>
     [JsonPropertyName("complained")]
     public required long Complained { get; init; }
 
@@ -12180,7 +12482,7 @@ public sealed partial class CampaignMessageCounts
     [JsonPropertyName("opened")]
     public required long Opened { get; init; }
 
-    /// <summary>Of `opened`, those only a machine opened: Apple Mail Privacy Protection fetches a message's images whether or not it is read. Clicks are unaffected.</summary>
+    /// <summary>Of `opened`, those only a machine opened: a mail app fetched its images with no reader (Apple Mail Privacy Protection, Gmail's prefetch on delivery) or a mail security scanner checked it. Clicks are unaffected.</summary>
     [JsonPropertyName("openedByMachine")]
     public required long OpenedByMachine { get; init; }
 
@@ -12196,6 +12498,10 @@ public sealed partial class CampaignMessageCounts
     [JsonPropertyName("unsubscribed")]
     public required long Unsubscribed { get; init; }
 
+    /// <summary>Test sends whose outcome was acted out: those to `delivered@`, `bounce@` or `complaint@example.com` (the transactional guide's "Test addresses"). These counts go by message status, so they include them; `deliverabilityHealth` leaves them out.</summary>
+    [JsonPropertyName("simulated")]
+    public required long Simulated { get; init; }
+
     /// <summary>All messages created. `sent` and `delivered` overlap the other counts, so they do not add up to it; `byStatus` does.</summary>
     [JsonPropertyName("total")]
     public required long Total { get; init; }
@@ -12203,6 +12509,82 @@ public sealed partial class CampaignMessageCounts
     /// <summary>Each message once, by where it is now, summing to `total`: the delivery breakdown. A delivered message later marked as spam is `complained` here, while `delivered` above still counts it.</summary>
     [JsonPropertyName("byStatus")]
     public required Dictionary<string, long> ByStatus { get; init; }
+
+}
+
+/// <summary>DeliverabilityHealth Kirora API contract.</summary>
+public sealed partial class DeliverabilityHealth
+{
+    /// <summary>`insufficient_data` until the sample and feedback coverage minimums are met; then the highest line the bounce or complaint ratio reaches.</summary>
+    [JsonPropertyName("band")]
+    public required string Band { get; init; }
+
+    /// <summary>The documented limits value.</summary>
+    [JsonPropertyName("limits")]
+    public required DeliverabilityLimits Limits { get; init; }
+
+    /// <summary>Recorded bounces per sent email, the figure the band compares with `limits`; `null` while `sampleSize` is 0.</summary>
+    [JsonPropertyName("bounceRatio")]
+    public required decimal? BounceRatio { get; init; }
+
+    /// <summary>Recorded complaints per sent email, the figure the band compares with `limits`; `null` while `sampleSize` is 0.</summary>
+    [JsonPropertyName("complaintRatio")]
+    public required decimal? ComplaintRatio { get; init; }
+
+    /// <summary>Sent emails the band is judged on: real sends only, with test sends that act an outcome out (`delivered@`, `bounce@`, `complaint@example.com`) left out.</summary>
+    [JsonPropertyName("sampleSize")]
+    public required long SampleSize { get; init; }
+
+    /// <summary>The fewest emails (`sampleSize`) the band is judged on, currently 100: below it the band is `insufficient_data`.</summary>
+    [JsonPropertyName("minimumSampleSize")]
+    public required long MinimumSampleSize { get; init; }
+
+    /// <summary>Share of the sample whose outcome (delivered, bounced or complained) is known; `null` before any email is sent.</summary>
+    [JsonPropertyName("feedbackCoverage")]
+    public required decimal? FeedbackCoverage { get; init; }
+
+    /// <summary>The least `feedbackCoverage` the band is judged on, currently 0.95: below it the band is `insufficient_data`, as bounce and complaint reports are still arriving.</summary>
+    [JsonPropertyName("minimumFeedbackCoverage")]
+    public required decimal MinimumFeedbackCoverage { get; init; }
+
+}
+
+/// <summary>DeliverabilityLimits Kirora API contract.</summary>
+public sealed partial class DeliverabilityLimits
+{
+    /// <summary>The documented watch value.</summary>
+    [JsonPropertyName("watch")]
+    public required DeliverabilityLimitsWatch Watch { get; init; }
+
+    /// <summary>The documented critical value.</summary>
+    [JsonPropertyName("critical")]
+    public required DeliverabilityLimitsCritical Critical { get; init; }
+
+}
+
+/// <summary>DeliverabilityLimitsWatch Kirora API contract.</summary>
+public sealed partial class DeliverabilityLimitsWatch
+{
+    /// <summary>A ratio from 0 to 1: 0.05 is 5%.</summary>
+    [JsonPropertyName("bounceRatio")]
+    public required decimal BounceRatio { get; init; }
+
+    /// <summary>A ratio from 0 to 1: 0.05 is 5%.</summary>
+    [JsonPropertyName("complaintRatio")]
+    public required decimal ComplaintRatio { get; init; }
+
+}
+
+/// <summary>DeliverabilityLimitsCritical Kirora API contract.</summary>
+public sealed partial class DeliverabilityLimitsCritical
+{
+    /// <summary>A ratio from 0 to 1: 0.05 is 5%.</summary>
+    [JsonPropertyName("bounceRatio")]
+    public required decimal BounceRatio { get; init; }
+
+    /// <summary>A ratio from 0 to 1: 0.05 is 5%.</summary>
+    [JsonPropertyName("complaintRatio")]
+    public required decimal ComplaintRatio { get; init; }
 
 }
 
@@ -17519,6 +17901,33 @@ public sealed partial class JourneySimulationPathItem
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
     public Optional<string> Reason { get; init; }
 
+    /// <summary>With `reason` `DRAFT_INCOMPLETE`: what the step still needs, as activation would list it. Omit this field to leave it unspecified.</summary>
+    [JsonPropertyName("issues")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+    public Optional<IReadOnlyList<JourneyActivationIssue>> Issues { get; init; }
+
+}
+
+/// <summary>JourneyActivationIssue Kirora API contract.</summary>
+public sealed partial class JourneyActivationIssue
+{
+    /// <summary>Where to fix it, as a path into the journey (`steps.2.content.from`, `trigger.segmentId`, `exitConditions.0`), or `postalAddress` for the workspace setting.</summary>
+    [JsonPropertyName("field")]
+    public required string Field { get; init; }
+
+    /// <summary>The error `activateJourney` answers with for it: `DRAFT_INCOMPLETE` for a missing or broken part, or the send check's own code (`SENDING_DOMAIN_UNVERIFIED`, `SENDING_DOMAIN_DMARC_MISSING`, `POSTAL_ADDRESS_MISSING` and so on).</summary>
+    [JsonPropertyName("code")]
+    public required string Code { get; init; }
+
+    /// <summary>What is wrong, in words a person can act on.</summary>
+    [JsonPropertyName("message")]
+    public required string Message { get; init; }
+
+    /// <summary>The step a `steps.N` path names, by id: the path counts steps in saved order, which need not be the order they run in. Omit this field to leave it unspecified.</summary>
+    [JsonPropertyName("stepId")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+    public Optional<string> StepId { get; init; }
+
 }
 
 /// <summary>ActivateJourneyInput Kirora API contract.</summary>
@@ -17827,15 +18236,15 @@ public sealed partial class JourneyEmailCounts
     [JsonPropertyName("sent")]
     public required long Sent { get; init; }
 
-    /// <summary>Confirmed delivered, whatever happened after.</summary>
+    /// <summary>Confirmed delivered, whatever happened after; test sends to `delivered@example.com` included (see `simulated`).</summary>
     [JsonPropertyName("delivered")]
     public required long Delivered { get; init; }
 
-    /// <summary>Rejected by the recipient server.</summary>
+    /// <summary>Rejected by the recipient server; a test send to `bounce@example.com` is not counted.</summary>
     [JsonPropertyName("bounced")]
     public required long Bounced { get; init; }
 
-    /// <summary>Marked as spam by the recipient.</summary>
+    /// <summary>Marked as spam by the recipient; a test send to `complaint@example.com` is not counted.</summary>
     [JsonPropertyName("complained")]
     public required long Complained { get; init; }
 
@@ -17843,7 +18252,7 @@ public sealed partial class JourneyEmailCounts
     [JsonPropertyName("opened")]
     public required long Opened { get; init; }
 
-    /// <summary>Of `opened`, those only a machine opened: Apple Mail Privacy Protection fetches a message's images whether or not it is read.</summary>
+    /// <summary>Of `opened`, those only a machine opened: a mail app fetched its images with no reader (Apple Mail Privacy Protection, Gmail's prefetch on delivery) or a mail security scanner checked it.</summary>
     [JsonPropertyName("openedByMachine")]
     public required long OpenedByMachine { get; init; }
 
@@ -17858,6 +18267,10 @@ public sealed partial class JourneyEmailCounts
     /// <summary>Whose recipient opted out through the email's link.</summary>
     [JsonPropertyName("unsubscribed")]
     public required long Unsubscribed { get; init; }
+
+    /// <summary>Of `sent`, test sends whose outcome was acted out: those to `delivered@`, `bounce@` or `complaint@example.com` (the transactional guide's "Test addresses"). The bounce and complaint rates leave them out.</summary>
+    [JsonPropertyName("simulated")]
+    public required long Simulated { get; init; }
 
 }
 
@@ -18180,6 +18593,24 @@ public sealed partial class JourneyStepMetricsStepsItemRandomSplitPathsItemConve
     /// <summary>`contacts / count`; `null` with no enrollments. Against the holdout, the lift.</summary>
     [JsonPropertyName("rate")]
     public required decimal? Rate { get; init; }
+
+}
+
+/// <summary>GetJourneyActivationCheckResponse Kirora API contract.</summary>
+public sealed partial class GetJourneyActivationCheckResponse
+{
+    /// <summary>The documented data value.</summary>
+    [JsonPropertyName("data")]
+    public required JourneyActivationCheck Data { get; init; }
+
+}
+
+/// <summary>JourneyActivationCheck Kirora API contract.</summary>
+public sealed partial class JourneyActivationCheck
+{
+    /// <summary>Empty when activating now would pass these checks.</summary>
+    [JsonPropertyName("issues")]
+    public required IReadOnlyList<JourneyActivationIssue> Issues { get; init; }
 
 }
 
@@ -18647,7 +19078,7 @@ public sealed partial class CreateTemplateInput
     [JsonPropertyName("blocks")]
     public required IReadOnlyList<EmailBlockInput> Blocks { get; init; }
 
-    /// <summary>Theme values this email overrides. Defaults to `{}`, which keeps the workspace brand theme. Omit this field to leave it unspecified.</summary>
+    /// <summary>Theme values this email overrides. Defaults to `{}`, which keeps the workspace brand kit. Omit this field to leave it unspecified.</summary>
     [JsonPropertyName("theme")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
     public Optional<EmailThemeInput> Theme { get; init; }
@@ -19063,7 +19494,7 @@ public sealed partial class RenderTemplateContentInput
     [JsonPropertyName("blocks")]
     public required IReadOnlyList<EmailBlockInput> Blocks { get; init; }
 
-    /// <summary>Theme values this email overrides. Defaults to `{}`, which keeps the workspace brand theme. Omit this field to leave it unspecified.</summary>
+    /// <summary>Theme values this email overrides. Defaults to `{}`, which keeps the workspace brand kit. Omit this field to leave it unspecified.</summary>
     [JsonPropertyName("theme")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
     public Optional<EmailThemeInput> Theme { get; init; }
@@ -19159,7 +19590,7 @@ public sealed partial class SendTemplateTestInput
     [JsonPropertyName("blocks")]
     public required IReadOnlyList<EmailBlockInput> Blocks { get; init; }
 
-    /// <summary>Theme values this email overrides. Defaults to `{}`, which keeps the workspace brand theme. Omit this field to leave it unspecified.</summary>
+    /// <summary>Theme values this email overrides. Defaults to `{}`, which keeps the workspace brand kit. Omit this field to leave it unspecified.</summary>
     [JsonPropertyName("theme")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
     public Optional<EmailThemeInput> Theme { get; init; }
@@ -19327,9 +19758,64 @@ public sealed partial class TemplateVersion
     [JsonPropertyName("sharedBlocks")]
     public required Dictionary<string, IReadOnlyList<EmailBlock>> SharedBlocks { get; init; }
 
-    /// <summary>The workspace brand theme as it stood when published, under this version's `theme`: what sends of this version are drawn in.</summary>
-    [JsonPropertyName("brandTheme")]
-    public required EmailTheme BrandTheme { get; init; }
+    /// <summary>The workspace brand kit as it stood when published, under this version's `theme`: the look, logo and social links sends of this version are drawn with.</summary>
+    [JsonPropertyName("brandKit")]
+    public required TemplateVersionBrandKit BrandKit { get; init; }
+
+}
+
+/// <summary>TemplateVersionBrandKit Kirora API contract.</summary>
+public sealed partial class TemplateVersionBrandKit
+{
+    /// <summary>The documented name value.</summary>
+    [JsonPropertyName("name")]
+    public required string? Name { get; init; }
+
+    /// <summary>The documented theme value.</summary>
+    [JsonPropertyName("theme")]
+    public required EmailTheme Theme { get; init; }
+
+    /// <summary>The documented logo value.</summary>
+    [JsonPropertyName("logo")]
+    public required TemplateVersionBrandKitLogo? Logo { get; init; }
+
+    /// <summary>The documented socialLinks value.</summary>
+    [JsonPropertyName("socialLinks")]
+    public required IReadOnlyList<TemplateVersionBrandKitSocialLinksItem> SocialLinks { get; init; }
+
+}
+
+/// <summary>TemplateVersionBrandKitLogo Kirora API contract.</summary>
+public sealed partial class TemplateVersionBrandKitLogo
+{
+    /// <summary>The documented assetId value.</summary>
+    [JsonPropertyName("assetId")]
+    public required Guid AssetId { get; init; }
+
+    /// <summary>The documented url value.</summary>
+    [JsonPropertyName("url")]
+    public required string Url { get; init; }
+
+    /// <summary>The documented alt value.</summary>
+    [JsonPropertyName("alt")]
+    public required string? Alt { get; init; }
+
+    /// <summary>The documented width value.</summary>
+    [JsonPropertyName("width")]
+    public required string? Width { get; init; }
+
+}
+
+/// <summary>TemplateVersionBrandKitSocialLinksItem Kirora API contract.</summary>
+public sealed partial class TemplateVersionBrandKitSocialLinksItem
+{
+    /// <summary>The documented label value.</summary>
+    [JsonPropertyName("label")]
+    public required string Label { get; init; }
+
+    /// <summary>The documented href value.</summary>
+    [JsonPropertyName("href")]
+    public required string Href { get; init; }
 
 }
 
@@ -19361,12 +19847,79 @@ public sealed partial class DuplicateTemplateResponse
 
 }
 
-/// <summary>GetBrandThemeResponse Kirora API contract.</summary>
-public sealed partial class GetBrandThemeResponse
+/// <summary>GetBrandKitResponse Kirora API contract.</summary>
+public sealed partial class GetBrandKitResponse
 {
     /// <summary>The documented data value.</summary>
     [JsonPropertyName("data")]
-    public required EmailTheme Data { get; init; }
+    public required BrandKit Data { get; init; }
+
+}
+
+/// <summary>BrandKit Kirora API contract.</summary>
+public sealed partial class BrandKit
+{
+    /// <summary>The sender's name on the unsubscribe and opt-in pages, and the logo's alt text. Null is the workspace name.</summary>
+    [JsonPropertyName("name")]
+    public required string? Name { get; init; }
+
+    /// <summary>The workspace's email look. Every email's `theme` holds only the fields it overrides; the rest come from here.</summary>
+    [JsonPropertyName("theme")]
+    public required EmailTheme Theme { get; init; }
+
+    /// <summary>The profiles a `social` block without links of its own shows.</summary>
+    [JsonPropertyName("socialLinks")]
+    public required IReadOnlyList<BrandKitSocialLinksItem> SocialLinks { get; init; }
+
+    /// <summary>The shared block gallery and Kiro designs open with, in place of their logo.</summary>
+    [JsonPropertyName("defaultHeaderId")]
+    public required Guid? DefaultHeaderId { get; init; }
+
+    /// <summary>The shared block gallery and Kiro designs close with, in place of their footer. It must hold a `footer` block.</summary>
+    [JsonPropertyName("defaultFooterId")]
+    public required Guid? DefaultFooterId { get; init; }
+
+    /// <summary>What a `header` block without an image of its own shows.</summary>
+    [JsonPropertyName("logo")]
+    public required BrandKitLogo? Logo { get; init; }
+
+    /// <summary>Null until the brand kit is saved.</summary>
+    [JsonPropertyName("updatedAt")]
+    public required DateTimeOffset? UpdatedAt { get; init; }
+
+}
+
+/// <summary>BrandKitSocialLinksItem Kirora API contract.</summary>
+public sealed partial class BrandKitSocialLinksItem
+{
+    /// <summary>The documented label value.</summary>
+    [JsonPropertyName("label")]
+    public required string Label { get; init; }
+
+    /// <summary>The documented href value.</summary>
+    [JsonPropertyName("href")]
+    public required string Href { get; init; }
+
+}
+
+/// <summary>BrandKitLogo Kirora API contract.</summary>
+public sealed partial class BrandKitLogo
+{
+    /// <summary>The documented assetId value.</summary>
+    [JsonPropertyName("assetId")]
+    public required Guid AssetId { get; init; }
+
+    /// <summary>The image's address in the workspace library.</summary>
+    [JsonPropertyName("url")]
+    public required string Url { get; init; }
+
+    /// <summary>Null is `name`.</summary>
+    [JsonPropertyName("alt")]
+    public required string? Alt { get; init; }
+
+    /// <summary>The documented width value.</summary>
+    [JsonPropertyName("width")]
+    public required string? Width { get; init; }
 
 }
 
@@ -19526,6 +20079,10 @@ public sealed partial class SharedBlockUsage
     /// <summary>Journeys not ended that place it.</summary>
     [JsonPropertyName("journeys")]
     public required IReadOnlyList<SharedBlockUsageJourneysItem> Journeys { get; init; }
+
+    /// <summary>Whether it is the brand kit's default header or footer.</summary>
+    [JsonPropertyName("brandKit")]
+    public required bool BrandKit { get; init; }
 
     /// <summary>More use it than are listed: each list stops at 50.</summary>
     [JsonPropertyName("hasMore")]
@@ -19754,9 +20311,9 @@ public sealed partial class AssetUsage
     [JsonPropertyName("messages")]
     public required IReadOnlyList<AssetUsageMessagesItem> Messages { get; init; }
 
-    /// <summary>Whether the workspace's brand theme uses it.</summary>
-    [JsonPropertyName("brandTheme")]
-    public required bool BrandTheme { get; init; }
+    /// <summary>Whether it is the workspace's brand kit logo.</summary>
+    [JsonPropertyName("brandKit")]
+    public required bool BrandKit { get; init; }
 
     /// <summary>More use it than are listed: each list stops at 50.</summary>
     [JsonPropertyName("hasMore")]
@@ -19972,6 +20529,10 @@ public sealed partial class FormListItem
     [JsonPropertyName("doubleOptIn")]
     public required bool DoubleOptIn { get; init; }
 
+    /// <summary>Users of this workspace told about each submission.</summary>
+    [JsonPropertyName("notifyUserIds")]
+    public required IReadOnlyList<Guid> NotifyUserIds { get; init; }
+
     /// <summary>Where the CAPTCHA comes from; `null` while it is off. Secrets never show.</summary>
     [JsonPropertyName("captcha")]
     public required FormListItemCaptcha? Captcha { get; init; }
@@ -20146,6 +20707,11 @@ public sealed partial class CreateFormInput
     [JsonPropertyName("doubleOptIn")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
     public Optional<bool> DoubleOptIn { get; init; }
+
+    /// <summary>Users of this workspace to tell about each submission, in the bell and by email (each can turn the email off). Each must be a user here. Omit this field to leave it unspecified.</summary>
+    [JsonPropertyName("notifyUserIds")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+    public Optional<IReadOnlyList<Guid>> NotifyUserIds { get; init; }
 
     /// <summary>The documented theme value. Omit this field to leave it unspecified.</summary>
     [JsonPropertyName("theme")]
@@ -20702,6 +21268,10 @@ public sealed partial class Form
     [JsonPropertyName("doubleOptIn")]
     public required bool DoubleOptIn { get; init; }
 
+    /// <summary>Users of this workspace told about each submission.</summary>
+    [JsonPropertyName("notifyUserIds")]
+    public required IReadOnlyList<Guid> NotifyUserIds { get; init; }
+
     /// <summary>The documented theme value.</summary>
     [JsonPropertyName("theme")]
     public required FormTheme Theme { get; init; }
@@ -21240,6 +21810,11 @@ public sealed partial class UpdateFormInput
     [JsonPropertyName("doubleOptIn")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
     public Optional<bool> DoubleOptIn { get; init; }
+
+    /// <summary>Users of this workspace to tell about each submission, in the bell and by email (each can turn the email off). Each must be a user here. Omit this field to leave it unspecified.</summary>
+    [JsonPropertyName("notifyUserIds")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+    public Optional<IReadOnlyList<Guid>> NotifyUserIds { get; init; }
 
     /// <summary>The documented theme value. Omit this field to leave it unspecified.</summary>
     [JsonPropertyName("theme")]
@@ -23536,7 +24111,7 @@ public sealed partial class CampaignPerformanceEmail
     [JsonPropertyName("opened")]
     public required long Opened { get; init; }
 
-    /// <summary>Of `opened`, those only a machine opened: Apple Mail Privacy Protection fetches a message's images whether or not it is read.</summary>
+    /// <summary>Of `opened`, those only a machine opened: a mail app fetched its images with no reader (Apple Mail Privacy Protection, Gmail's prefetch on delivery) or a mail security scanner checked it.</summary>
     [JsonPropertyName("openedByMachine")]
     public required long OpenedByMachine { get; init; }
 
@@ -23564,7 +24139,7 @@ public sealed partial class CampaignPerformanceEmail
     [JsonPropertyName("unsubscribed")]
     public required long Unsubscribed { get; init; }
 
-    /// <summary>Email rates as fractions: delivery, bounce and complaint over sent; open, click and unsubscribe over delivered. `null` when there is no denominator.</summary>
+    /// <summary>Email rates as fractions: delivery over sent; bounce and complaint over real sends (`sent` less `simulated` where the counts give it), as `deliverabilityHealth` judges them; open, click and unsubscribe over delivered. `null` when there is no denominator.</summary>
     [JsonPropertyName("rates")]
     public required EmailRates Rates { get; init; }
 
@@ -23720,7 +24295,7 @@ public sealed partial class Overview
 
     /// <summary>Advisory bounce and complaint health of the workspace's marketing email in the window.</summary>
     [JsonPropertyName("deliverabilityHealth")]
-    public required OverviewDeliverabilityHealth DeliverabilityHealth { get; init; }
+    public required DeliverabilityHealth DeliverabilityHealth { get; init; }
 
     /// <summary>One point per calendar day in the window: email and push by the day they were sent, conversions and revenue by the day they happened.</summary>
     [JsonPropertyName("series")]
@@ -23756,7 +24331,7 @@ public sealed partial class OverviewEmail
     [JsonPropertyName("delta")]
     public required OverviewCounts Delta { get; init; }
 
-    /// <summary>Email rates as fractions: delivery, bounce and complaint over sent; open, click and unsubscribe over delivered. `null` when there is no denominator.</summary>
+    /// <summary>Email rates as fractions: delivery over sent; bounce and complaint over real sends (`sent` less `simulated` where the counts give it), as `deliverabilityHealth` judges them; open, click and unsubscribe over delivered. `null` when there is no denominator.</summary>
     [JsonPropertyName("rates")]
     public required EmailRates Rates { get; init; }
 
@@ -23777,7 +24352,7 @@ public sealed partial class OverviewCounts
     [JsonPropertyName("opened")]
     public required long Opened { get; init; }
 
-    /// <summary>Of `opened`, those only a machine opened: Apple Mail Privacy Protection fetches a message's images whether or not it is read.</summary>
+    /// <summary>Of `opened`, those only a machine opened: a mail app fetched its images with no reader (Apple Mail Privacy Protection, Gmail's prefetch on delivery) or a mail security scanner checked it.</summary>
     [JsonPropertyName("openedByMachine")]
     public required long OpenedByMachine { get; init; }
 
@@ -23785,13 +24360,21 @@ public sealed partial class OverviewCounts
     [JsonPropertyName("clicked")]
     public required long Clicked { get; init; }
 
-    /// <summary>The documented feedbackObserved value.</summary>
+    /// <summary>Of `sent`, test sends whose outcome was acted out: those to `delivered@`, `bounce@` or `complaint@example.com` (the transactional guide's "Test addresses"). Counted in `sent` and `delivered`; never in `bounced`, `complained`, `feedbackObserved`, the bounce and complaint rates or `deliverabilityHealth`.</summary>
+    [JsonPropertyName("simulated")]
+    public required long Simulated { get; init; }
+
+    /// <summary>Of the real sends in `sent`, those whose delivery, bounce or complaint is known.</summary>
     [JsonPropertyName("feedbackObserved")]
     public required long FeedbackObserved { get; init; }
 
-    /// <summary>Not delivered, with no bounce or complaint: refused before sending (counted on the day it was queued) or failed after it (on the day it was sent). `failure.reason` on each message says why.</summary>
+    /// <summary>Not delivered, with no bounce or complaint: refused before sending (counted on the day it was queued) or failed after it (on the day it was sent, and also in `sent`). `failure.reason` on each message says why.</summary>
     [JsonPropertyName("failed")]
     public required long Failed { get; init; }
+
+    /// <summary>Of `failed`, those refused before reaching the provider, on the day they were queued. Not in `sent`, like `skipped`, so `sent + failedBeforeSending + skipped` counts each message once.</summary>
+    [JsonPropertyName("failedBeforeSending")]
+    public required long FailedBeforeSending { get; init; }
 
     /// <summary>Stopped before sending by a guard (no consent, suppressed, no address), on the day it was queued. Not in `sent`.</summary>
     [JsonPropertyName("skipped")]
@@ -23884,74 +24467,6 @@ public sealed partial class OverviewConversionsRevenueItem
     /// <summary>The documented previous value.</summary>
     [JsonPropertyName("previous")]
     public required decimal Previous { get; init; }
-
-}
-
-/// <summary>OverviewDeliverabilityHealth Kirora API contract.</summary>
-public sealed partial class OverviewDeliverabilityHealth
-{
-    /// <summary>`insufficient_data` until the sample and feedback coverage minimums are met.</summary>
-    [JsonPropertyName("band")]
-    public required string Band { get; init; }
-
-    /// <summary>Where the bands start: `watch` at the line where admins are warned, `critical` where marketing email pauses.</summary>
-    [JsonPropertyName("limits")]
-    public required OverviewDeliverabilityHealthLimits Limits { get; init; }
-
-    /// <summary>Emails the band is judged on.</summary>
-    [JsonPropertyName("sampleSize")]
-    public required long SampleSize { get; init; }
-
-    /// <summary>The documented minimumSampleSize value.</summary>
-    [JsonPropertyName("minimumSampleSize")]
-    public required decimal MinimumSampleSize { get; init; }
-
-    /// <summary>Fraction of the sample whose bounce or complaint outcome is known.</summary>
-    [JsonPropertyName("feedbackCoverage")]
-    public required decimal? FeedbackCoverage { get; init; }
-
-    /// <summary>The documented minimumFeedbackCoverage value.</summary>
-    [JsonPropertyName("minimumFeedbackCoverage")]
-    public required decimal MinimumFeedbackCoverage { get; init; }
-
-}
-
-/// <summary>OverviewDeliverabilityHealthLimits Kirora API contract.</summary>
-public sealed partial class OverviewDeliverabilityHealthLimits
-{
-    /// <summary>The documented watch value.</summary>
-    [JsonPropertyName("watch")]
-    public required OverviewDeliverabilityHealthLimitsWatch Watch { get; init; }
-
-    /// <summary>The documented critical value.</summary>
-    [JsonPropertyName("critical")]
-    public required OverviewDeliverabilityHealthLimitsCritical Critical { get; init; }
-
-}
-
-/// <summary>OverviewDeliverabilityHealthLimitsWatch Kirora API contract.</summary>
-public sealed partial class OverviewDeliverabilityHealthLimitsWatch
-{
-    /// <summary>The documented bounceRatio value.</summary>
-    [JsonPropertyName("bounceRatio")]
-    public required decimal BounceRatio { get; init; }
-
-    /// <summary>The documented complaintRatio value.</summary>
-    [JsonPropertyName("complaintRatio")]
-    public required decimal ComplaintRatio { get; init; }
-
-}
-
-/// <summary>OverviewDeliverabilityHealthLimitsCritical Kirora API contract.</summary>
-public sealed partial class OverviewDeliverabilityHealthLimitsCritical
-{
-    /// <summary>The documented bounceRatio value.</summary>
-    [JsonPropertyName("bounceRatio")]
-    public required decimal BounceRatio { get; init; }
-
-    /// <summary>The documented complaintRatio value.</summary>
-    [JsonPropertyName("complaintRatio")]
-    public required decimal ComplaintRatio { get; init; }
 
 }
 
@@ -25468,6 +25983,13 @@ internal sealed class SegmentRulesMatchAllAllItemVariant1Converter : JsonConvert
         }
         catch (JsonException) { }
         next6:;
+        if (!Kirora.Serialization.ContractValidator.MatchesUnionVariant("SegmentRulesMatchAllAllItemVariant1", 7, element)) goto next7;
+        try
+        {
+            return (SegmentRulesMatchAllAllItemVariant1)JsonSerializer.Deserialize(element, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<TopicCondition>)options.GetTypeInfo(typeof(TopicCondition)))!;
+        }
+        catch (JsonException) { }
+        next7:;
         throw new JsonException("No documented union variant matched.");
     }
     /// <summary>Provides the documented operation.</summary>
@@ -25482,6 +26004,7 @@ internal sealed class SegmentRulesMatchAllAllItemVariant1Converter : JsonConvert
             case InstallationCondition typed: JsonSerializer.Serialize(writer, typed, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<InstallationCondition>)options.GetTypeInfo(typeof(InstallationCondition))); break;
             case ListCondition typed: JsonSerializer.Serialize(writer, typed, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<ListCondition>)options.GetTypeInfo(typeof(ListCondition))); break;
             case SegmentCondition typed: JsonSerializer.Serialize(writer, typed, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<SegmentCondition>)options.GetTypeInfo(typeof(SegmentCondition))); break;
+            case TopicCondition typed: JsonSerializer.Serialize(writer, typed, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<TopicCondition>)options.GetTypeInfo(typeof(TopicCondition))); break;
             default: throw new JsonException("Unsupported union value.");
         }
     }
@@ -25543,6 +26066,13 @@ internal sealed class SegmentRuleGroupMatchAllAllItemConverter : JsonConverter<S
         }
         catch (JsonException) { }
         next6:;
+        if (!Kirora.Serialization.ContractValidator.MatchesUnionVariant("SegmentRuleGroupMatchAllAllItem", 7, element)) goto next7;
+        try
+        {
+            return (SegmentRuleGroupMatchAllAllItem)JsonSerializer.Deserialize(element, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<TopicCondition>)options.GetTypeInfo(typeof(TopicCondition)))!;
+        }
+        catch (JsonException) { }
+        next7:;
         throw new JsonException("No documented union variant matched.");
     }
     /// <summary>Provides the documented operation.</summary>
@@ -25557,6 +26087,7 @@ internal sealed class SegmentRuleGroupMatchAllAllItemConverter : JsonConverter<S
             case InstallationCondition typed: JsonSerializer.Serialize(writer, typed, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<InstallationCondition>)options.GetTypeInfo(typeof(InstallationCondition))); break;
             case ListCondition typed: JsonSerializer.Serialize(writer, typed, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<ListCondition>)options.GetTypeInfo(typeof(ListCondition))); break;
             case SegmentCondition typed: JsonSerializer.Serialize(writer, typed, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<SegmentCondition>)options.GetTypeInfo(typeof(SegmentCondition))); break;
+            case TopicCondition typed: JsonSerializer.Serialize(writer, typed, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<TopicCondition>)options.GetTypeInfo(typeof(TopicCondition))); break;
             default: throw new JsonException("Unsupported union value.");
         }
     }
@@ -25618,6 +26149,13 @@ internal sealed class SegmentRuleGroupMatchAnyAnyItemConverter : JsonConverter<S
         }
         catch (JsonException) { }
         next6:;
+        if (!Kirora.Serialization.ContractValidator.MatchesUnionVariant("SegmentRuleGroupMatchAnyAnyItem", 7, element)) goto next7;
+        try
+        {
+            return (SegmentRuleGroupMatchAnyAnyItem)JsonSerializer.Deserialize(element, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<TopicCondition>)options.GetTypeInfo(typeof(TopicCondition)))!;
+        }
+        catch (JsonException) { }
+        next7:;
         throw new JsonException("No documented union variant matched.");
     }
     /// <summary>Provides the documented operation.</summary>
@@ -25632,6 +26170,7 @@ internal sealed class SegmentRuleGroupMatchAnyAnyItemConverter : JsonConverter<S
             case InstallationCondition typed: JsonSerializer.Serialize(writer, typed, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<InstallationCondition>)options.GetTypeInfo(typeof(InstallationCondition))); break;
             case ListCondition typed: JsonSerializer.Serialize(writer, typed, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<ListCondition>)options.GetTypeInfo(typeof(ListCondition))); break;
             case SegmentCondition typed: JsonSerializer.Serialize(writer, typed, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<SegmentCondition>)options.GetTypeInfo(typeof(SegmentCondition))); break;
+            case TopicCondition typed: JsonSerializer.Serialize(writer, typed, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<TopicCondition>)options.GetTypeInfo(typeof(TopicCondition))); break;
             default: throw new JsonException("Unsupported union value.");
         }
     }
@@ -25763,6 +26302,13 @@ internal sealed class SegmentRulesMatchAnyAnyItemVariant1Converter : JsonConvert
         }
         catch (JsonException) { }
         next6:;
+        if (!Kirora.Serialization.ContractValidator.MatchesUnionVariant("SegmentRulesMatchAnyAnyItemVariant1", 7, element)) goto next7;
+        try
+        {
+            return (SegmentRulesMatchAnyAnyItemVariant1)JsonSerializer.Deserialize(element, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<TopicCondition>)options.GetTypeInfo(typeof(TopicCondition)))!;
+        }
+        catch (JsonException) { }
+        next7:;
         throw new JsonException("No documented union variant matched.");
     }
     /// <summary>Provides the documented operation.</summary>
@@ -25777,6 +26323,7 @@ internal sealed class SegmentRulesMatchAnyAnyItemVariant1Converter : JsonConvert
             case InstallationCondition typed: JsonSerializer.Serialize(writer, typed, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<InstallationCondition>)options.GetTypeInfo(typeof(InstallationCondition))); break;
             case ListCondition typed: JsonSerializer.Serialize(writer, typed, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<ListCondition>)options.GetTypeInfo(typeof(ListCondition))); break;
             case SegmentCondition typed: JsonSerializer.Serialize(writer, typed, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<SegmentCondition>)options.GetTypeInfo(typeof(SegmentCondition))); break;
+            case TopicCondition typed: JsonSerializer.Serialize(writer, typed, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<TopicCondition>)options.GetTypeInfo(typeof(TopicCondition))); break;
             default: throw new JsonException("Unsupported union value.");
         }
     }
@@ -26193,6 +26740,13 @@ internal sealed class SegmentRulesInputMatchAllAllItemVariant1Converter : JsonCo
         }
         catch (JsonException) { }
         next6:;
+        if (!Kirora.Serialization.ContractValidator.MatchesUnionVariant("SegmentRulesInputMatchAllAllItemVariant1", 7, element)) goto next7;
+        try
+        {
+            return (SegmentRulesInputMatchAllAllItemVariant1)JsonSerializer.Deserialize(element, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<TopicConditionInput>)options.GetTypeInfo(typeof(TopicConditionInput)))!;
+        }
+        catch (JsonException) { }
+        next7:;
         throw new JsonException("No documented union variant matched.");
     }
     /// <summary>Provides the documented operation.</summary>
@@ -26207,6 +26761,7 @@ internal sealed class SegmentRulesInputMatchAllAllItemVariant1Converter : JsonCo
             case InstallationConditionInput typed: JsonSerializer.Serialize(writer, typed, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<InstallationConditionInput>)options.GetTypeInfo(typeof(InstallationConditionInput))); break;
             case ListConditionInput typed: JsonSerializer.Serialize(writer, typed, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<ListConditionInput>)options.GetTypeInfo(typeof(ListConditionInput))); break;
             case SegmentConditionInput typed: JsonSerializer.Serialize(writer, typed, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<SegmentConditionInput>)options.GetTypeInfo(typeof(SegmentConditionInput))); break;
+            case TopicConditionInput typed: JsonSerializer.Serialize(writer, typed, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<TopicConditionInput>)options.GetTypeInfo(typeof(TopicConditionInput))); break;
             default: throw new JsonException("Unsupported union value.");
         }
     }
@@ -26268,6 +26823,13 @@ internal sealed class SegmentRuleGroupInputMatchAllAllItemConverter : JsonConver
         }
         catch (JsonException) { }
         next6:;
+        if (!Kirora.Serialization.ContractValidator.MatchesUnionVariant("SegmentRuleGroupInputMatchAllAllItem", 7, element)) goto next7;
+        try
+        {
+            return (SegmentRuleGroupInputMatchAllAllItem)JsonSerializer.Deserialize(element, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<TopicConditionInput>)options.GetTypeInfo(typeof(TopicConditionInput)))!;
+        }
+        catch (JsonException) { }
+        next7:;
         throw new JsonException("No documented union variant matched.");
     }
     /// <summary>Provides the documented operation.</summary>
@@ -26282,6 +26844,7 @@ internal sealed class SegmentRuleGroupInputMatchAllAllItemConverter : JsonConver
             case InstallationConditionInput typed: JsonSerializer.Serialize(writer, typed, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<InstallationConditionInput>)options.GetTypeInfo(typeof(InstallationConditionInput))); break;
             case ListConditionInput typed: JsonSerializer.Serialize(writer, typed, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<ListConditionInput>)options.GetTypeInfo(typeof(ListConditionInput))); break;
             case SegmentConditionInput typed: JsonSerializer.Serialize(writer, typed, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<SegmentConditionInput>)options.GetTypeInfo(typeof(SegmentConditionInput))); break;
+            case TopicConditionInput typed: JsonSerializer.Serialize(writer, typed, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<TopicConditionInput>)options.GetTypeInfo(typeof(TopicConditionInput))); break;
             default: throw new JsonException("Unsupported union value.");
         }
     }
@@ -26343,6 +26906,13 @@ internal sealed class SegmentRuleGroupInputMatchAnyAnyItemConverter : JsonConver
         }
         catch (JsonException) { }
         next6:;
+        if (!Kirora.Serialization.ContractValidator.MatchesUnionVariant("SegmentRuleGroupInputMatchAnyAnyItem", 7, element)) goto next7;
+        try
+        {
+            return (SegmentRuleGroupInputMatchAnyAnyItem)JsonSerializer.Deserialize(element, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<TopicConditionInput>)options.GetTypeInfo(typeof(TopicConditionInput)))!;
+        }
+        catch (JsonException) { }
+        next7:;
         throw new JsonException("No documented union variant matched.");
     }
     /// <summary>Provides the documented operation.</summary>
@@ -26357,6 +26927,7 @@ internal sealed class SegmentRuleGroupInputMatchAnyAnyItemConverter : JsonConver
             case InstallationConditionInput typed: JsonSerializer.Serialize(writer, typed, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<InstallationConditionInput>)options.GetTypeInfo(typeof(InstallationConditionInput))); break;
             case ListConditionInput typed: JsonSerializer.Serialize(writer, typed, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<ListConditionInput>)options.GetTypeInfo(typeof(ListConditionInput))); break;
             case SegmentConditionInput typed: JsonSerializer.Serialize(writer, typed, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<SegmentConditionInput>)options.GetTypeInfo(typeof(SegmentConditionInput))); break;
+            case TopicConditionInput typed: JsonSerializer.Serialize(writer, typed, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<TopicConditionInput>)options.GetTypeInfo(typeof(TopicConditionInput))); break;
             default: throw new JsonException("Unsupported union value.");
         }
     }
@@ -26488,6 +27059,13 @@ internal sealed class SegmentRulesInputMatchAnyAnyItemVariant1Converter : JsonCo
         }
         catch (JsonException) { }
         next6:;
+        if (!Kirora.Serialization.ContractValidator.MatchesUnionVariant("SegmentRulesInputMatchAnyAnyItemVariant1", 7, element)) goto next7;
+        try
+        {
+            return (SegmentRulesInputMatchAnyAnyItemVariant1)JsonSerializer.Deserialize(element, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<TopicConditionInput>)options.GetTypeInfo(typeof(TopicConditionInput)))!;
+        }
+        catch (JsonException) { }
+        next7:;
         throw new JsonException("No documented union variant matched.");
     }
     /// <summary>Provides the documented operation.</summary>
@@ -26502,6 +27080,7 @@ internal sealed class SegmentRulesInputMatchAnyAnyItemVariant1Converter : JsonCo
             case InstallationConditionInput typed: JsonSerializer.Serialize(writer, typed, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<InstallationConditionInput>)options.GetTypeInfo(typeof(InstallationConditionInput))); break;
             case ListConditionInput typed: JsonSerializer.Serialize(writer, typed, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<ListConditionInput>)options.GetTypeInfo(typeof(ListConditionInput))); break;
             case SegmentConditionInput typed: JsonSerializer.Serialize(writer, typed, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<SegmentConditionInput>)options.GetTypeInfo(typeof(SegmentConditionInput))); break;
+            case TopicConditionInput typed: JsonSerializer.Serialize(writer, typed, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<TopicConditionInput>)options.GetTypeInfo(typeof(TopicConditionInput))); break;
             default: throw new JsonException("Unsupported union value.");
         }
     }
@@ -26693,6 +27272,41 @@ internal sealed class SendTransactionalInputEmailConverter : JsonConverter<SendT
         {
             case SendTransactionalInputEmailStoredTemplate typed: JsonSerializer.Serialize(writer, typed, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<SendTransactionalInputEmailStoredTemplate>)options.GetTypeInfo(typeof(SendTransactionalInputEmailStoredTemplate))); break;
             case SendTransactionalInputEmailInlineContent typed: JsonSerializer.Serialize(writer, typed, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<SendTransactionalInputEmailInlineContent>)options.GetTypeInfo(typeof(SendTransactionalInputEmailInlineContent))); break;
+            default: throw new JsonException("Unsupported union value.");
+        }
+    }
+}
+
+internal sealed class TransactionalDeliverInputConverter : JsonConverter<TransactionalDeliverInput>
+{
+    /// <summary>Provides the documented operation.</summary>
+    public override TransactionalDeliverInput? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+    {
+        using var document = JsonDocument.ParseValue(ref reader);
+        var element = document.RootElement;
+        if (!Kirora.Serialization.ContractValidator.MatchesUnionVariant("TransactionalDeliverInput", 0, element)) goto next0;
+        try
+        {
+            return (TransactionalDeliverInput)JsonSerializer.Deserialize(element, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<string>)options.GetTypeInfo(typeof(string)))!;
+        }
+        catch (JsonException) { }
+        next0:;
+        if (!Kirora.Serialization.ContractValidator.MatchesUnionVariant("TransactionalDeliverInput", 1, element)) goto next1;
+        try
+        {
+            return (TransactionalDeliverInput)JsonSerializer.Deserialize(element, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<TransactionalDeliverFirstInput>)options.GetTypeInfo(typeof(TransactionalDeliverFirstInput)))!;
+        }
+        catch (JsonException) { }
+        next1:;
+        throw new JsonException("No documented union variant matched.");
+    }
+    /// <summary>Provides the documented operation.</summary>
+    public override void Write(Utf8JsonWriter writer, TransactionalDeliverInput value, JsonSerializerOptions options)
+    {
+        switch (value.Value)
+        {
+            case string typed: JsonSerializer.Serialize(writer, typed, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<string>)options.GetTypeInfo(typeof(string))); break;
+            case TransactionalDeliverFirstInput typed: JsonSerializer.Serialize(writer, typed, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<TransactionalDeliverFirstInput>)options.GetTypeInfo(typeof(TransactionalDeliverFirstInput))); break;
             default: throw new JsonException("Unsupported union value.");
         }
     }

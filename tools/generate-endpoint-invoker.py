@@ -18,4 +18,4 @@ lines+=['            default: throw new InvalidOperationException("No invocation
 if '--check' in sys.argv:
  if not p.exists() or p.read_text()!=text:raise SystemExit('Endpoint invocations are stale')
 else:p.write_text(text)
-print('All 183 public endpoint invocations match generated contracts.')
+print(f'All {len(ops)} public endpoint invocations match generated contracts.')

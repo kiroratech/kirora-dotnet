@@ -72,7 +72,9 @@ internal static class GeneratedOptionalConverters
         if (type == typeof(Optional<DurationOrZeroInput>)) return new OptionalJsonConverter<DurationOrZeroInput>();
         if (type == typeof(Optional<EmailBlockStyle>)) return new OptionalJsonConverter<EmailBlockStyle>();
         if (type == typeof(Optional<EmailBlockStyleInput>)) return new OptionalJsonConverter<EmailBlockStyleInput>();
+        if (type == typeof(Optional<EmailBlockStyleInputMobilePadding>)) return new OptionalJsonConverter<EmailBlockStyleInputMobilePadding>();
         if (type == typeof(Optional<EmailBlockStyleInputPadding>)) return new OptionalJsonConverter<EmailBlockStyleInputPadding>();
+        if (type == typeof(Optional<EmailBlockStyleMobilePadding>)) return new OptionalJsonConverter<EmailBlockStyleMobilePadding>();
         if (type == typeof(Optional<EmailBlockStylePadding>)) return new OptionalJsonConverter<EmailBlockStylePadding>();
         if (type == typeof(Optional<EmailThemeInput>)) return new OptionalJsonConverter<EmailThemeInput>();
         if (type == typeof(Optional<EmailThreadingInput>)) return new OptionalJsonConverter<EmailThreadingInput>();
@@ -133,6 +135,7 @@ internal static class GeneratedOptionalConverters
         if (type == typeof(Optional<IReadOnlyList<Guid>?>)) return new OptionalJsonConverter<IReadOnlyList<Guid>?>();
         if (type == typeof(Optional<IReadOnlyList<ImageGroupBlockImagesItem>>)) return new OptionalJsonConverter<IReadOnlyList<ImageGroupBlockImagesItem>>();
         if (type == typeof(Optional<IReadOnlyList<ImageGroupBlockInputImagesItem>>)) return new OptionalJsonConverter<IReadOnlyList<ImageGroupBlockInputImagesItem>>();
+        if (type == typeof(Optional<IReadOnlyList<JourneyActivationIssue>>)) return new OptionalJsonConverter<IReadOnlyList<JourneyActivationIssue>>();
         if (type == typeof(Optional<IReadOnlyList<JourneyConversions>>)) return new OptionalJsonConverter<IReadOnlyList<JourneyConversions>>();
         if (type == typeof(Optional<IReadOnlyList<JourneyExitConditionsItemEventExitWhereItem>>)) return new OptionalJsonConverter<IReadOnlyList<JourneyExitConditionsItemEventExitWhereItem>>();
         if (type == typeof(Optional<IReadOnlyList<JourneyStepPushSendStepContentPushButtonsItem>>)) return new OptionalJsonConverter<IReadOnlyList<JourneyStepPushSendStepContentPushButtonsItem>>();
@@ -152,6 +155,8 @@ internal static class GeneratedOptionalConverters
         if (type == typeof(Optional<IReadOnlyList<MessageContentPushOverridesAndroidButtonsItem>>)) return new OptionalJsonConverter<IReadOnlyList<MessageContentPushOverridesAndroidButtonsItem>>();
         if (type == typeof(Optional<IReadOnlyList<MessageContentPushOverridesIosButtonsItem>>)) return new OptionalJsonConverter<IReadOnlyList<MessageContentPushOverridesIosButtonsItem>>();
         if (type == typeof(Optional<IReadOnlyList<MessageContentPushOverridesWebButtonsItem>>)) return new OptionalJsonConverter<IReadOnlyList<MessageContentPushOverridesWebButtonsItem>>();
+        if (type == typeof(Optional<IReadOnlyList<SocialBlockInputLinksItem>>)) return new OptionalJsonConverter<IReadOnlyList<SocialBlockInputLinksItem>>();
+        if (type == typeof(Optional<IReadOnlyList<SocialBlockLinksItem>>)) return new OptionalJsonConverter<IReadOnlyList<SocialBlockLinksItem>>();
         if (type == typeof(Optional<IReadOnlyList<TransactionalPushInputButtonsItem>>)) return new OptionalJsonConverter<IReadOnlyList<TransactionalPushInputButtonsItem>>();
         if (type == typeof(Optional<IReadOnlyList<TransactionalPushInputOverridesAndroidButtonsItem>>)) return new OptionalJsonConverter<IReadOnlyList<TransactionalPushInputOverridesAndroidButtonsItem>>();
         if (type == typeof(Optional<IReadOnlyList<TransactionalPushInputOverridesIosButtonsItem>>)) return new OptionalJsonConverter<IReadOnlyList<TransactionalPushInputOverridesIosButtonsItem>>();
@@ -205,6 +210,7 @@ internal static class GeneratedOptionalConverters
         if (type == typeof(Optional<SignedDurationInput>)) return new OptionalJsonConverter<SignedDurationInput>();
         if (type == typeof(Optional<TemplateSnapshot>)) return new OptionalJsonConverter<TemplateSnapshot>();
         if (type == typeof(Optional<TemplateSnapshotInput>)) return new OptionalJsonConverter<TemplateSnapshotInput>();
+        if (type == typeof(Optional<TransactionalDeliverInput>)) return new OptionalJsonConverter<TransactionalDeliverInput>();
         if (type == typeof(Optional<TransactionalEmailTrackingInput>)) return new OptionalJsonConverter<TransactionalEmailTrackingInput>();
         if (type == typeof(Optional<TransactionalPushInput>)) return new OptionalJsonConverter<TransactionalPushInput>();
         if (type == typeof(Optional<TransactionalPushInputOverrides>)) return new OptionalJsonConverter<TransactionalPushInputOverrides>();

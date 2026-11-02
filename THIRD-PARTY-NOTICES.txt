@@ -1,6 +1,6 @@
 Kirora OpenAPI specification
 Official repository: https://github.com/kiroratech/openapi
-Pinned commit: d4e38cb942645976d01e3e109ed586c8d8783feb
+Pinned commit: 30043317efd68ffceeab882019431e57b7463018
 
 The following license covers the upstream specification included in this package
 and portions derived from it. It does not assign a license to the SDK as a whole.

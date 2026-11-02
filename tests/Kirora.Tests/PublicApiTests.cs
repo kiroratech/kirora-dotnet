@@ -5,7 +5,7 @@ namespace Kirora.Tests;
 public sealed class PublicApiTests
 {
     [Fact]
-    public void PhaseTwoPublicTypesAndMembersRemainAvailable()
+    public void PhaseTwoDeltaExactlyMatchesDocumentedMigration()
     {
         var expected = File.ReadAllLines(Path.Combine(AppContext.BaseDirectory, "Fixtures/public-api-phase2.txt"));
         var actual = new HashSet<string>(StringComparer.Ordinal);
@@ -20,7 +20,7 @@ public sealed class PublicApiTests
                 else if (member is FieldInfo field) actual.Add($"F:{type.FullName}:{field.FieldType}:{field.Name}");
             }
         }
-        Assert.Empty(expected.Except(actual));
+        MigrationApiAssertions.HistoricalDelta("public-api-phase2.txt", expected, actual);
     }
 }
 
@@ -43,7 +43,7 @@ public sealed class XmlDocumentationTests
 public sealed class PhaseThreeApiTests
 {
     [Fact]
-    public void PhaseThreePublicSignaturesRemainAvailable()
+    public void PhaseThreeDeltaExactlyMatchesDocumentedMigration()
     {
         var current = typeof(KiroraClient).Assembly.GetExportedTypes().SelectMany(type =>
             new[] { $"T:{type.FullName}:{type.BaseType}:{type.IsSealed}:{type.IsAbstract}" }.Concat(
@@ -56,6 +56,17 @@ public sealed class PhaseThreeApiTests
                     FieldInfo field => $"F:{type.FullName}:{field.FieldType}:{field.Name}",
                     _ => string.Empty
                 }))).ToHashSet(StringComparer.Ordinal);
-        Assert.Empty(File.ReadAllLines(Path.Combine(AppContext.BaseDirectory, "Fixtures/public-api-phase3.txt")).Except(current));
+        MigrationApiAssertions.HistoricalDelta("public-api-phase3.txt", File.ReadAllLines(Path.Combine(AppContext.BaseDirectory, "Fixtures/public-api-phase3.txt")), current);
+        Assert.Equal(File.ReadAllLines(Path.Combine(AppContext.BaseDirectory, "Fixtures/public-api-upstream-30043317.txt")).Order(StringComparer.Ordinal), current.Where(s => s.Length > 0).Order(StringComparer.Ordinal));
+    }
+}
+
+internal static class MigrationApiAssertions
+{
+    internal static void HistoricalDelta(string baseline, IEnumerable<string> historical, IEnumerable<string> current)
+    {
+        using var report = System.Text.Json.JsonDocument.Parse(File.ReadAllText(Path.Combine(AppContext.BaseDirectory, "Fixtures/migration-api-changes.json")));
+        var documented = report.RootElement.GetProperty("removedSignatures").GetProperty(baseline).EnumerateArray().Select(v => v.GetString()!).Order(StringComparer.Ordinal);
+        Assert.Equal(documented, historical.Except(current).Order(StringComparer.Ordinal));
     }
 }

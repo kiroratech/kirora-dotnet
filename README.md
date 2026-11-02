@@ -1,6 +1,6 @@
 # Kirora .NET SDK
 
-A .NET 8 SDK with strongly typed coverage of all **183 operations** in the pinned official Kirora OpenAPI specification. This is an **unpublished public-alpha candidate**, not a claim of live verified API parity. No API key is included in the SDK.
+A .NET 8 SDK with strongly typed coverage of all **184 operations** in the pinned official Kirora OpenAPI specification. This is an **unpublished public-alpha candidate**, not a claim of live verified API parity. No API key is included in the SDK.
 
 ## Installation
 
@@ -97,7 +97,10 @@ var result = await kirora.Transactional.SendAsync(new SendTransactionalInput {
     Push = new TransactionalPushInput {
         Title = "Order received", Body = "Thank you for your order."
     },
-    Deliver = "first"
+    Deliver = (TransactionalDeliverInput)new TransactionalDeliverFirstInput
+    {
+        First = ["email", "push"]
+    }
 }, new KiroraRequestOptions { IdempotencyKey = "order-1001-receipt" }, ct);
 ```
 
@@ -155,9 +158,9 @@ Automatic write retries follow generated operation semantics and documented idem
 
 ## Coverage, generation and validation
 
-[API coverage](docs/API-COVERAGE.md) and the [operation CSV matrix](docs/api-coverage.csv) document all 183 endpoints, scopes, retry policies and the inspected Node/Go comparison. Reports, Events and ConversionGoals expose analytics; no speculative Analytics URL prefix is added. The website/spec discrepancies remain documented.
+[API coverage](docs/API-COVERAGE.md) and the [operation CSV matrix](docs/api-coverage.csv) document all 184 endpoints, scopes, retry policies and the inspected Node/Go comparison. Reports, Events and ConversionGoals expose analytics; no speculative Analytics URL prefix is added. The website/spec discrepancies remain documented.
 
-`spec/openapi.json` and its source pin are unchanged: API 1.0.0 at commit d4e38cb942645976d01e3e109ed586c8d8783feb, SHA-256 4b31b357845dc09f89018879db8f238bb742df6a4c5f023b3210dded9919c8fa. Generation is deterministic, offline and fail-closed on pin mismatches; never edit generated DTOs or fetch mutable main during a normal build.
+`spec/openapi.json` and its source pin are unchanged: API 1.0.0 at commit 30043317efd68ffceeab882019431e57b7463018, SHA-256 4b31b357845dc09f89018879db8f238bb742df6a4c5f023b3210dded9919c8fa. Generation is deterministic, offline and fail-closed on pin mismatches; never edit generated DTOs or fetch mutable main during a normal build.
 
 ```sh
 sh tools/check-generated.sh
@@ -176,4 +179,6 @@ All default tests and the Native AOT smoke use fake HTTP. Four live workflows re
 
 ## Official OpenAPI provenance
 
-The authoritative specification repository is [kiroratech/openapi](https://github.com/kiroratech/openapi). This SDK retains commit [`d4e38cb942645976d01e3e109ed586c8d8783feb`](https://github.com/kiroratech/openapi/commit/d4e38cb942645976d01e3e109ed586c8d8783feb), with its checksum recorded in `spec/source.json`. Coverage claims refer to that immutable pin. See [upstream verification](docs/UPSTREAM-VERIFICATION.md) for the newer official contract differences and migration recommendation. The upstream MIT license is retained in `spec/LICENSE` and distributed in `THIRD-PARTY-NOTICES.txt`; SDK licensing remains a separate maintainer decision.
+The authoritative specification repository is [kiroratech/openapi](https://github.com/kiroratech/openapi). This SDK pins commit [`30043317efd68ffceeab882019431e57b7463018`](https://github.com/kiroratech/openapi/commit/30043317efd68ffceeab882019431e57b7463018), with its checksum recorded in `spec/source.json`. Coverage claims refer to that immutable pin. See [upstream verification](docs/UPSTREAM-VERIFICATION.md) for the newer official contract differences and migration recommendation. The upstream MIT license is retained in `spec/LICENSE` and distributed in `THIRD-PARTY-NOTICES.txt`; SDK licensing remains a separate maintainer decision.
+
+The pre-release contract migration intentionally changes generated model types and removes the obsolete brand-theme route. See [migration guidance and exact API changes](docs/OPENAPI-MIGRATION.md).

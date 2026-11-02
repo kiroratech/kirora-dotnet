@@ -277,6 +277,11 @@
           "type": "string",
           "format": "date-time",
           "description": "When it happened."
+        },
+        "expiresAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "When retention deletes it: when it happened plus the days the plan kept events when it was stored. Fixed: a plan change moves only later events."
         }
       },
       "required": [
@@ -288,7 +293,8 @@
         "contact",
         "properties",
         "context",
-        "occurredAt"
+        "occurredAt",
+        "expiresAt"
       ],
       "additionalProperties": false,
       "title": "Accepted"
@@ -1128,6 +1134,9 @@
     },
     {
       "$ref": "#/components/schemas/SegmentCondition"
+    },
+    {
+      "$ref": "#/components/schemas/TopicCondition"
     }
   ],
   "SegmentRuleGroupMatchAllAllItem": [
@@ -1151,6 +1160,9 @@
     },
     {
       "$ref": "#/components/schemas/SegmentCondition"
+    },
+    {
+      "$ref": "#/components/schemas/TopicCondition"
     }
   ],
   "SegmentRuleGroupMatchAnyAnyItem": [
@@ -1174,6 +1186,9 @@
     },
     {
       "$ref": "#/components/schemas/SegmentCondition"
+    },
+    {
+      "$ref": "#/components/schemas/TopicCondition"
     }
   ],
   "SegmentRuleGroup": [
@@ -1206,6 +1221,9 @@
               },
               {
                 "$ref": "#/components/schemas/SegmentCondition"
+              },
+              {
+                "$ref": "#/components/schemas/TopicCondition"
               }
             ]
           },
@@ -1247,6 +1265,9 @@
               },
               {
                 "$ref": "#/components/schemas/SegmentCondition"
+              },
+              {
+                "$ref": "#/components/schemas/TopicCondition"
               }
             ]
           },
@@ -1283,6 +1304,9 @@
         },
         {
           "$ref": "#/components/schemas/SegmentCondition"
+        },
+        {
+          "$ref": "#/components/schemas/TopicCondition"
         }
       ]
     },
@@ -1311,6 +1335,9 @@
     },
     {
       "$ref": "#/components/schemas/SegmentCondition"
+    },
+    {
+      "$ref": "#/components/schemas/TopicCondition"
     }
   ],
   "SegmentRulesMatchAnyAnyItem": [
@@ -1336,6 +1363,9 @@
         },
         {
           "$ref": "#/components/schemas/SegmentCondition"
+        },
+        {
+          "$ref": "#/components/schemas/TopicCondition"
         }
       ]
     },
@@ -1375,6 +1405,9 @@
                   },
                   {
                     "$ref": "#/components/schemas/SegmentCondition"
+                  },
+                  {
+                    "$ref": "#/components/schemas/TopicCondition"
                   }
                 ]
               },
@@ -1423,6 +1456,9 @@
                   },
                   {
                     "$ref": "#/components/schemas/SegmentCondition"
+                  },
+                  {
+                    "$ref": "#/components/schemas/TopicCondition"
                   }
                 ]
               },
@@ -1588,6 +1624,9 @@
     },
     {
       "$ref": "#/components/schemas/SegmentConditionInput"
+    },
+    {
+      "$ref": "#/components/schemas/TopicConditionInput"
     }
   ],
   "SegmentRuleGroupInputMatchAllAllItem": [
@@ -1611,6 +1650,9 @@
     },
     {
       "$ref": "#/components/schemas/SegmentConditionInput"
+    },
+    {
+      "$ref": "#/components/schemas/TopicConditionInput"
     }
   ],
   "SegmentRuleGroupInputMatchAnyAnyItem": [
@@ -1634,6 +1676,9 @@
     },
     {
       "$ref": "#/components/schemas/SegmentConditionInput"
+    },
+    {
+      "$ref": "#/components/schemas/TopicConditionInput"
     }
   ],
   "SegmentRuleGroupInput": [
@@ -1666,6 +1711,9 @@
               },
               {
                 "$ref": "#/components/schemas/SegmentConditionInput"
+              },
+              {
+                "$ref": "#/components/schemas/TopicConditionInput"
               }
             ]
           },
@@ -1707,6 +1755,9 @@
               },
               {
                 "$ref": "#/components/schemas/SegmentConditionInput"
+              },
+              {
+                "$ref": "#/components/schemas/TopicConditionInput"
               }
             ]
           },
@@ -1743,6 +1794,9 @@
         },
         {
           "$ref": "#/components/schemas/SegmentConditionInput"
+        },
+        {
+          "$ref": "#/components/schemas/TopicConditionInput"
         }
       ]
     },
@@ -1771,6 +1825,9 @@
     },
     {
       "$ref": "#/components/schemas/SegmentConditionInput"
+    },
+    {
+      "$ref": "#/components/schemas/TopicConditionInput"
     }
   ],
   "SegmentRulesInputMatchAnyAnyItem": [
@@ -1796,6 +1853,9 @@
         },
         {
           "$ref": "#/components/schemas/SegmentConditionInput"
+        },
+        {
+          "$ref": "#/components/schemas/TopicConditionInput"
         }
       ]
     },
@@ -1835,6 +1895,9 @@
                   },
                   {
                     "$ref": "#/components/schemas/SegmentConditionInput"
+                  },
+                  {
+                    "$ref": "#/components/schemas/TopicConditionInput"
                   }
                 ]
               },
@@ -1883,6 +1946,9 @@
                   },
                   {
                     "$ref": "#/components/schemas/SegmentConditionInput"
+                  },
+                  {
+                    "$ref": "#/components/schemas/TopicConditionInput"
                   }
                 ]
               },
@@ -2091,6 +2157,16 @@
       "title": "Inline content"
     }
   ],
+  "TransactionalDeliverInput": [
+    {
+      "type": "string",
+      "const": "all",
+      "description": "Every channel given that the contact can receive."
+    },
+    {
+      "$ref": "#/components/schemas/TransactionalDeliverFirstInput"
+    }
+  ],
   "SendTransactionalMessagesBatchResultResultsItem": [
     {
       "type": "object",
@@ -2111,12 +2187,20 @@
           "items": {
             "$ref": "#/components/schemas/TransactionalMessage"
           }
+        },
+        "skippedChannels": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/TransactionalSkippedChannel"
+          },
+          "description": "Channels given that were not sent, each with the reason: the contact cannot receive it, or the plan has no room for it."
         }
       },
       "required": [
         "idempotencyKey",
         "replayed",
-        "messages"
+        "messages",
+        "skippedChannels"
       ],
       "additionalProperties": false,
       "title": "Accepted"
@@ -2209,7 +2293,7 @@
             {
               "type": "string",
               "examples": [
-                "Africa/Lagos"
+                "Europe/London"
               ],
               "description": "The IANA timezone for contacts without one."
             },
@@ -2455,7 +2539,7 @@
           "description": "The IANA timezone for contacts without one; omit it for the workspace's.",
           "type": "string",
           "examples": [
-            "Africa/Lagos"
+            "Europe/London"
           ]
         },
         "ifTimeHasPassed": {

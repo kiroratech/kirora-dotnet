@@ -242,9 +242,9 @@
                     "email": "amaka@example.com",
                     "firstName": "Amaka",
                     "lastName": "Obi",
-                    "phone": "+2348031234567",
-                    "timezone": "Africa/Lagos",
-                    "country": "NG",
+                    "phone": "+447700900123",
+                    "timezone": "Europe/London",
+                    "country": "GB",
                     "locale": "en-NG",
                     "rfm": {
                       "group": "loyal",
@@ -429,9 +429,9 @@
                     "email": "amaka@example.com",
                     "firstName": "Amaka",
                     "lastName": "Obi",
-                    "phone": "+2348031234567",
-                    "timezone": "Africa/Lagos",
-                    "country": "NG",
+                    "phone": "+447700900123",
+                    "timezone": "Europe/London",
+                    "country": "GB",
                     "locale": "en-NG",
                     "rfm": {
                       "group": "loyal",
@@ -619,9 +619,9 @@
                     "email": "amaka@example.com",
                     "firstName": "Amaka",
                     "lastName": "Obi",
-                    "phone": "+2348031234567",
-                    "timezone": "Africa/Lagos",
-                    "country": "NG",
+                    "phone": "+447700900123",
+                    "timezone": "Europe/London",
+                    "country": "GB",
                     "locale": "en-NG",
                     "rfm": {
                       "group": "loyal",
@@ -859,9 +859,9 @@
                     "email": "amaka@example.com",
                     "firstName": "Amaka",
                     "lastName": "Obi",
-                    "phone": "+2348031234567",
-                    "timezone": "Africa/Lagos",
-                    "country": "NG",
+                    "phone": "+447700900123",
+                    "timezone": "Europe/London",
+                    "country": "GB",
                     "locale": "en-NG",
                     "rfm": {
                       "group": "loyal",
@@ -1212,9 +1212,9 @@
                     "email": "amaka@example.com",
                     "firstName": "Amaka",
                     "lastName": "Obi",
-                    "phone": "+2348031234567",
-                    "timezone": "Africa/Lagos",
-                    "country": "NG",
+                    "phone": "+447700900123",
+                    "timezone": "Europe/London",
+                    "country": "GB",
                     "locale": "en-NG",
                     "rfm": {
                       "group": "loyal",
@@ -1702,7 +1702,7 @@
     "message.opened": {
       "post": {
         "summary": "message.opened",
-        "description": "The first tracked open of an email, which may be automated: mail apps such as Apple Mail fetch images whether or not the message is read. Check `message.openedByMachine`. No event follows a later open by a person. Reconcile with `GET /v1/messages/{id}`.",
+        "description": "The first tracked open of an email, which may be automated: Apple Mail Privacy Protection fetches images whether or not the message is read, Gmail's prefetch fetches them on delivery, and mail security scanners check messages. Check `message.openedByMachine`. No event follows a later open or click by a person, which clears `openedByMachine` and moves `openedAt` to its time: reconcile with `GET /v1/messages/{id}`.",
         "x-subscribable": true,
         "parameters": [
           {
@@ -2136,7 +2136,7 @@
     "message.skipped": {
       "post": {
         "summary": "message.skipped",
-        "description": "A guard stopped it before sending: no consent, a suppressed address, no device, a message limit, a suspended workspace, or a cancel. `message.skip.reason` says which. Reconcile with `GET /v1/messages/{id}`.",
+        "description": "A guard stopped it before sending: no consent, a suppressed address, no device, a message limit, a suspended workspace, or a cancel. It also ends a transactional `deliver.first` fallback the first channel made unnecessary (`fallback_not_needed`), which is not a failure. `message.skip.reason` says which. Reconcile with `GET /v1/messages/{id}`.",
         "x-subscribable": true,
         "parameters": [
           {
@@ -2893,12 +2893,15 @@
               "country",
               "locale",
               "rfmGroup",
+              "rfmRecency",
+              "rfmFrequency",
+              "rfmMonetary",
               "purchaseCount",
               "totalSpent",
               "lastPurchasedAt",
               "createdAt"
             ],
-            "description": "The contact column to test. Each takes these operators, and is refused with others: `email`: equals, notEquals, contains, startsWith, exists, notExists, in; `firstName`: equals, notEquals, contains, startsWith, exists, notExists, in; `lastName`: equals, notEquals, contains, startsWith, exists, notExists, in; `phone`: equals, notEquals, contains, startsWith, exists, notExists, in; `timezone`: equals, notEquals, contains, startsWith, exists, notExists, in; `externalId`: equals, notEquals, contains, startsWith, exists, notExists, in; `consent.email`: equals; `consent.push`: equals; `country`: equals, notEquals, in, exists, notExists; `locale`: equals, notEquals, startsWith, in, exists, notExists; `rfmGroup`: equals, notEquals, in, exists, notExists; `purchaseCount`: equals, gt, gte, lt, lte; `totalSpent`: equals, gt, gte, lt, lte; `lastPurchasedAt`: before, after, withinLastDays, moreThanDaysAgo, exists, notExists; `createdAt`: before, after, withinLastDays, moreThanDaysAgo. `phone` holds +country numbers: write `equals`, `notEquals` and `in` values with their country code. Consent takes `true` or `false`. `purchaseCount`, `totalSpent` (in the main currency) and `lastPurchasedAt` are a customer's totals of the workspace's purchase event (`purchaseEvent` in workspace settings: an order, a paid invoice, a booking), recomputed daily with `rfmGroup`; the contact's stored `totalSpent` is null when the workspace's purchases carry no amount. In these comparisons a missing count or spend is 0, so someone who never purchased has 0 purchases and 0 spent."
+            "description": "The contact column to test. Each takes these operators, and is refused with others: `email`: equals, notEquals, contains, startsWith, exists, notExists, in; `firstName`: equals, notEquals, contains, startsWith, exists, notExists, in; `lastName`: equals, notEquals, contains, startsWith, exists, notExists, in; `phone`: equals, notEquals, contains, startsWith, exists, notExists, in; `timezone`: equals, notEquals, contains, startsWith, exists, notExists, in; `externalId`: equals, notEquals, contains, startsWith, exists, notExists, in; `consent.email`: equals; `consent.push`: equals; `country`: equals, notEquals, in, exists, notExists; `locale`: equals, notEquals, startsWith, in, exists, notExists; `rfmGroup`: equals, notEquals, in, exists, notExists; `rfmRecency`: equals, notEquals, in, exists, notExists, gt, gte, lt, lte; `rfmFrequency`: equals, notEquals, in, exists, notExists, gt, gte, lt, lte; `rfmMonetary`: equals, notEquals, in, exists, notExists, gt, gte, lt, lte; `purchaseCount`: equals, gt, gte, lt, lte; `totalSpent`: equals, gt, gte, lt, lte; `lastPurchasedAt`: before, after, withinLastDays, moreThanDaysAgo, exists, notExists; `createdAt`: before, after, withinLastDays, moreThanDaysAgo. `phone` holds +country numbers: write `equals`, `notEquals` and `in` values with their country code. Consent takes `true` or `false`.\n\nPurchases: `purchaseCount`, `totalSpent` (in the main currency) and `lastPurchasedAt` are a customer's totals of the workspace's purchase event (`purchaseEvent` in workspace settings: an order, a paid invoice, a booking), recomputed daily; the contact's stored `totalSpent` is null when the workspace's purchases carry no amount. In comparisons on `purchaseCount` and `totalSpent` a missing count or spend is 0, so someone who never purchased has 0 purchases and 0 spent.\n\nRFM: `rfmGroup` and its scores `rfmRecency`, `rfmFrequency` and `rfmMonetary` (monetary value: how much they spend) come from the same daily pass. A score is a whole number from 1 to 5 (an array of them for `in`), 5 being the most recent, most frequent or highest spending; any other value is refused with 400. Someone who never purchased has no `rfmGroup` or scores: on those four fields they match only `notExists` and `notEquals`. So `rfmRecency` `notEquals` 5 includes everyone who never purchased; add an `exists` rule on the same field to leave them out (bought, but not recently)."
           },
           "operator": {
             "type": "string",
@@ -3021,7 +3024,7 @@
             "additionalProperties": false
           },
           "where": {
-            "description": "Property conditions the event must meet, up to 5.",
+            "description": "Property conditions the event must meet, up to 5; `count` counts only events meeting all of them.",
             "minItems": 1,
             "maxItems": 5,
             "type": "array",
@@ -3042,9 +3045,14 @@
                     "gt",
                     "gte",
                     "lt",
-                    "lte"
+                    "lte",
+                    "before",
+                    "after",
+                    "withinLastDays",
+                    "moreThanDaysAgo",
+                    "inNextDays"
                   ],
-                  "description": "`notEquals` also matches an event without the property. `equals` and `notEquals` ignore case and accents in text."
+                  "description": "`notEquals` also matches an event without the property. `equals` and `notEquals` ignore case and accents in text. The date operators read the property as a date, as attribute conditions do: UTC days, an ISO-8601 date is the start of that day, and a property that is missing or not an ISO-8601 date or date and time never matches. They read the property's own date; `withinDays` limits when the event happened. Membership moves with the calendar: a contact enters when the date comes into range, with no new event, and a journey triggered by entering the segment then starts for them."
                 },
                 "value": {
                   "anyOf": [
@@ -3058,7 +3066,8 @@
                     {
                       "type": "boolean"
                     }
-                  ]
+                  ],
+                  "description": "What to compare with: an ISO date for `before` and `after`; a whole number of days, 1 to 3650, for `withinLastDays`, `moreThanDaysAgo` and `inNextDays`."
                 }
               },
               "required": [
@@ -3095,7 +3104,7 @@
               "notClicked",
               "bounced"
             ],
-            "description": "`notOpened` and `notClicked`: sent, and not opened or clicked. Opens include machine opens (Apple Mail Privacy Protection)."
+            "description": "`notOpened` and `notClicked`: sent, and not opened or clicked. Opens include machine opens (see `openedByMachine`)."
           },
           "count": {
             "description": "How many messages had this activity; defaults to at least one. Not with `notSent`.",
@@ -3152,7 +3161,7 @@
             "pattern": "^[a-z0-9][a-z0-9_-]{0,63}$"
           },
           "withinDays": {
-            "description": "Only activity in the last this many days.",
+            "description": "Only activity in the last this many days. For `notOpened` and `notClicked` it is a waiting time instead: only messages sent at least this many days ago count, so each has had that long to be opened or clicked.",
             "type": "integer",
             "exclusiveMinimum": 0,
             "maximum": 3650
@@ -3256,6 +3265,39 @@
         "additionalProperties": false,
         "title": "Segment membership"
       },
+      "TopicConditionInput": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "const": "topic"
+          },
+          "topicId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "One of the workspace's topics when the rules are saved."
+          },
+          "channel": {
+            "description": "Reads the contact's choice for this channel, which overrides their topic-wide choice. Without it, the rule reads the topic-wide choice, which a contact's `subscribed` shows.",
+            "type": "string",
+            "enum": [
+              "email",
+              "push"
+            ]
+          },
+          "subscribed": {
+            "type": "boolean",
+            "description": "True for contacts the topic reaches, false for those it does not."
+          }
+        },
+        "required": [
+          "type",
+          "topicId",
+          "subscribed"
+        ],
+        "additionalProperties": false,
+        "title": "Topic"
+      },
       "SegmentRuleGroupInput": {
         "anyOf": [
           {
@@ -3287,6 +3329,9 @@
                     },
                     {
                       "$ref": "#/components/schemas/SegmentConditionInput"
+                    },
+                    {
+                      "$ref": "#/components/schemas/TopicConditionInput"
                     }
                   ]
                 },
@@ -3328,6 +3373,9 @@
                     },
                     {
                       "$ref": "#/components/schemas/SegmentConditionInput"
+                    },
+                    {
+                      "$ref": "#/components/schemas/TopicConditionInput"
                     }
                   ]
                 },
@@ -3375,6 +3423,9 @@
                         },
                         {
                           "$ref": "#/components/schemas/SegmentConditionInput"
+                        },
+                        {
+                          "$ref": "#/components/schemas/TopicConditionInput"
                         }
                       ]
                     },
@@ -3423,6 +3474,9 @@
                         },
                         {
                           "$ref": "#/components/schemas/SegmentConditionInput"
+                        },
+                        {
+                          "$ref": "#/components/schemas/TopicConditionInput"
                         }
                       ]
                     },
@@ -3728,13 +3782,40 @@
             "maximum": 72
           },
           "mobileFontSize": {
-            "description": "Text size in px on phones (screens up to 620px), 12 to 72.",
+            "description": "Text size in px on phones (screens up to 620px), 12 to 72. Email apps that ignore mobile styles use `fontSize`.",
             "type": "integer",
             "minimum": 12,
             "maximum": 72
           },
           "padding": {
             "description": "Space inside the block in px, 0 to 100 per side; omitted sides keep their default.",
+            "type": "object",
+            "properties": {
+              "top": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 100
+              },
+              "right": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 100
+              },
+              "bottom": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 100
+              },
+              "left": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 100
+              }
+            },
+            "additionalProperties": false
+          },
+          "mobilePadding": {
+            "description": "Space inside the block in px on phones (screens up to 620px), 0 to 100 per side; omitted sides keep the block's `padding` (or its default). Email apps that ignore mobile styles use `padding`.",
             "type": "object",
             "properties": {
               "top": {
@@ -3917,12 +3998,12 @@
             ]
           },
           "src": {
-            "description": "The logo image's URL.",
+            "description": "The logo image's URL; without one, the brand kit's logo.",
             "type": "string",
             "maxLength": 2048
           },
           "alt": {
-            "description": "The logo's alt text. Without `src`, it shows as a wordmark in the heading font; gallery samples set it to `{{ org.name }}`.",
+            "description": "The logo's alt text. Without `src` or a brand kit logo, it shows as a wordmark in the heading font; gallery samples set it to `{{ org.name }}`.",
             "type": "string",
             "maxLength": 100000
           },
@@ -5002,6 +5083,7 @@
             "description": "When unset, headings, text, buttons and boxed text start from the reading side (left, or right in a right-to-left language); other blocks centre."
           },
           "links": {
+            "description": "The profiles to show; without any, the brand kit's social links.",
             "maxItems": 10,
             "type": "array",
             "items": {
@@ -5046,8 +5128,7 @@
         },
         "required": [
           "id",
-          "type",
-          "links"
+          "type"
         ],
         "additionalProperties": {}
       },
@@ -5514,6 +5595,27 @@
             "type": "string",
             "pattern": "^#(?:[0-9a-f]{3}|[0-9a-f]{6})$"
           },
+          "headingColor": {
+            "description": "Heading colour, as hex; unset, headings take `textColor`.",
+            "type": "string",
+            "pattern": "^#(?:[0-9a-f]{3}|[0-9a-f]{6})$"
+          },
+          "buttonTextColor": {
+            "description": "Label colour of solid buttons in `accentColor`, as hex; unset, white or near-black, whichever reads on it.",
+            "type": "string",
+            "pattern": "^#(?:[0-9a-f]{3}|[0-9a-f]{6})$"
+          },
+          "baseFontSize": {
+            "description": "Body text size; headings and buttons scale with it. Unset is `16px`.",
+            "type": "string",
+            "enum": [
+              "14px",
+              "15px",
+              "16px",
+              "17px",
+              "18px"
+            ]
+          },
           "cardWidth": {
             "description": "Width of the email card on wide screens.",
             "type": "string",
@@ -5631,7 +5733,7 @@
           },
           "theme": {
             "default": {},
-            "description": "Theme values this email overrides. Defaults to `{}`, which keeps the workspace brand theme.",
+            "description": "Theme values this email overrides. Defaults to `{}`, which keeps the workspace brand kit.",
             "$ref": "#/components/schemas/EmailThemeInput"
           },
           "language": {
@@ -5907,7 +6009,7 @@
           },
           "theme": {
             "default": {},
-            "description": "Theme values this email overrides. Defaults to `{}`, which keeps the workspace brand theme.",
+            "description": "Theme values this email overrides. Defaults to `{}`, which keeps the workspace brand kit.",
             "$ref": "#/components/schemas/EmailThemeInput"
           },
           "language": {
@@ -6008,7 +6110,7 @@
           },
           "theme": {
             "default": {},
-            "description": "Theme values this email overrides. Defaults to `{}`, which keeps the workspace brand theme.",
+            "description": "Theme values this email overrides. Defaults to `{}`, which keeps the workspace brand kit.",
             "$ref": "#/components/schemas/EmailThemeInput"
           },
           "language": {
@@ -6412,7 +6514,7 @@
               "opens",
               "conversions"
             ],
-            "description": "How the winner is picked: the version with the highest click or open rate over its delivered messages (as the campaign's own rates; over sent until any version has a delivery), or the highest share of its sent messages that reached the campaign's conversion goal (`conversionGoalId`). Opens overcount: Apple Mail opens every message it receives. A push test is decided by clicks (a tap the app reports with a link to follow, so the push needs an `actionUrl`) or conversions, not opens. A tie goes to the lower version."
+            "description": "How the winner is picked: the version with the highest click or open rate over its delivered messages (as the campaign's own rates; over sent until any version has a delivery), or the highest share of its sent messages that reached the campaign's conversion goal (`conversionGoalId`). Opens overcount: machine opens (Apple Mail Privacy Protection, Gmail's prefetch, mail scanners) count unread email as opened. A push test is decided by clicks (a tap the app reports with a link to follow, so the push needs an `actionUrl`) or conversions, not opens. A tie goes to the lower version."
           },
           "conversionGoalId": {
             "description": "The campaign's conversion goal that decides; required when `winnerBy` is `conversions`.",
@@ -7805,7 +7907,7 @@
                 "description": "The IANA timezone for contacts without one; omit it for the workspace's.",
                 "type": "string",
                 "examples": [
-                  "Africa/Lagos"
+                  "Europe/London"
                 ]
               },
               "ifTimeHasPassed": {
@@ -13355,6 +13457,39 @@
         ],
         "additionalProperties": false
       },
+      "TransactionalDeliverFirstInput": {
+        "type": "object",
+        "properties": {
+          "first": {
+            "minItems": 1,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "email",
+                "push"
+              ]
+            },
+            "description": "Every channel given, each once, in the order to try them. The first the contact can receive is sent; when sending it fails, it is skipped or it bounces, the next is sent."
+          }
+        },
+        "required": [
+          "first"
+        ],
+        "additionalProperties": false
+      },
+      "TransactionalDeliverInput": {
+        "anyOf": [
+          {
+            "type": "string",
+            "const": "all",
+            "description": "Every channel given that the contact can receive."
+          },
+          {
+            "$ref": "#/components/schemas/TransactionalDeliverFirstInput"
+          }
+        ]
+      },
       "EmailAttachmentInput": {
         "type": "object",
         "properties": {
@@ -13586,18 +13721,14 @@
             "$ref": "#/components/schemas/TransactionalPushInput"
           },
           "sendAt": {
-            "description": "When to send, up to 90 days ahead, with its UTC offset. Suppression and push reachability are checked when the request is accepted and again when it goes; `deliver: first` picks its channel when accepted.",
+            "description": "When to send, up to 90 days ahead, with its UTC offset. Suppression and push reachability are checked when the request is accepted and again when it goes. A `deliver.first` fallback keeps this time but goes only after the message before it fails, is skipped or bounces.",
             "type": "string",
             "format": "date-time"
           },
           "deliver": {
             "default": "all",
-            "description": "With both `push` and `email`: `all` sends each the contact can receive; `first` sends push when the contact has a reachable device, else email.",
-            "type": "string",
-            "enum": [
-              "all",
-              "first"
-            ]
+            "description": "With both `push` and `email`: `all` (the default) sends each the contact can receive; `{ \"first\": [\"email\", \"push\"] }` sends the first in that order the contact can receive, and the next only if it fails, is skipped or bounces.",
+            "$ref": "#/components/schemas/TransactionalDeliverInput"
           }
         },
         "required": [
@@ -14483,6 +14614,15 @@
             "description": "Ask submitters to confirm by email before they are subscribed.",
             "type": "boolean"
           },
+          "notifyUserIds": {
+            "description": "Users of this workspace to tell about each submission, in the bell and by email (each can turn the email off). Each must be a user here.",
+            "maxItems": 20,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
           "theme": {
             "$ref": "#/components/schemas/FormThemeInput"
           },
@@ -14777,6 +14917,15 @@
           "doubleOptIn": {
             "description": "Ask submitters to confirm by email before they are subscribed.",
             "type": "boolean"
+          },
+          "notifyUserIds": {
+            "description": "Users of this workspace to tell about each submission, in the bell and by email (each can turn the email off). Each must be a user here.",
+            "maxItems": 20,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            }
           },
           "theme": {
             "$ref": "#/components/schemas/FormThemeInput"
@@ -15672,12 +15821,15 @@
               "country",
               "locale",
               "rfmGroup",
+              "rfmRecency",
+              "rfmFrequency",
+              "rfmMonetary",
               "purchaseCount",
               "totalSpent",
               "lastPurchasedAt",
               "createdAt"
             ],
-            "description": "The contact column to test. Each takes these operators, and is refused with others: `email`: equals, notEquals, contains, startsWith, exists, notExists, in; `firstName`: equals, notEquals, contains, startsWith, exists, notExists, in; `lastName`: equals, notEquals, contains, startsWith, exists, notExists, in; `phone`: equals, notEquals, contains, startsWith, exists, notExists, in; `timezone`: equals, notEquals, contains, startsWith, exists, notExists, in; `externalId`: equals, notEquals, contains, startsWith, exists, notExists, in; `consent.email`: equals; `consent.push`: equals; `country`: equals, notEquals, in, exists, notExists; `locale`: equals, notEquals, startsWith, in, exists, notExists; `rfmGroup`: equals, notEquals, in, exists, notExists; `purchaseCount`: equals, gt, gte, lt, lte; `totalSpent`: equals, gt, gte, lt, lte; `lastPurchasedAt`: before, after, withinLastDays, moreThanDaysAgo, exists, notExists; `createdAt`: before, after, withinLastDays, moreThanDaysAgo. `phone` holds +country numbers: write `equals`, `notEquals` and `in` values with their country code. Consent takes `true` or `false`. `purchaseCount`, `totalSpent` (in the main currency) and `lastPurchasedAt` are a customer's totals of the workspace's purchase event (`purchaseEvent` in workspace settings: an order, a paid invoice, a booking), recomputed daily with `rfmGroup`; the contact's stored `totalSpent` is null when the workspace's purchases carry no amount. In these comparisons a missing count or spend is 0, so someone who never purchased has 0 purchases and 0 spent."
+            "description": "The contact column to test. Each takes these operators, and is refused with others: `email`: equals, notEquals, contains, startsWith, exists, notExists, in; `firstName`: equals, notEquals, contains, startsWith, exists, notExists, in; `lastName`: equals, notEquals, contains, startsWith, exists, notExists, in; `phone`: equals, notEquals, contains, startsWith, exists, notExists, in; `timezone`: equals, notEquals, contains, startsWith, exists, notExists, in; `externalId`: equals, notEquals, contains, startsWith, exists, notExists, in; `consent.email`: equals; `consent.push`: equals; `country`: equals, notEquals, in, exists, notExists; `locale`: equals, notEquals, startsWith, in, exists, notExists; `rfmGroup`: equals, notEquals, in, exists, notExists; `rfmRecency`: equals, notEquals, in, exists, notExists, gt, gte, lt, lte; `rfmFrequency`: equals, notEquals, in, exists, notExists, gt, gte, lt, lte; `rfmMonetary`: equals, notEquals, in, exists, notExists, gt, gte, lt, lte; `purchaseCount`: equals, gt, gte, lt, lte; `totalSpent`: equals, gt, gte, lt, lte; `lastPurchasedAt`: before, after, withinLastDays, moreThanDaysAgo, exists, notExists; `createdAt`: before, after, withinLastDays, moreThanDaysAgo. `phone` holds +country numbers: write `equals`, `notEquals` and `in` values with their country code. Consent takes `true` or `false`.\n\nPurchases: `purchaseCount`, `totalSpent` (in the main currency) and `lastPurchasedAt` are a customer's totals of the workspace's purchase event (`purchaseEvent` in workspace settings: an order, a paid invoice, a booking), recomputed daily; the contact's stored `totalSpent` is null when the workspace's purchases carry no amount. In comparisons on `purchaseCount` and `totalSpent` a missing count or spend is 0, so someone who never purchased has 0 purchases and 0 spent.\n\nRFM: `rfmGroup` and its scores `rfmRecency`, `rfmFrequency` and `rfmMonetary` (monetary value: how much they spend) come from the same daily pass. A score is a whole number from 1 to 5 (an array of them for `in`), 5 being the most recent, most frequent or highest spending; any other value is refused with 400. Someone who never purchased has no `rfmGroup` or scores: on those four fields they match only `notExists` and `notEquals`. So `rfmRecency` `notEquals` 5 includes everyone who never purchased; add an `exists` rule on the same field to leave them out (bought, but not recently)."
           },
           "operator": {
             "type": "string",
@@ -15800,7 +15952,7 @@
             "additionalProperties": false
           },
           "where": {
-            "description": "Property conditions the event must meet, up to 5.",
+            "description": "Property conditions the event must meet, up to 5; `count` counts only events meeting all of them.",
             "minItems": 1,
             "maxItems": 5,
             "type": "array",
@@ -15821,9 +15973,14 @@
                     "gt",
                     "gte",
                     "lt",
-                    "lte"
+                    "lte",
+                    "before",
+                    "after",
+                    "withinLastDays",
+                    "moreThanDaysAgo",
+                    "inNextDays"
                   ],
-                  "description": "`notEquals` also matches an event without the property. `equals` and `notEquals` ignore case and accents in text."
+                  "description": "`notEquals` also matches an event without the property. `equals` and `notEquals` ignore case and accents in text. The date operators read the property as a date, as attribute conditions do: UTC days, an ISO-8601 date is the start of that day, and a property that is missing or not an ISO-8601 date or date and time never matches. They read the property's own date; `withinDays` limits when the event happened. Membership moves with the calendar: a contact enters when the date comes into range, with no new event, and a journey triggered by entering the segment then starts for them."
                 },
                 "value": {
                   "anyOf": [
@@ -15837,7 +15994,8 @@
                     {
                       "type": "boolean"
                     }
-                  ]
+                  ],
+                  "description": "What to compare with: an ISO date for `before` and `after`; a whole number of days, 1 to 3650, for `withinLastDays`, `moreThanDaysAgo` and `inNextDays`."
                 }
               },
               "required": [
@@ -15874,7 +16032,7 @@
               "notClicked",
               "bounced"
             ],
-            "description": "`notOpened` and `notClicked`: sent, and not opened or clicked. Opens include machine opens (Apple Mail Privacy Protection)."
+            "description": "`notOpened` and `notClicked`: sent, and not opened or clicked. Opens include machine opens (see `openedByMachine`)."
           },
           "count": {
             "description": "How many messages had this activity; defaults to at least one. Not with `notSent`.",
@@ -15931,7 +16089,7 @@
             "pattern": "^[a-z0-9][a-z0-9_-]{0,63}$"
           },
           "withinDays": {
-            "description": "Only activity in the last this many days.",
+            "description": "Only activity in the last this many days. For `notOpened` and `notClicked` it is a waiting time instead: only messages sent at least this many days ago count, so each has had that long to be opened or clicked.",
             "type": "integer",
             "exclusiveMinimum": 0,
             "maximum": 3650
@@ -16035,6 +16193,39 @@
         "additionalProperties": false,
         "title": "Segment membership"
       },
+      "TopicCondition": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "const": "topic"
+          },
+          "topicId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "One of the workspace's topics when the rules are saved."
+          },
+          "channel": {
+            "description": "Reads the contact's choice for this channel, which overrides their topic-wide choice. Without it, the rule reads the topic-wide choice, which a contact's `subscribed` shows.",
+            "type": "string",
+            "enum": [
+              "email",
+              "push"
+            ]
+          },
+          "subscribed": {
+            "type": "boolean",
+            "description": "True for contacts the topic reaches, false for those it does not."
+          }
+        },
+        "required": [
+          "type",
+          "topicId",
+          "subscribed"
+        ],
+        "additionalProperties": false,
+        "title": "Topic"
+      },
       "SegmentRuleGroup": {
         "anyOf": [
           {
@@ -16066,6 +16257,9 @@
                     },
                     {
                       "$ref": "#/components/schemas/SegmentCondition"
+                    },
+                    {
+                      "$ref": "#/components/schemas/TopicCondition"
                     }
                   ]
                 },
@@ -16107,6 +16301,9 @@
                     },
                     {
                       "$ref": "#/components/schemas/SegmentCondition"
+                    },
+                    {
+                      "$ref": "#/components/schemas/TopicCondition"
                     }
                   ]
                 },
@@ -16154,6 +16351,9 @@
                         },
                         {
                           "$ref": "#/components/schemas/SegmentCondition"
+                        },
+                        {
+                          "$ref": "#/components/schemas/TopicCondition"
                         }
                       ]
                     },
@@ -16202,6 +16402,9 @@
                         },
                         {
                           "$ref": "#/components/schemas/SegmentCondition"
+                        },
+                        {
+                          "$ref": "#/components/schemas/TopicCondition"
                         }
                       ]
                     },
@@ -16772,7 +16975,7 @@
             "statuses": [
               409
             ],
-            "description": "Something still uses the resource, so it cannot be deleted: a list or segment an unfinished campaign targets, a list, segment, form, topic or webhook endpoint a live or paused journey names, a segment another segment reads, a push project something scheduled or live sends to, a topic a campaign sends on, a placed shared block, an image an email loads, a sending domain email still sends from, an event name a journey, segment, campaign or goal reads, a tag such a rule names, a conversion goal an A/B test not yet decided or a live or paused journey's exit decides by. `details`, where present, name what uses it, in the shape of that resource's usage: `ListUsage`, `SegmentUsage`, `SharedBlockUsage`, `AssetUsage`, `SendingDomainUsage`; a journey's topic, form or webhook endpoint gives `details.journeys`, an event name, tag or conversion goal `details.usedBy`."
+            "description": "Something still uses the resource, so it cannot be deleted: a list or segment an unfinished campaign targets, a list, segment, form, topic or webhook endpoint a live or paused journey names, a segment another segment reads, a push project something scheduled or live sends to, a topic a campaign sends on or rules name, a placed shared block, an image an email loads, a sending domain email still sends from, an event name a journey, segment, campaign or goal reads, a tag such a rule names, a conversion goal an A/B test not yet decided or a live or paused journey's exit decides by. `details`, where present, name what uses it, in the shape of that resource's usage: `ListUsage`, `SegmentUsage`, `SharedBlockUsage`, `AssetUsage`, `SendingDomainUsage`; a journey's form or webhook endpoint gives `details.journeys`, a topic `details.campaigns`, `details.journeys` and `details.segments` (up to 50 each, with `details.hasMore`), an event name, tag or conversion goal `details.usedBy`."
           },
           "FORBIDDEN": {
             "statuses": [
@@ -17163,6 +17366,148 @@
         ],
         "additionalProperties": false
       },
+      "DeliverabilityLimits": {
+        "type": "object",
+        "properties": {
+          "watch": {
+            "type": "object",
+            "properties": {
+              "bounceRatio": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1,
+                "description": "A ratio from 0 to 1: 0.05 is 5%."
+              },
+              "complaintRatio": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1,
+                "description": "A ratio from 0 to 1: 0.05 is 5%."
+              }
+            },
+            "required": [
+              "bounceRatio",
+              "complaintRatio"
+            ],
+            "additionalProperties": false
+          },
+          "critical": {
+            "type": "object",
+            "properties": {
+              "bounceRatio": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1,
+                "description": "A ratio from 0 to 1: 0.05 is 5%."
+              },
+              "complaintRatio": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1,
+                "description": "A ratio from 0 to 1: 0.05 is 5%."
+              }
+            },
+            "required": [
+              "bounceRatio",
+              "complaintRatio"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "watch",
+          "critical"
+        ],
+        "additionalProperties": false,
+        "description": "Where the bands start, the workspace's own lines: `watch` where its admins are warned, `critical` where its marketing email pauses. The pause is judged on all of the workspace's marketing email over the last 24 hours (or week, for a small sender), not on one report."
+      },
+      "DeliverabilityHealth": {
+        "type": "object",
+        "properties": {
+          "band": {
+            "type": "string",
+            "enum": [
+              "insufficient_data",
+              "healthy",
+              "watch",
+              "critical"
+            ],
+            "description": "`insufficient_data` until the sample and feedback coverage minimums are met; then the highest line the bounce or complaint ratio reaches."
+          },
+          "limits": {
+            "$ref": "#/components/schemas/DeliverabilityLimits"
+          },
+          "bounceRatio": {
+            "anyOf": [
+              {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1,
+                "description": "A ratio from 0 to 1: 0.05 is 5%."
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Recorded bounces per sent email, the figure the band compares with `limits`; `null` while `sampleSize` is 0."
+          },
+          "complaintRatio": {
+            "anyOf": [
+              {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1,
+                "description": "A ratio from 0 to 1: 0.05 is 5%."
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Recorded complaints per sent email, the figure the band compares with `limits`; `null` while `sampleSize` is 0."
+          },
+          "sampleSize": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Sent emails the band is judged on: real sends only, with test sends that act an outcome out (`delivered@`, `bounce@`, `complaint@example.com`) left out."
+          },
+          "minimumSampleSize": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "The fewest emails (`sampleSize`) the band is judged on, currently 100: below it the band is `insufficient_data`."
+          },
+          "feedbackCoverage": {
+            "anyOf": [
+              {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Share of the sample whose outcome (delivered, bounced or complained) is known; `null` before any email is sent."
+          },
+          "minimumFeedbackCoverage": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1,
+            "description": "The least `feedbackCoverage` the band is judged on, currently 0.95: below it the band is `insufficient_data`, as bounce and complaint reports are still arriving."
+          }
+        },
+        "required": [
+          "band",
+          "limits",
+          "bounceRatio",
+          "complaintRatio",
+          "sampleSize",
+          "minimumSampleSize",
+          "feedbackCoverage",
+          "minimumFeedbackCoverage"
+        ],
+        "additionalProperties": false,
+        "description": "Advisory bounce and complaint health on the workspace's lines (`limits`): judged once `sampleSize` and `feedbackCoverage` reach their minimums. Bounces and complaints are recorded ones, so a simulated test bounce never counts."
+      },
       "Duration": {
         "type": "object",
         "properties": {
@@ -17359,13 +17704,40 @@
             "maximum": 72
           },
           "mobileFontSize": {
-            "description": "Text size in px on phones (screens up to 620px), 12 to 72.",
+            "description": "Text size in px on phones (screens up to 620px), 12 to 72. Email apps that ignore mobile styles use `fontSize`.",
             "type": "integer",
             "minimum": 12,
             "maximum": 72
           },
           "padding": {
             "description": "Space inside the block in px, 0 to 100 per side; omitted sides keep their default.",
+            "type": "object",
+            "properties": {
+              "top": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 100
+              },
+              "right": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 100
+              },
+              "bottom": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 100
+              },
+              "left": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 100
+              }
+            },
+            "additionalProperties": false
+          },
+          "mobilePadding": {
+            "description": "Space inside the block in px on phones (screens up to 620px), 0 to 100 per side; omitted sides keep the block's `padding` (or its default). Email apps that ignore mobile styles use `padding`.",
             "type": "object",
             "properties": {
               "top": {
@@ -17548,12 +17920,12 @@
             ]
           },
           "src": {
-            "description": "The logo image's URL.",
+            "description": "The logo image's URL; without one, the brand kit's logo.",
             "type": "string",
             "maxLength": 2048
           },
           "alt": {
-            "description": "The logo's alt text. Without `src`, it shows as a wordmark in the heading font; gallery samples set it to `{{ org.name }}`.",
+            "description": "The logo's alt text. Without `src` or a brand kit logo, it shows as a wordmark in the heading font; gallery samples set it to `{{ org.name }}`.",
             "type": "string",
             "maxLength": 100000
           },
@@ -18633,6 +19005,7 @@
             "description": "When unset, headings, text, buttons and boxed text start from the reading side (left, or right in a right-to-left language); other blocks centre."
           },
           "links": {
+            "description": "The profiles to show; without any, the brand kit's social links.",
             "maxItems": 10,
             "type": "array",
             "items": {
@@ -18678,8 +19051,7 @@
         },
         "required": [
           "id",
-          "type",
-          "links"
+          "type"
         ],
         "additionalProperties": {}
       },
@@ -19147,6 +19519,27 @@
             "type": "string",
             "pattern": "^#(?:[0-9a-f]{3}|[0-9a-f]{6})$"
           },
+          "headingColor": {
+            "description": "Heading colour, as hex; unset, headings take `textColor`.",
+            "type": "string",
+            "pattern": "^#(?:[0-9a-f]{3}|[0-9a-f]{6})$"
+          },
+          "buttonTextColor": {
+            "description": "Label colour of solid buttons in `accentColor`, as hex; unset, white or near-black, whichever reads on it.",
+            "type": "string",
+            "pattern": "^#(?:[0-9a-f]{3}|[0-9a-f]{6})$"
+          },
+          "baseFontSize": {
+            "description": "Body text size; headings and buttons scale with it. Unset is `16px`.",
+            "type": "string",
+            "enum": [
+              "14px",
+              "15px",
+              "16px",
+              "17px",
+              "18px"
+            ]
+          },
           "cardWidth": {
             "description": "Width of the email card on wide screens.",
             "type": "string",
@@ -19509,9 +19902,90 @@
             },
             "description": "The content of each shared block this version places, by shared block id, as it stood when published: what sends of this version show."
           },
-          "brandTheme": {
-            "description": "The workspace brand theme as it stood when published, under this version's `theme`: what sends of this version are drawn in.",
-            "$ref": "#/components/schemas/EmailTheme"
+          "brandKit": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "theme": {
+                "$ref": "#/components/schemas/EmailTheme"
+              },
+              "logo": {
+                "anyOf": [
+                  {
+                    "type": "object",
+                    "properties": {
+                      "assetId": {
+                        "type": "string",
+                        "format": "uuid"
+                      },
+                      "url": {
+                        "type": "string"
+                      },
+                      "alt": {
+                        "type": [
+                          "string",
+                          "null"
+                        ]
+                      },
+                      "width": {
+                        "type": [
+                          "string",
+                          "null"
+                        ]
+                      }
+                    },
+                    "required": [
+                      "assetId",
+                      "url",
+                      "alt",
+                      "width"
+                    ],
+                    "additionalProperties": false
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "socialLinks": {
+                "maxItems": 10,
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "label": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 80
+                    },
+                    "href": {
+                      "type": "string",
+                      "maxLength": 2048,
+                      "format": "uri",
+                      "pattern": "^[^\\s{}]*$"
+                    }
+                  },
+                  "required": [
+                    "label",
+                    "href"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            },
+            "required": [
+              "name",
+              "theme",
+              "logo",
+              "socialLinks"
+            ],
+            "additionalProperties": false,
+            "description": "The workspace brand kit as it stood when published, under this version's `theme`: the look, logo and social links sends of this version are drawn with."
           }
         },
         "required": [
@@ -19525,7 +19999,7 @@
           "plainTextOverride",
           "transactionalDefaults",
           "sharedBlocks",
-          "brandTheme"
+          "brandKit"
         ],
         "additionalProperties": false
       },
@@ -20027,18 +20501,28 @@
           },
           "openedByMachine": {
             "type": "integer",
-            "description": "Of `opened`, those only a machine opened: Apple Mail Privacy Protection fetches a message's images whether or not it is read."
+            "description": "Of `opened`, those only a machine opened: a mail app fetched its images with no reader (Apple Mail Privacy Protection, Gmail's prefetch on delivery) or a mail security scanner checked it."
           },
           "clicked": {
             "type": "integer",
             "description": "With a link clicked by a person."
           },
+          "simulated": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Of `sent`, test sends whose outcome was acted out: those to `delivered@`, `bounce@` or `complaint@example.com` (the transactional guide's \"Test addresses\"). Counted in `sent` and `delivered`; never in `bounced`, `complained`, `feedbackObserved`, the bounce and complaint rates or `deliverabilityHealth`."
+          },
           "feedbackObserved": {
-            "type": "integer"
+            "type": "integer",
+            "description": "Of the real sends in `sent`, those whose delivery, bounce or complaint is known."
           },
           "failed": {
             "type": "integer",
-            "description": "Not delivered, with no bounce or complaint: refused before sending (counted on the day it was queued) or failed after it (on the day it was sent). `failure.reason` on each message says why."
+            "description": "Not delivered, with no bounce or complaint: refused before sending (counted on the day it was queued) or failed after it (on the day it was sent, and also in `sent`). `failure.reason` on each message says why."
+          },
+          "failedBeforeSending": {
+            "type": "integer",
+            "description": "Of `failed`, those refused before reaching the provider, on the day they were queued. Not in `sent`, like `skipped`, so `sent + failedBeforeSending + skipped` counts each message once."
           },
           "skipped": {
             "type": "integer",
@@ -20061,8 +20545,10 @@
           "opened",
           "openedByMachine",
           "clicked",
+          "simulated",
           "feedbackObserved",
           "failed",
+          "failedBeforeSending",
           "skipped",
           "bounced",
           "complained",
@@ -20232,7 +20718,7 @@
                 "$ref": "#/components/schemas/OverviewCounts"
               },
               "rates": {
-                "description": "Email rates as fractions: delivery, bounce and complaint over sent; open, click and unsubscribe over delivered. `null` when there is no denominator.",
+                "description": "Email rates as fractions: delivery over sent; bounce and complaint over real sends (`sent` less `simulated` where the counts give it), as `deliverabilityHealth` judges them; open, click and unsubscribe over delivered. `null` when there is no denominator.",
                 "$ref": "#/components/schemas/EmailRates"
               }
             },
@@ -20331,97 +20817,8 @@
             "description": "True when `refunds` is left out because `total` or `currency` is a masked attribute this viewer may not see."
           },
           "deliverabilityHealth": {
-            "type": "object",
-            "properties": {
-              "band": {
-                "type": "string",
-                "enum": [
-                  "insufficient_data",
-                  "healthy",
-                  "watch",
-                  "critical"
-                ],
-                "description": "`insufficient_data` until the sample and feedback coverage minimums are met."
-              },
-              "limits": {
-                "type": "object",
-                "properties": {
-                  "watch": {
-                    "type": "object",
-                    "properties": {
-                      "bounceRatio": {
-                        "type": "number"
-                      },
-                      "complaintRatio": {
-                        "type": "number"
-                      }
-                    },
-                    "required": [
-                      "bounceRatio",
-                      "complaintRatio"
-                    ],
-                    "additionalProperties": false
-                  },
-                  "critical": {
-                    "type": "object",
-                    "properties": {
-                      "bounceRatio": {
-                        "type": "number"
-                      },
-                      "complaintRatio": {
-                        "type": "number"
-                      }
-                    },
-                    "required": [
-                      "bounceRatio",
-                      "complaintRatio"
-                    ],
-                    "additionalProperties": false
-                  }
-                },
-                "required": [
-                  "watch",
-                  "critical"
-                ],
-                "additionalProperties": false,
-                "description": "Where the bands start: `watch` at the line where admins are warned, `critical` where marketing email pauses."
-              },
-              "sampleSize": {
-                "type": "integer",
-                "minimum": 0,
-                "description": "Emails the band is judged on."
-              },
-              "minimumSampleSize": {
-                "type": "number",
-                "const": 100
-              },
-              "feedbackCoverage": {
-                "anyOf": [
-                  {
-                    "type": "number",
-                    "minimum": 0
-                  },
-                  {
-                    "type": "null"
-                  }
-                ],
-                "description": "Fraction of the sample whose bounce or complaint outcome is known."
-              },
-              "minimumFeedbackCoverage": {
-                "type": "number",
-                "const": 0.95
-              }
-            },
-            "required": [
-              "band",
-              "limits",
-              "sampleSize",
-              "minimumSampleSize",
-              "feedbackCoverage",
-              "minimumFeedbackCoverage"
-            ],
-            "additionalProperties": false,
-            "description": "Advisory bounce and complaint health of the workspace's marketing email in the window."
+            "description": "Advisory bounce and complaint health of the workspace's marketing email in the window.",
+            "$ref": "#/components/schemas/DeliverabilityHealth"
           },
           "series": {
             "maxItems": 366,
@@ -21465,7 +21862,7 @@
               "opens",
               "conversions"
             ],
-            "description": "How the winner is picked: the version with the highest click or open rate over its delivered messages (as the campaign's own rates; over sent until any version has a delivery), or the highest share of its sent messages that reached the campaign's conversion goal (`conversionGoalId`). Opens overcount: Apple Mail opens every message it receives. A push test is decided by clicks (a tap the app reports with a link to follow, so the push needs an `actionUrl`) or conversions, not opens. A tie goes to the lower version."
+            "description": "How the winner is picked: the version with the highest click or open rate over its delivered messages (as the campaign's own rates; over sent until any version has a delivery), or the highest share of its sent messages that reached the campaign's conversion goal (`conversionGoalId`). Opens overcount: machine opens (Apple Mail Privacy Protection, Gmail's prefetch, mail scanners) count unread email as opened. A push test is decided by clicks (a tap the app reports with a link to follow, so the push needs an `actionUrl`) or conversions, not opens. A tie goes to the lower version."
           },
           "conversionGoalId": {
             "anyOf": [
@@ -21668,7 +22065,7 @@
                   {
                     "type": "string",
                     "examples": [
-                      "Africa/Lagos"
+                      "Europe/London"
                     ],
                     "description": "The IANA timezone for contacts without one."
                   },
@@ -22235,12 +22632,12 @@
           "bounced": {
             "type": "integer",
             "minimum": 0,
-            "description": "Messages the recipient server rejected."
+            "description": "Messages in status `bounced`, test sends to `bounce@example.com` included (see `simulated`); `deliverabilityHealth` counts recorded bounces of real sends only."
           },
           "complained": {
             "type": "integer",
             "minimum": 0,
-            "description": "Messages the recipient marked as spam."
+            "description": "Messages in status `complained`, test sends to `complaint@example.com` included (see `simulated`)."
           },
           "opened": {
             "type": "integer",
@@ -22250,7 +22647,7 @@
           "openedByMachine": {
             "type": "integer",
             "minimum": 0,
-            "description": "Of `opened`, those only a machine opened: Apple Mail Privacy Protection fetches a message's images whether or not it is read. Clicks are unaffected."
+            "description": "Of `opened`, those only a machine opened: a mail app fetched its images with no reader (Apple Mail Privacy Protection, Gmail's prefetch on delivery) or a mail security scanner checked it. Clicks are unaffected."
           },
           "clicked": {
             "type": "integer",
@@ -22266,6 +22663,11 @@
             "type": "integer",
             "minimum": 0,
             "description": "Recipients who opted out through this campaign's link."
+          },
+          "simulated": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Test sends whose outcome was acted out: those to `delivered@`, `bounce@` or `complaint@example.com` (the transactional guide's \"Test addresses\"). These counts go by message status, so they include them; `deliverabilityHealth` leaves them out."
           },
           "total": {
             "type": "integer",
@@ -22318,6 +22720,7 @@
           "clicked",
           "clickedByMachine",
           "unsubscribed",
+          "simulated",
           "total",
           "byStatus"
         ],
@@ -22751,6 +23154,17 @@
             ],
             "description": "Email message counters; `null` when the campaign sends no email."
           },
+          "deliverabilityHealth": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/DeliverabilityHealth"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Advisory bounce and complaint health of the campaign's email, judged on the same lines and minimums as `deliverabilityHealth` on `getOverviewReport`; `null` when the campaign sends no email. It reads real sends only: test sends (`email.simulated`) are left out, though `email.bounced` and `email.complained`, counted by status, include them."
+          },
           "push": {
             "anyOf": [
               {
@@ -22818,6 +23232,7 @@
           "revenue",
           "revenueWithheld",
           "email",
+          "deliverabilityHealth",
           "push",
           "skippedByReason",
           "abTest"
@@ -22980,11 +23395,17 @@
           "occurredAt": {
             "type": "string",
             "format": "date-time"
+          },
+          "expiresAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "When retention deletes it: when it happened plus the days the plan kept events when it was stored. Fixed: a plan change moves only later events."
           }
         },
         "required": [
           "id",
-          "occurredAt"
+          "occurredAt",
+          "expiresAt"
         ],
         "additionalProperties": false
       },
@@ -23234,6 +23655,7 @@
                         "type": "string",
                         "enum": [
                           "string",
+                          "date",
                           "number",
                           "boolean",
                           "object",
@@ -23241,7 +23663,7 @@
                           "null"
                         ]
                       },
-                      "description": "The value types seen."
+                      "description": "The value types seen. `date` is a string written as an ISO-8601 date or date and time, which segment date operators can read; a property whose values are mixed lists each type, such as `date` and `string`."
                     },
                     "samples": {
                       "type": "array",
@@ -23587,6 +24009,11 @@
                 "type": "string",
                 "format": "date-time",
                 "description": "When it happened."
+              },
+              "expiresAt": {
+                "type": "string",
+                "format": "date-time",
+                "description": "When retention deletes it: when it happened plus the days the plan kept events when it was stored. Fixed: a plan change moves only later events."
               }
             },
             "required": [
@@ -23598,7 +24025,8 @@
               "contact",
               "properties",
               "context",
-              "occurredAt"
+              "occurredAt",
+              "expiresAt"
             ],
             "additionalProperties": false,
             "title": "Accepted"
@@ -24688,17 +25116,17 @@
           "delivered": {
             "type": "integer",
             "minimum": 0,
-            "description": "Confirmed delivered, whatever happened after."
+            "description": "Confirmed delivered, whatever happened after; test sends to `delivered@example.com` included (see `simulated`)."
           },
           "bounced": {
             "type": "integer",
             "minimum": 0,
-            "description": "Rejected by the recipient server."
+            "description": "Rejected by the recipient server; a test send to `bounce@example.com` is not counted."
           },
           "complained": {
             "type": "integer",
             "minimum": 0,
-            "description": "Marked as spam by the recipient."
+            "description": "Marked as spam by the recipient; a test send to `complaint@example.com` is not counted."
           },
           "opened": {
             "type": "integer",
@@ -24708,7 +25136,7 @@
           "openedByMachine": {
             "type": "integer",
             "minimum": 0,
-            "description": "Of `opened`, those only a machine opened: Apple Mail Privacy Protection fetches a message's images whether or not it is read."
+            "description": "Of `opened`, those only a machine opened: a mail app fetched its images with no reader (Apple Mail Privacy Protection, Gmail's prefetch on delivery) or a mail security scanner checked it."
           },
           "clicked": {
             "type": "integer",
@@ -24724,6 +25152,11 @@
             "type": "integer",
             "minimum": 0,
             "description": "Whose recipient opted out through the email's link."
+          },
+          "simulated": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Of `sent`, test sends whose outcome was acted out: those to `delivered@`, `bounce@` or `complaint@example.com` (the transactional guide's \"Test addresses\"). The bounce and complaint rates leave them out."
           }
         },
         "required": [
@@ -24740,7 +25173,8 @@
           "openedByMachine",
           "clicked",
           "clickedByMachine",
-          "unsubscribed"
+          "unsubscribed",
+          "simulated"
         ],
         "additionalProperties": false
       },
@@ -27607,6 +28041,53 @@
         ],
         "additionalProperties": false
       },
+      "JourneyActivationIssue": {
+        "type": "object",
+        "properties": {
+          "field": {
+            "type": "string",
+            "description": "Where to fix it, as a path into the journey (`steps.2.content.from`, `trigger.segmentId`, `exitConditions.0`), or `postalAddress` for the workspace setting."
+          },
+          "code": {
+            "description": "The error `activateJourney` answers with for it: `DRAFT_INCOMPLETE` for a missing or broken part, or the send check's own code (`SENDING_DOMAIN_UNVERIFIED`, `SENDING_DOMAIN_DMARC_MISSING`, `POSTAL_ADDRESS_MISSING` and so on).",
+            "$ref": "#/components/schemas/ErrorCode"
+          },
+          "message": {
+            "type": "string",
+            "description": "What is wrong, in words a person can act on."
+          },
+          "stepId": {
+            "description": "The step a `steps.N` path names, by id: the path counts steps in saved order, which need not be the order they run in.",
+            "type": "string",
+            "pattern": "^[a-z0-9][a-z0-9_-]{0,63}$",
+            "examples": [
+              "welcome-email"
+            ]
+          }
+        },
+        "required": [
+          "field",
+          "code",
+          "message"
+        ],
+        "additionalProperties": false
+      },
+      "JourneyActivationCheck": {
+        "type": "object",
+        "properties": {
+          "issues": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/JourneyActivationIssue"
+            },
+            "description": "Empty when activating now would pass these checks."
+          }
+        },
+        "required": [
+          "issues"
+        ],
+        "additionalProperties": false
+      },
       "JourneySimulation": {
         "type": "object",
         "properties": {
@@ -27700,6 +28181,13 @@
                 "reason": {
                   "description": "Why a send step would not send: the send guard's error code, or `PLAN_LIMIT_REACHED`.",
                   "type": "string"
+                },
+                "issues": {
+                  "description": "With `reason` `DRAFT_INCOMPLETE`: what the step still needs, as activation would list it.",
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/JourneyActivationIssue"
+                  }
                 }
               },
               "required": [
@@ -27874,6 +28362,18 @@
               }
             ],
             "description": "When a timed message goes out; null when it went at once."
+          },
+          "fallbackFor": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "With `deliver.first`: the message this one stands in for. It waits as `queued` until that one ends: sent when it failed, was skipped or bounced, else skipped with reason `fallback_not_needed`. Null otherwise."
           }
         },
         "required": [
@@ -27882,7 +28382,33 @@
           "status",
           "correlationId",
           "createdAt",
-          "sendAt"
+          "sendAt",
+          "fallbackFor"
+        ],
+        "additionalProperties": false
+      },
+      "TransactionalSkippedChannel": {
+        "type": "object",
+        "properties": {
+          "channel": {
+            "type": "string",
+            "enum": [
+              "email",
+              "push"
+            ]
+          },
+          "code": {
+            "type": "string",
+            "description": "Its error code, such as `SUPPRESSED`."
+          },
+          "message": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "channel",
+          "code",
+          "message"
         ],
         "additionalProperties": false
       },
@@ -27894,10 +28420,18 @@
             "items": {
               "$ref": "#/components/schemas/TransactionalMessage"
             }
+          },
+          "skippedChannels": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TransactionalSkippedChannel"
+            },
+            "description": "Channels given that were not sent, each with the reason: the contact cannot receive it, or the plan has no room for it."
           }
         },
         "required": [
-          "messages"
+          "messages",
+          "skippedChannels"
         ],
         "additionalProperties": false
       },
@@ -27927,12 +28461,20 @@
                       "items": {
                         "$ref": "#/components/schemas/TransactionalMessage"
                       }
+                    },
+                    "skippedChannels": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/TransactionalSkippedChannel"
+                      },
+                      "description": "Channels given that were not sent, each with the reason: the contact cannot receive it, or the plan has no room for it."
                     }
                   },
                   "required": [
                     "idempotencyKey",
                     "replayed",
-                    "messages"
+                    "messages",
+                    "skippedChannels"
                   ],
                   "additionalProperties": false,
                   "title": "Accepted"
@@ -28228,11 +28770,11 @@
                 "type": "null"
               }
             ],
-            "description": "First open, when tracked."
+            "description": "First open, when tracked: a person's first open or click, or a machine's open while only a machine has opened it."
           },
           "openedByMachine": {
             "type": "boolean",
-            "description": "Only a machine has opened it so far: Apple Mail Privacy Protection fetches images whether or not the message is read. A click or a later open by a person clears it."
+            "description": "Only a machine has opened it so far: a mail app fetched its images with no reader (Apple Mail Privacy Protection, Gmail's prefetch on delivery) or a mail security scanner checked it. A click or a later open by a person clears it."
           },
           "clickedAt": {
             "anyOf": [
@@ -28342,7 +28884,7 @@
                   },
                   "reason": {
                     "type": "string",
-                    "description": "Which guard stopped it before sending, such as `suppressed`, `consent_missing` or `cancelled`."
+                    "description": "Which guard stopped it before sending, such as `suppressed`, `consent_missing` or `cancelled`; `fallback_not_needed`: a transactional `deliver.first` fallback whose first channel arrived; `plan_limit_reached`: a fallback the plan had no room for when it was due."
                   },
                   "suppressionReason": {
                     "anyOf": [
@@ -29331,6 +29873,27 @@
           "updatedAt": {
             "type": "string",
             "format": "date-time"
+          },
+          "counts": {
+            "type": "object",
+            "properties": {
+              "in": {
+                "type": "integer",
+                "minimum": 0,
+                "description": "Contacts the topic reaches topic-wide: for `opt_out` everyone who has not left, for `opt_in` those who joined."
+              },
+              "left": {
+                "type": "integer",
+                "minimum": 0,
+                "description": "Contacts who left the topic."
+              }
+            },
+            "required": [
+              "in",
+              "left"
+            ],
+            "additionalProperties": false,
+            "description": "Counted now, as the topic rule without `channel` reads it; a contact's channel choice can still differ on that channel."
           }
         },
         "required": [
@@ -29339,7 +29902,8 @@
           "description",
           "mode",
           "createdAt",
-          "updatedAt"
+          "updatedAt",
+          "counts"
         ],
         "additionalProperties": false
       },
@@ -30254,6 +30818,14 @@
             "type": "boolean",
             "description": "Whether submitters must confirm by email before they are subscribed."
           },
+          "notifyUserIds": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "Users of this workspace told about each submission."
+          },
           "theme": {
             "$ref": "#/components/schemas/FormTheme"
           },
@@ -30383,6 +30955,7 @@
           "allowedOrigins",
           "refusedOrigins",
           "doubleOptIn",
+          "notifyUserIds",
           "theme",
           "display",
           "captcha",
@@ -30550,6 +31123,14 @@
             "type": "boolean",
             "description": "Whether submitters must confirm by email before they are subscribed."
           },
+          "notifyUserIds": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "Users of this workspace told about each submission."
+          },
           "captcha": {
             "anyOf": [
               {
@@ -30605,6 +31186,7 @@
           "submissionCount",
           "allowedOrigins",
           "doubleOptIn",
+          "notifyUserIds",
           "captcha",
           "archivedAt",
           "createdAt",
@@ -30695,6 +31277,147 @@
         "required": [
           "key",
           "description"
+        ],
+        "additionalProperties": false
+      },
+      "BrandKit": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 120
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "The sender's name on the unsubscribe and opt-in pages, and the logo's alt text. Null is the workspace name."
+          },
+          "theme": {
+            "description": "The workspace's email look. Every email's `theme` holds only the fields it overrides; the rest come from here.",
+            "$ref": "#/components/schemas/EmailTheme"
+          },
+          "socialLinks": {
+            "maxItems": 10,
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "label": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 80
+                },
+                "href": {
+                  "type": "string",
+                  "maxLength": 2048,
+                  "format": "uri",
+                  "pattern": "^[^\\s{}]*$"
+                }
+              },
+              "required": [
+                "label",
+                "href"
+              ],
+              "additionalProperties": false
+            },
+            "description": "The profiles a `social` block without links of its own shows."
+          },
+          "defaultHeaderId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "The shared block gallery and Kiro designs open with, in place of their logo."
+          },
+          "defaultFooterId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "The shared block gallery and Kiro designs close with, in place of their footer. It must hold a `footer` block."
+          },
+          "logo": {
+            "anyOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "assetId": {
+                    "type": "string",
+                    "format": "uuid"
+                  },
+                  "url": {
+                    "type": "string",
+                    "description": "The image's address in the workspace library."
+                  },
+                  "alt": {
+                    "description": "Null is `name`.",
+                    "type": [
+                      "string",
+                      "null"
+                    ]
+                  },
+                  "width": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "pattern": "^(?:[89]\\d|1\\d\\d|2[0-3]\\d|240)px$",
+                        "description": "How wide the logo shows, from `80px` to `240px`. Null is `120px`."
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  }
+                },
+                "required": [
+                  "assetId",
+                  "url",
+                  "alt",
+                  "width"
+                ],
+                "additionalProperties": false
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "What a `header` block without an image of its own shows."
+          },
+          "updatedAt": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Null until the brand kit is saved."
+          }
+        },
+        "required": [
+          "name",
+          "theme",
+          "socialLinks",
+          "defaultHeaderId",
+          "defaultFooterId",
+          "logo",
+          "updatedAt"
         ],
         "additionalProperties": false
       },
@@ -30839,6 +31562,10 @@
             },
             "description": "Journeys not ended that place it."
           },
+          "brandKit": {
+            "type": "boolean",
+            "description": "Whether it is the brand kit's default header or footer."
+          },
           "hasMore": {
             "type": "boolean",
             "description": "More use it than are listed: each list stops at 50."
@@ -30848,6 +31575,7 @@
           "templates",
           "campaigns",
           "journeys",
+          "brandKit",
           "hasMore"
         ],
         "additionalProperties": false
@@ -31211,7 +31939,7 @@
               "openedByMachine": {
                 "type": "integer",
                 "minimum": 0,
-                "description": "Of `opened`, those only a machine opened: Apple Mail Privacy Protection fetches a message's images whether or not it is read."
+                "description": "Of `opened`, those only a machine opened: a mail app fetched its images with no reader (Apple Mail Privacy Protection, Gmail's prefetch on delivery) or a mail security scanner checked it."
               },
               "clicked": {
                 "type": "integer",
@@ -31241,7 +31969,7 @@
                 "minimum": 0
               },
               "rates": {
-                "description": "Email rates as fractions: delivery, bounce and complaint over sent; open, click and unsubscribe over delivered. `null` when there is no denominator.",
+                "description": "Email rates as fractions: delivery over sent; bounce and complaint over real sends (`sent` less `simulated` where the counts give it), as `deliverabilityHealth` judges them; open, click and unsubscribe over delivered. `null` when there is no denominator.",
                 "$ref": "#/components/schemas/EmailRates"
               }
             },
@@ -32267,16 +32995,45 @@
             },
             "description": "Cautions about the email's own content that never block it: `mostly_images` (under 250 characters of text beside images), `link_shortener`, `mismatched_link_text` (a link's text shows another domain), `shouting_subject` (mostly capitals or `!!`), `heavy_images` (uploaded images over 1 MB, or more than 15 images). There is no spam score: placement depends mostly on the sender's reputation."
           },
+          "abTestSplit": {
+            "anyOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "expectedPerVersion": {
+                    "type": "number",
+                    "minimum": 0,
+                    "description": "Eligible recipients each version is expected to reach in the test: the test share split evenly. Each contact is drawn on its own, so the real count varies around it, and a version can reach nobody: likely under 1, possible at a few."
+                  },
+                  "expectedRest": {
+                    "type": "number",
+                    "minimum": 0,
+                    "description": "Eligible recipients expected to wait for the winner: an expectation, like `expectedPerVersion`, drawn the same way."
+                  }
+                },
+                "required": [
+                  "expectedPerVersion",
+                  "expectedRest"
+                ],
+                "additionalProperties": false
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "The A/B test's expected split of the eligible recipients of the tested channel; `null` without a test. A version that reaches nobody scores 0, a tie goes to the lowest version, and the winner is sent to the rest even when the test reached nobody (version 1 then)."
+          },
           "abTestWarnings": {
             "type": "array",
             "items": {
               "type": "string",
               "enum": [
+                "empty_versions",
                 "small_versions",
                 "opens_measure"
               ]
             },
-            "description": "Cautions about the A/B test that do not stop it: `small_versions`, fewer than 1,000 eligible recipients per version, too few for a reliable winner; `opens_measure`, opens decide, and Apple Mail counts every message it receives as opened."
+            "description": "Cautions about the A/B test that do not stop it: `empty_versions`, under one eligible recipient expected per version, so a version will likely reach nobody (always returned with `small_versions`, which it implies: show the stronger one); `small_versions`, fewer than 1,000 eligible recipients per version, too few for a reliable winner; `opens_measure`, opens decide, and machine opens (Apple Mail Privacy Protection, Gmail's prefetch, mail scanners) count unread email as opened."
           }
         },
         "required": [
@@ -32288,6 +33045,7 @@
           "blockers",
           "channels",
           "contentWarnings",
+          "abTestSplit",
           "abTestWarnings"
         ],
         "additionalProperties": false
@@ -33744,6 +34502,26 @@
               "additionalProperties": false
             }
           },
+          "goals": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                "name": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "id",
+                "name"
+              ],
+              "additionalProperties": false
+            }
+          },
           "journeys": {
             "type": "array",
             "items": {
@@ -33794,6 +34572,46 @@
               "additionalProperties": false
             }
           },
+          "templates": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                "name": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "id",
+                "name"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "sharedBlocks": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                "name": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "id",
+                "name"
+              ],
+              "additionalProperties": false
+            }
+          },
           "hasMore": {
             "type": "boolean",
             "description": "More use it than are listed: each list stops at 50."
@@ -33802,8 +34620,11 @@
         "required": [
           "campaigns",
           "forms",
+          "goals",
           "journeys",
           "segments",
+          "templates",
+          "sharedBlocks",
           "hasMore"
         ],
         "additionalProperties": false
@@ -34272,9 +35093,9 @@
             },
             "description": "Transactional messages not yet sent that use the image; `name` is the subject or title. A timed one can be cancelled; an immediate one is locked."
           },
-          "brandTheme": {
+          "brandKit": {
             "type": "boolean",
-            "description": "Whether the workspace's brand theme uses it."
+            "description": "Whether it is the workspace's brand kit logo."
           },
           "hasMore": {
             "type": "boolean",
@@ -34288,7 +35109,7 @@
           "journeys",
           "journeysWithEnrollments",
           "messages",
-          "brandTheme",
+          "brandKit",
           "hasMore"
         ],
         "additionalProperties": false
@@ -34811,10 +35632,13 @@
         }
       },
       "ServiceUnavailable": {
-        "description": "A dependency is temporarily unavailable. Retry with backoff.",
+        "description": "A dependency is temporarily unavailable. Retry after `Retry-After` when it is sent, otherwise with backoff.",
         "headers": {
           "X-Request-Id": {
             "$ref": "#/components/headers/XRequestId"
+          },
+          "Retry-After": {
+            "$ref": "#/components/headers/RetryAfter"
           }
         },
         "content": {
@@ -34985,9 +35809,9 @@
                           "email": "amaka@example.com",
                           "firstName": "Amaka",
                           "lastName": "Obi",
-                          "phone": "+2348031234567",
-                          "timezone": "Africa/Lagos",
-                          "country": "NG",
+                          "phone": "+447700900123",
+                          "timezone": "Europe/London",
+                          "country": "GB",
                           "locale": "en-NG",
                           "rfm": {
                             "group": "loyal",
@@ -35099,8 +35923,8 @@
                     "email": "amaka@example.com",
                     "firstName": "Amaka",
                     "lastName": "Obi",
-                    "phone": "+2348031234567",
-                    "timezone": "Africa/Lagos",
+                    "phone": "+447700900123",
+                    "timezone": "Europe/London",
                     "dates": {
                       "birthday": "1992-03-14"
                     },
@@ -35196,9 +36020,9 @@
                         "email": "amaka@example.com",
                         "firstName": "Amaka",
                         "lastName": "Obi",
-                        "phone": "+2348031234567",
-                        "timezone": "Africa/Lagos",
-                        "country": "NG",
+                        "phone": "+447700900123",
+                        "timezone": "Europe/London",
+                        "country": "GB",
                         "locale": "en-NG",
                         "rfm": {
                           "group": "loyal",
@@ -35248,9 +36072,9 @@
                         "email": "amaka@example.com",
                         "firstName": "Amaka",
                         "lastName": "Obi",
-                        "phone": "+2348031234567",
-                        "timezone": "Africa/Lagos",
-                        "country": "NG",
+                        "phone": "+447700900123",
+                        "timezone": "Europe/London",
+                        "country": "GB",
                         "locale": "en-NG",
                         "rfm": {
                           "group": "loyal",
@@ -35352,9 +36176,9 @@
                         "email": "amaka@example.com",
                         "firstName": "Amaka",
                         "lastName": "Obi",
-                        "phone": "+2348031234567",
-                        "timezone": "Africa/Lagos",
-                        "country": "NG",
+                        "phone": "+447700900123",
+                        "timezone": "Europe/London",
+                        "country": "GB",
                         "locale": "en-NG",
                         "rfm": {
                           "group": "loyal",
@@ -35547,9 +36371,9 @@
                               "email": "amaka@example.com",
                               "firstName": "Amaka",
                               "lastName": "Obi",
-                              "phone": "+2348031234567",
-                              "timezone": "Africa/Lagos",
-                              "country": "NG",
+                              "phone": "+447700900123",
+                              "timezone": "Europe/London",
+                              "country": "GB",
                               "locale": "en-NG",
                               "rfm": {
                                 "group": "loyal",
@@ -35753,9 +36577,9 @@
                         "email": "amaka@example.com",
                         "firstName": "Amaka",
                         "lastName": "Obi",
-                        "phone": "+2348031234567",
-                        "timezone": "Africa/Lagos",
-                        "country": "NG",
+                        "phone": "+447700900123",
+                        "timezone": "Europe/London",
+                        "country": "GB",
                         "locale": "en-NG",
                         "rfm": {
                           "group": "loyal",
@@ -35933,9 +36757,9 @@
                         "email": "amaka@example.com",
                         "firstName": "Amaka",
                         "lastName": "Obi",
-                        "phone": "+2348031234567",
-                        "timezone": "Africa/Lagos",
-                        "country": "NG",
+                        "phone": "+447700900123",
+                        "timezone": "Europe/London",
+                        "country": "GB",
                         "locale": "en-NG",
                         "rfm": {
                           "group": "loyal",
@@ -36367,9 +37191,9 @@
                         "email": "amaka@example.com",
                         "firstName": "Amaka",
                         "lastName": "Obi",
-                        "phone": "+2348031234567",
-                        "timezone": "Africa/Lagos",
-                        "country": "NG",
+                        "phone": "+447700900123",
+                        "timezone": "Europe/London",
+                        "country": "GB",
                         "locale": "en-NG",
                         "rfm": {
                           "group": "loyal",
@@ -36733,9 +37557,9 @@
                           "email": "amaka@example.com",
                           "firstName": "Amaka",
                           "lastName": "Obi",
-                          "phone": "+2348031234567",
-                          "timezone": "Africa/Lagos",
-                          "country": "NG",
+                          "phone": "+447700900123",
+                          "timezone": "Europe/London",
+                          "country": "GB",
                           "locale": "en-NG",
                           "rfm": {
                             "group": "loyal",
@@ -37724,7 +38548,8 @@
                           },
                           "source": "web",
                           "occurredAt": "2026-10-01T09:30:00.000Z",
-                          "receivedAt": "2026-10-01T09:30:01.204Z"
+                          "receivedAt": "2026-10-01T09:30:01.204Z",
+                          "expiresAt": "2027-10-01T09:30:00.000Z"
                         },
                         {
                           "id": "0192f3c0-2b3c-7d4e-9f50-6b7c8d9e0f1a",
@@ -37739,7 +38564,8 @@
                           "context": null,
                           "source": "api",
                           "occurredAt": "2026-09-30T17:05:00.000Z",
-                          "receivedAt": "2026-09-30T17:05:00.312Z"
+                          "receivedAt": "2026-09-30T17:05:00.312Z",
+                          "expiresAt": "2027-09-30T17:05:00.000Z"
                         }
                       ],
                       "meta": {
@@ -38833,7 +39659,6 @@
         "x-embed-session": false,
         "x-retry": "key",
         "x-required-scope": "events:write",
-        "x-plan-feature": "custom_events",
         "responses": {
           "201": {
             "description": "The event was recorded: its id and the `occurredAt` it was stored with, a receipt rather than the event.",
@@ -38858,7 +39683,8 @@
                     "value": {
                       "data": {
                         "id": "0192f3c0-1a2b-7c3d-8e4f-5a6b7c8d9e0f",
-                        "occurredAt": "2026-10-01T09:30:00.000Z"
+                        "occurredAt": "2026-10-01T09:30:00.000Z",
+                        "expiresAt": "2027-10-01T09:30:00.000Z"
                       }
                     }
                   },
@@ -38867,7 +39693,8 @@
                     "value": {
                       "data": {
                         "id": "0192f3c0-1a2b-7c3d-8e4f-5a6b7c8d9e0f",
-                        "occurredAt": "2026-10-01T09:30:00.000Z"
+                        "occurredAt": "2026-10-01T09:30:00.000Z",
+                        "expiresAt": "2027-10-01T09:30:00.000Z"
                       }
                     }
                   },
@@ -38876,7 +39703,8 @@
                     "value": {
                       "data": {
                         "id": "0192f3c0-1a2b-7c3d-8e4f-5a6b7c8d9e0f",
-                        "occurredAt": "2026-10-01T09:30:00.000Z"
+                        "occurredAt": "2026-10-01T09:30:00.000Z",
+                        "expiresAt": "2027-10-01T09:30:00.000Z"
                       }
                     }
                   }
@@ -39022,7 +39850,6 @@
         "x-embed-session": false,
         "x-retry": "entries",
         "x-required-scope": "events:write",
-        "x-plan-feature": "custom_events",
         "responses": {
           "200": {
             "description": "One result per event sent, in the same order.",
@@ -39052,7 +39879,8 @@
                             "replayed": false,
                             "event": {
                               "id": "0192f3c0-1a2b-7c3d-8e4f-5a6b7c8d9e0f",
-                              "occurredAt": "2026-10-01T09:30:00.000Z"
+                              "occurredAt": "2026-10-01T09:30:00.000Z",
+                              "expiresAt": "2027-10-01T09:30:00.000Z"
                             }
                           },
                           {
@@ -39060,7 +39888,8 @@
                             "replayed": false,
                             "event": {
                               "id": "0192f3c0-2b3c-7d4e-9f50-6b7c8d9e0f1a",
-                              "occurredAt": "2026-10-01T09:30:00.000Z"
+                              "occurredAt": "2026-10-01T09:30:00.000Z",
+                              "expiresAt": "2027-10-01T09:30:00.000Z"
                             }
                           }
                         ]
@@ -39077,7 +39906,8 @@
                             "replayed": false,
                             "event": {
                               "id": "0192f3c0-1a2b-7c3d-8e4f-5a6b7c8d9e0f",
-                              "occurredAt": "2026-10-01T09:30:00.000Z"
+                              "occurredAt": "2026-10-01T09:30:00.000Z",
+                              "expiresAt": "2027-10-01T09:30:00.000Z"
                             }
                           },
                           {
@@ -39346,12 +40176,12 @@
                           },
                           "error": {
                             "code": "VALIDATION_ERROR",
-                            "message": "Request validation failed",
+                            "message": "Some request values are invalid. Check the field errors.",
                             "errors": [
                               {
                                 "in": "body",
                                 "field": "email",
-                                "message": "Invalid email address"
+                                "message": "Enter an email address, like name@example.com."
                               }
                             ]
                           }
@@ -39381,7 +40211,8 @@
                           },
                           "source": "web",
                           "occurredAt": "2026-10-01T09:30:00.000Z",
-                          "receivedAt": "2026-10-01T09:30:01.204Z"
+                          "receivedAt": "2026-10-01T09:30:01.204Z",
+                          "expiresAt": "2027-10-01T09:30:00.000Z"
                         }
                       ],
                       "meta": {
@@ -39807,6 +40638,17 @@
                                 "EUR"
                               ],
                               "seenIn": 410
+                            },
+                            {
+                              "key": "deliver_by",
+                              "types": [
+                                "date"
+                              ],
+                              "samples": [
+                                "2026-10-03",
+                                "2026-10-05"
+                              ],
+                              "seenIn": 388
                             }
                           ]
                         },
@@ -40182,7 +41024,6 @@
         "x-embed-session": false,
         "x-retry": "converges",
         "x-required-scope": "events:write",
-        "x-plan-feature": "custom_events",
         "responses": {
           "200": {
             "description": "The name as the catalogue lists it.",
@@ -40898,7 +41739,7 @@
         "tags": [
           "lists"
         ],
-        "description": "Deletes the list and its membership records. The contacts themselves are not deleted. Refused with one 409 `IN_USE` naming everything that blocks it, in the shape of `getListUsage`: campaigns not yet sent or cancelled (A/B tests included) whose audience, rules or exclusions name it (`details.campaigns`), published forms that add submitters to it or name it in a field (`details.forms`): without the list a form refuses every submission. Also active or paused journeys (`details.journeys`) and segments whose rules name it (`details.segments`): a \"not in this list\" rule must not outlive the list. Change or end those first. A sent or cancelled campaign does not block it: the campaign keeps its recipients and messages, the list leaves its `listIds` (`null` once none is left) and `audienceName` keeps the names of the lists it went to.\n\nRequires API-key scope: `lists:write`.",
+        "description": "Deletes the list and its membership records. The contacts themselves are not deleted. Refused with one 409 `IN_USE` naming everything that blocks it, in the shape of `getListUsage`: campaigns not yet sent or cancelled (A/B tests included) whose audience, rules or exclusions name it, or whose content has a block shown only to, or hidden from, its members (`details.campaigns`), published forms not archived that add submitters to it or name it in a field (`details.forms`): without the list a form refuses every submission. Also goals not retired (`details.goals`), active or paused journeys (`details.journeys`), segments whose rules name it (`details.segments`), and templates (the draft or the published version) and shared blocks with such a block (`details.templates`, `details.sharedBlocks`): a \"not in this list\" rule must not outlive the list. Change or end those first. A sent or cancelled campaign does not block it: the campaign keeps its recipients and messages, the list leaves its `listIds` (`null` once none is left) and `audienceName` keeps the names of the lists it went to.\n\nRequires API-key scope: `lists:write`.",
         "parameters": [
           {
             "schema": {
@@ -41279,7 +42120,7 @@
         "tags": [
           "lists"
         ],
-        "description": "Returns what names the list: campaigns whose audience, rules or exclusions name it, forms that add people to it, journeys whose rules or steps name it, and segments whose rules name it, up to 50 of each (`hasMore` when a kind holds more). Deleting the list is refused (409 `IN_USE`) while any of them is a campaign not yet sent or cancelled (`draft`, `scheduled`, `testing` for an A/B test, or `sending`), an `active` or `paused` journey, or a segment. Forms, sent or cancelled campaigns and draft or ended journeys do not block it.\n\nRequires API-key scope: `lists:read`.",
+        "description": "Returns what names the list: campaigns whose audience, rules or exclusions name it, or whose content has a block shown only to, or hidden from, its members, forms that add people to it, goals whose rules name it, journeys whose rules or steps name it, segments whose rules name it, and templates (the draft or the published version) and shared blocks with such a block, up to 50 of each (`hasMore` when a kind holds more). Deleting the list is refused (409 `IN_USE`) while any of them is a campaign not yet sent or cancelled (`draft`, `scheduled`, `testing` for an A/B test, or `sending`), a published form not archived, a goal not retired, an `active` or `paused` journey, a segment, a template or a shared block. Draft or archived forms, sent or cancelled campaigns, retired goals and draft or ended journeys do not block it.\n\nRequires API-key scope: `lists:read`.",
         "parameters": [
           {
             "schema": {
@@ -41343,8 +42184,11 @@
                             "name": "Newsletter sign-up"
                           }
                         ],
+                        "goals": [],
                         "journeys": [],
                         "segments": [],
+                        "templates": [],
+                        "sharedBlocks": [],
                         "hasMore": false
                       }
                     }
@@ -41619,9 +42463,9 @@
                   }
                 },
                 "nestedRules": {
-                  "summary": "Nested rules: Nigerian pro customers, or anyone who clicked",
+                  "summary": "Nested rules: premium customers with a phone, or anyone who clicked",
                   "value": {
-                    "name": "Engaged or pro",
+                    "name": "Engaged or premium",
                     "rules": {
                       "any": [
                         {
@@ -41635,7 +42479,7 @@
                               "type": "attribute",
                               "field": "attributes.plan",
                               "operator": "equals",
-                              "value": "pro"
+                              "value": "premium"
                             }
                           ]
                         },
@@ -41722,11 +42566,11 @@
                     }
                   },
                   "nestedRules": {
-                    "summary": "Nested rules: Nigerian pro customers, or anyone who clicked",
+                    "summary": "Nested rules: premium customers with a phone, or anyone who clicked",
                     "value": {
                       "data": {
                         "id": "0192f3a3-3d5e-7a70-8c43-6b8c9d0e1f2b",
-                        "name": "Engaged or pro",
+                        "name": "Engaged or premium",
                         "description": null,
                         "rules": {
                           "any": [
@@ -41741,7 +42585,7 @@
                                   "type": "attribute",
                                   "field": "attributes.plan",
                                   "operator": "equals",
-                                  "value": "pro"
+                                  "value": "premium"
                                 }
                               ]
                             },
@@ -41962,7 +42806,7 @@
         "tags": [
           "segments"
         ],
-        "description": "Replaces the segment's rules, renames it or changes its description. Changing rules changes who the segment matches from the next evaluation onward; campaigns already sent are unaffected. When an agent key changes the rules, everything that uses the segment, directly or through segments that name it, waits for a person again: scheduled campaigns are unscheduled, active journeys are paused, and each needs a human confirmation before it sends.\n\nRequires API-key scope: `segments:write`.",
+        "description": "Replaces the segment's rules, renames it or changes its description. Changing rules changes who the segment matches from the next evaluation onward; campaigns already sent are unaffected. When an agent key changes the rules, everything that uses the segment, directly or through segments that name it, waits for a person again: scheduled campaigns are unscheduled, active journeys are paused, and each needs a human confirmation before it sends. While a campaign that uses it is still sending or deciding an A/B test, an agent key cannot change the rules (403 `AGENT_KEY_REFUSED`).\n\nRequires API-key scope: `segments:write`.",
         "requestBody": {
           "required": true,
           "content": {
@@ -42501,9 +43345,9 @@
                           "email": "amaka@example.com",
                           "firstName": "Amaka",
                           "lastName": "Obi",
-                          "phone": "+2348031234567",
-                          "timezone": "Africa/Lagos",
-                          "country": "NG",
+                          "phone": "+447700900123",
+                          "timezone": "Europe/London",
+                          "country": "GB",
                           "locale": "en-NG",
                           "rfm": {
                             "group": "loyal",
@@ -42748,9 +43592,9 @@
                           "email": "amaka@example.com",
                           "firstName": "Amaka",
                           "lastName": "Obi",
-                          "phone": "+2348031234567",
-                          "timezone": "Africa/Lagos",
-                          "country": "NG",
+                          "phone": "+447700900123",
+                          "timezone": "Europe/London",
+                          "country": "GB",
                           "locale": "en-NG",
                           "rfm": {
                             "group": "loyal",
@@ -43201,7 +44045,11 @@
                           "description": "Discounts and bundles, once a week",
                           "mode": "opt_out",
                           "createdAt": "2026-09-01T10:00:00.000Z",
-                          "updatedAt": "2026-09-01T10:00:00.000Z"
+                          "updatedAt": "2026-09-01T10:00:00.000Z",
+                          "counts": {
+                            "in": 11842,
+                            "left": 316
+                          }
                         }
                       ],
                       "meta": {
@@ -43321,7 +44169,11 @@
                         "description": "Discounts and bundles, once a week",
                         "mode": "opt_out",
                         "createdAt": "2026-09-01T10:00:00.000Z",
-                        "updatedAt": "2026-09-01T10:00:00.000Z"
+                        "updatedAt": "2026-09-01T10:00:00.000Z",
+                        "counts": {
+                          "in": 12158,
+                          "left": 0
+                        }
                       }
                     }
                   }
@@ -43450,7 +44302,11 @@
                         "description": "Discounts and bundles, once a week",
                         "mode": "opt_out",
                         "createdAt": "2026-09-01T10:00:00.000Z",
-                        "updatedAt": "2026-09-01T10:00:00.000Z"
+                        "updatedAt": "2026-09-01T10:00:00.000Z",
+                        "counts": {
+                          "in": 11842,
+                          "left": 316
+                        }
                       }
                     }
                   }
@@ -43576,7 +44432,11 @@
                         "description": "Discounts and bundles, once a week",
                         "mode": "opt_out",
                         "createdAt": "2026-09-01T10:00:00.000Z",
-                        "updatedAt": "2026-10-02T11:00:00.000Z"
+                        "updatedAt": "2026-10-02T11:00:00.000Z",
+                        "counts": {
+                          "in": 11842,
+                          "left": 316
+                        }
                       }
                     }
                   }
@@ -43636,7 +44496,7 @@
         "tags": [
           "topics"
         ],
-        "description": "Deletes a topic. Refused with `409 IN_USE` while a campaign, or an active or paused journey, uses it (the journeys listed in `details.journeys`); ended journeys do not count. Consent changes keep its past changes. Every contact’s choices on the topic go with it, so agent keys are refused with 403.\n\nRequires API-key scope: `topics:write`.",
+        "description": "Deletes a topic. Refused with `409 IN_USE` while a campaign sends on it, and while rules name it, listed in `details`: campaigns not yet sent or cancelled whose rules or exclusions name it, or whose content has a block shown only to, or hidden from, its contacts (`details.campaigns`), goals not retired (`details.goals`), active or paused journeys (`details.journeys`), segments (`details.segments`), and templates (the draft or the published version) and shared blocks with such a block (`details.templates`, `details.sharedBlocks`), each listing up to 50, with `details.hasMore` when there are more. Ended journeys do not count. Consent changes keep its past changes. Every contact’s choices on the topic go with it, so agent keys are refused with 403.\n\nRequires API-key scope: `topics:write`.",
         "parameters": [
           {
             "schema": {
@@ -44835,7 +45695,7 @@
         "tags": [
           "transactional"
         ],
-        "description": "Sends a one-off message to one recipient — a receipt, a password reset, a confirmation — bypassing campaigns. It ignores marketing preferences (it is the critical tier) but respects suppression. Agent keys are refused with 403.\n\n**Channels.** Give `email`, `push`, or both. With both, `deliver: all` (the default) sends each one the contact can receive, and `deliver: first` sends push when the contact has a reachable device and email otherwise. A channel the contact cannot receive is passed over; only when none is left does the send fail, with that channel's reason. The response lists one message per channel sent.\n\n**Data.** `data` holds the values the content reads as `{{ data.<key> }}`, once for every channel: a stored template, inline email, and the push `title` and `body`. Inline content (email or push) whose `{{ data.<key> }}` tag has no value in `data`, and no default, is refused with 400 rather than sent blank.\n\n**Email.** Inline (`subject`, `from`, `html`, optional `text`, `previewText`, `replyTo`), or a stored template named by `template` (its alias, such as `password-reset`, or its id). The template's published version is rendered when the request is accepted and supplies the envelope; each envelope field given overrides it. The result needs a `subject` and a `from` (409 `TEMPLATE_ENVELOPE_INCOMPLETE`), and the `from` domain must be verified. A template never published is 409 `TEMPLATE_NOT_PUBLISHED`. Email is tracked only when `tracking` asks, and never for a contact in the EEA or the UK; `threading` continues a conversation. `attachments`, `threading` and `tracking` sit inside `email`.\n\n**Push.** `push` takes the notification fields (`title`, `body`, `actionUrl`, …) beside `pushProjectId`, which is needed only when the workspace has several push projects.\n\n**Recipient.** `to` names one `contactId`, `externalId` or `email`, and nothing else: set a contact's name or attributes with `POST /v1/contacts/identify` first. An `email` that matches no contact creates one for transactional mail only.\n\n**Retries.** Send an `Idempotency-Key` header to make a retry safe. A retry with the same key and request returns the first result, with `Idempotency-Replay: true`, and sends nothing again; the same key with a different request is 409 `IDEMPOTENCY_KEY_REUSED`. Without a key, every request sends: a retry after a timeout can send the message twice. A replay answers from the messages as they are now, so its `status` can differ from the first answer, and an `externalId` or `email` recipient the first request created or updated stays so even when the send itself was refused. Set `correlationId` to your own reference: it is echoed on each message's webhooks and its read, and `GET /v1/messages?correlationId=` finds them. `sendAt` times the send, email and push alike.\n\nRequires API-key scope: `transactional:send`.",
+        "description": "Sends a one-off message to one recipient — a receipt, a password reset, a confirmation — bypassing campaigns. It ignores marketing preferences (it is the critical tier) but respects suppression. Agent keys are refused with 403.\n\n**Channels.** Give `email`, `push`, or both. With both, `deliver: \"all\"` (the default) sends each one the contact can receive. `deliver: { \"first\": [\"email\", \"push\"] }` tries them in that order: the first the contact can receive goes, and each later one waits as a fallback (`fallbackFor`), sent only when the one before it fails, is skipped or bounces (an email gets 15 minutes to bounce), else skipped with reason `fallback_not_needed`. A fallback is charged only when it goes; with no room left in the plan by then it is skipped with reason `plan_limit_reached`. A channel the contact cannot receive, or the plan has no room for, is passed over and listed in `skippedChannels` with its error code; only when none is left does the send fail, with that channel's error. So with `all` too, a 202 can leave a channel unsent: check `skippedChannels`. The response lists one message per channel stored.\n\n**Data.** `data` holds the values the content reads as `{{ data.<key> }}`, once for every channel: a stored template, inline email, and the push `title` and `body`. Inline content (email or push) whose `{{ data.<key> }}` tag has no value in `data`, and no default, is refused with 400 rather than sent blank.\n\n**Email.** Inline (`subject`, `from`, `html`, optional `text`, `previewText`, `replyTo`), or a stored template named by `template` (its alias, such as `password-reset`, or its id). The template's published version is rendered when the request is accepted and supplies the envelope; each envelope field given overrides it. The result needs a `subject` and a `from` (409 `TEMPLATE_ENVELOPE_INCOMPLETE`), and the `from` domain must be verified. A template never published is 409 `TEMPLATE_NOT_PUBLISHED`. Email is tracked only when `tracking` asks, and never for a contact in the EEA or the UK; `threading` continues a conversation. `attachments`, `threading` and `tracking` sit inside `email`.\n\n**Push.** `push` takes the notification fields (`title`, `body`, `actionUrl`, …) beside `pushProjectId`, which is needed only when the workspace has several push projects. Unlike email, push needs the contact's push consent (`consent.push`) besides a device that allows notifications.\n\n**Recipient.** `to` names one `contactId`, `externalId` or `email`, and nothing else: set a contact's name or attributes with `POST /v1/contacts/identify` first. An `email` that matches no contact creates one for transactional mail only.\n\n**Retries.** Send an `Idempotency-Key` header to make a retry safe. A retry with the same key and request returns the first result, with `Idempotency-Replay: true`, and sends nothing again; the same key with a different request is 409 `IDEMPOTENCY_KEY_REUSED`. Without a key, every request sends: a retry after a timeout can send the message twice. A replay answers from the messages as they are now, so its `status` can differ from the first answer, and an `externalId` or `email` recipient the first request created or updated stays so even when the send itself was refused. Set `correlationId` to your own reference: it is echoed on each message's webhooks and its read, and `GET /v1/messages?correlationId=` finds them. `sendAt` times the send, email and push alike.\n\nRequires API-key scope: `transactional:send`.",
         "requestBody": {
           "required": true,
           "content": {
@@ -44901,6 +45761,34 @@
                     "deliver": "all"
                   }
                 },
+                "pushThenEmail": {
+                  "summary": "Push first, email only if the push cannot be sent",
+                  "value": {
+                    "to": {
+                      "contactId": "0192f3a1-7c2e-7d4b-9a10-3e5f6a7b8c9d"
+                    },
+                    "sensitive": true,
+                    "data": {
+                      "code": "739204"
+                    },
+                    "push": {
+                      "pushProjectId": "0192f3a1-91d4-7b2a-8c3e-4d5e6f7a8b9c",
+                      "title": "Your sign-in code",
+                      "body": "{{ data.code }}"
+                    },
+                    "email": {
+                      "subject": "Your sign-in code",
+                      "from": "Juniper Kitchen <security@juniperkitchen.com>",
+                      "html": "<p>Your code is <strong>{{ data.code }}</strong>.</p>"
+                    },
+                    "deliver": {
+                      "first": [
+                        "push",
+                        "email"
+                      ]
+                    }
+                  }
+                },
                 "scheduled": {
                   "summary": "Sent later, at 09:00 London time (GMT, +00:00)",
                   "value": {
@@ -44938,6 +45826,9 @@
               },
               "emailAndPush": {
                 "value": "delivery-7731-shipped"
+              },
+              "pushThenEmail": {
+                "value": "signin-code-2b7d41"
               },
               "scheduled": {
                 "value": "class-reminder-3315"
@@ -44991,9 +45882,11 @@
                             "status": "queued",
                             "correlationId": "order-1001",
                             "createdAt": "2026-11-17T08:30:00.000Z",
-                            "sendAt": null
+                            "sendAt": null,
+                            "fallbackFor": null
                           }
-                        ]
+                        ],
+                        "skippedChannels": []
                       }
                     }
                   },
@@ -45008,9 +45901,11 @@
                             "status": "queued",
                             "correlationId": null,
                             "createdAt": "2026-11-17T08:30:00.000Z",
-                            "sendAt": null
+                            "sendAt": null,
+                            "fallbackFor": null
                           }
-                        ]
+                        ],
+                        "skippedChannels": []
                       }
                     }
                   },
@@ -45025,7 +45920,8 @@
                             "status": "queued",
                             "correlationId": "delivery-7731",
                             "createdAt": "2026-11-17T08:30:00.000Z",
-                            "sendAt": null
+                            "sendAt": null,
+                            "fallbackFor": null
                           },
                           {
                             "id": "0192f3b0-1a2b-7c3d-8e4f-5a6b7c8d9e0f",
@@ -45033,9 +45929,39 @@
                             "status": "queued",
                             "correlationId": "delivery-7731",
                             "createdAt": "2026-11-17T08:30:00.000Z",
-                            "sendAt": null
+                            "sendAt": null,
+                            "fallbackFor": null
                           }
-                        ]
+                        ],
+                        "skippedChannels": []
+                      }
+                    }
+                  },
+                  "pushThenEmail": {
+                    "summary": "Push first, email only if the push cannot be sent",
+                    "value": {
+                      "data": {
+                        "messages": [
+                          {
+                            "id": "0192f3b0-2b3c-7d4e-9f50-6b7c8d9e0f1a",
+                            "channel": "push",
+                            "status": "queued",
+                            "correlationId": null,
+                            "createdAt": "2026-11-17T08:30:00.000Z",
+                            "sendAt": null,
+                            "fallbackFor": null
+                          },
+                          {
+                            "id": "0192f3b0-1a2b-7c3d-8e4f-5a6b7c8d9e0f",
+                            "channel": "email",
+                            "status": "queued",
+                            "correlationId": null,
+                            "createdAt": "2026-11-17T08:30:00.000Z",
+                            "sendAt": null,
+                            "fallbackFor": "0192f3b0-2b3c-7d4e-9f50-6b7c8d9e0f1a"
+                          }
+                        ],
+                        "skippedChannels": []
                       }
                     }
                   },
@@ -45050,9 +45976,11 @@
                             "status": "queued",
                             "correlationId": null,
                             "createdAt": "2026-11-17T08:30:00.000Z",
-                            "sendAt": "2026-11-17T09:00:00.000Z"
+                            "sendAt": "2026-11-17T09:00:00.000Z",
+                            "fallbackFor": null
                           }
-                        ]
+                        ],
+                        "skippedChannels": []
                       }
                     }
                   }
@@ -45258,9 +46186,11 @@
                                 "status": "queued",
                                 "correlationId": "order-1001",
                                 "createdAt": "2026-11-17T08:30:00.000Z",
-                                "sendAt": null
+                                "sendAt": null,
+                                "fallbackFor": null
                               }
-                            ]
+                            ],
+                            "skippedChannels": []
                           },
                           {
                             "idempotencyKey": "order-1002-receipt",
@@ -45272,9 +46202,11 @@
                                 "status": "queued",
                                 "correlationId": "order-1002",
                                 "createdAt": "2026-11-17T08:30:00.000Z",
-                                "sendAt": null
+                                "sendAt": null,
+                                "fallbackFor": null
                               }
-                            ]
+                            ],
+                            "skippedChannels": []
                           }
                         ]
                       }
@@ -45295,9 +46227,11 @@
                                 "status": "queued",
                                 "correlationId": "order-1003",
                                 "createdAt": "2026-11-17T08:30:00.000Z",
-                                "sendAt": null
+                                "sendAt": null,
+                                "fallbackFor": null
                               }
-                            ]
+                            ],
+                            "skippedChannels": []
                           },
                           {
                             "idempotencyKey": "order-1004-receipt",
@@ -46838,6 +47772,7 @@
                           }
                         ],
                         "contentWarnings": [],
+                        "abTestSplit": null,
                         "abTestWarnings": []
                       }
                     }
@@ -47042,11 +47977,11 @@
                   }
                 },
                 "localTime": {
-                  "summary": "Each person receives it at 08:00 in their own timezone (Africa/Lagos where none is known)",
+                  "summary": "Each person receives it at 08:00 in their own timezone (Europe/London where none is known)",
                   "value": {
                     "type": "local_time",
                     "localDateTime": "2026-11-03T08:00",
-                    "timezoneIfUnknown": "Africa/Lagos",
+                    "timezoneIfUnknown": "Europe/London",
                     "ifTimeHasPassed": "skip"
                   }
                 }
@@ -47184,7 +48119,7 @@
                     }
                   },
                   "localTime": {
-                    "summary": "Each person receives it at 08:00 in their own timezone (Africa/Lagos where none is known)",
+                    "summary": "Each person receives it at 08:00 in their own timezone (Europe/London where none is known)",
                     "value": {
                       "data": {
                         "id": "0192f3d3-5e6f-7071-8c83-9e0f1a2b3c4d",
@@ -47244,7 +48179,7 @@
                         "schedule": {
                           "type": "local_time",
                           "localDateTime": "2026-11-03T08:00",
-                          "timezoneIfUnknown": "Africa/Lagos",
+                          "timezoneIfUnknown": "Europe/London",
                           "ifTimeHasPassed": "skip",
                           "startsAt": "2026-11-02T18:00:00.000Z"
                         },
@@ -48989,6 +49924,7 @@
                           "clicked": 341,
                           "clickedByMachine": 29,
                           "unsubscribed": 6,
+                          "simulated": 0,
                           "total": 2455,
                           "byStatus": {
                             "queued": 0,
@@ -49000,6 +49936,25 @@
                             "bounced": 38,
                             "complained": 2
                           }
+                        },
+                        "deliverabilityHealth": {
+                          "band": "healthy",
+                          "limits": {
+                            "watch": {
+                              "bounceRatio": 0.02,
+                              "complaintRatio": 0.0005
+                            },
+                            "critical": {
+                              "bounceRatio": 0.03,
+                              "complaintRatio": 0.0008
+                            }
+                          },
+                          "bounceRatio": 0.004,
+                          "complaintRatio": 0,
+                          "sampleSize": 2455,
+                          "minimumSampleSize": 100,
+                          "feedbackCoverage": 0.99,
+                          "minimumFeedbackCoverage": 0.95
                         },
                         "push": null,
                         "skippedByReason": {
@@ -49058,7 +50013,7 @@
         "tags": [
           "campaigns"
         ],
-        "description": "Splits a campaign's email results into rows by the recipient's email domain (`gmail.com`), the device they first opened or clicked on (`desktop`, `mobile`, `tablet`), or the contact's country (`NG`), counted the same way as the campaign's metrics. Use it to find where a problem sits: bounces concentrated on one domain point at that mailbox provider, not at the whole list.\n\nRows are ordered by messages sent, largest first. The 50 largest are listed, and everything past them is summed in `other` (null when there are none). A row's `key` is `null` when the value is unknown: a device is known only once a person opens with images on or clicks (Apple Mail Privacy Protection's automatic opens and Gmail's image proxy name no device, and other image proxies may read as desktop); a country only when the contact has one; a domain only while the message still names someone (not after the contact is deleted).\n\nPush results are not included: a push campaign's per-device outcomes are in its metrics, under `push.devices`.\n\nRequires API-key scope: `campaigns:read`.",
+        "description": "Splits a campaign's email results into rows by the recipient's email domain (`gmail.com`), the device they first opened or clicked on (`desktop`, `mobile`, `tablet`), or the contact's country (`GB`), counted the same way as the campaign's metrics. Use it to find where a problem sits: bounces concentrated on one domain point at that mailbox provider, not at the whole list.\n\nRows are ordered by messages sent, largest first. The 50 largest are listed, and everything past them is summed in `other` (null when there are none). A row's `key` is `null` when the value is unknown: a device is known only once a person opens with images on or clicks (machine opens, such as Apple Mail Privacy Protection's and Gmail's prefetch, and Gmail's image proxy name no device, and other image proxies may read as desktop); a country only when the contact has one; a domain only while the message still names someone (not after the contact is deleted).\n\nPush results are not included: a push campaign's per-device outcomes are in its metrics, under `push.devices`.\n\nRequires API-key scope: `campaigns:read`.",
         "parameters": [
           {
             "schema": {
@@ -51651,7 +52606,8 @@
                           "openedByMachine": 38,
                           "clicked": 29,
                           "clickedByMachine": 3,
-                          "unsubscribed": 1
+                          "unsubscribed": 1,
+                          "simulated": 0
                         },
                         "push": {
                           "created": 0,
@@ -51901,7 +52857,8 @@
                               "openedByMachine": 18,
                               "clicked": 19,
                               "clickedByMachine": 2,
-                              "unsubscribed": 1
+                              "unsubscribed": 1,
+                              "simulated": 0
                             },
                             "conversions": [
                               {
@@ -51919,6 +52876,131 @@
                             ]
                           }
                         ]
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "headers": {
+              "X-Request-Id": {
+                "$ref": "#/components/headers/XRequestId"
+              },
+              "RateLimit-Limit": {
+                "$ref": "#/components/headers/RateLimitLimit"
+              },
+              "RateLimit-Remaining": {
+                "$ref": "#/components/headers/RateLimitRemaining"
+              },
+              "RateLimit-Reset": {
+                "$ref": "#/components/headers/RateLimitReset"
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          },
+          "503": {
+            "$ref": "#/components/responses/ServiceUnavailable"
+          }
+        }
+      }
+    },
+    "/v1/journeys/{id}/activation-check": {
+      "get": {
+        "operationId": "getJourneyActivationCheck",
+        "summary": "Check a journey before activating",
+        "tags": [
+          "journeys"
+        ],
+        "description": "Lists everything activating now would refuse, all at once and without activating: unfinished send steps, a list, segment, form, topic or webhook a step, the trigger or an exit names that is gone or off, a conversion goal exit without a goal, and for each finished send step an unverified sender or a sending domain without the DMARC record marketing email needs, the workspace's missing postal address or a push app not ready. Each issue gives the field to fix, the error code `activateJourney` would answer with for it and, on a step, the step's id. Empty `issues` means these checks pass; activation can still refuse for the plan's active journey limit or, for a journey an agent authored or edited, a person's confirmation. An ended journey has one issue on `status`; a workspace whose sending is stopped (suspended, or its deletion pending) has one on `workspace`.\n\nRequires API-key scope: `journeys:read`.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "description": "The journey's id."
+          },
+          {
+            "$ref": "#/components/parameters/KiroraWorkspace"
+          }
+        ],
+        "security": [
+          {
+            "apiKeyAuth": []
+          }
+        ],
+        "x-key-kinds": [
+          "integration",
+          "agent",
+          "partner"
+        ],
+        "x-embed-session": false,
+        "x-required-scope": "journeys:read",
+        "responses": {
+          "200": {
+            "description": "What activating the journey now would refuse.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/JourneyActivationCheck"
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ],
+                  "additionalProperties": false,
+                  "description": "What activating the journey now would refuse."
+                },
+                "examples": {
+                  "issues": {
+                    "summary": "Two things to fix before it can go live",
+                    "value": {
+                      "data": {
+                        "issues": [
+                          {
+                            "field": "steps.1.content.templateSnapshot",
+                            "code": "DRAFT_INCOMPLETE",
+                            "message": "This is required.",
+                            "stepId": "welcome-email"
+                          },
+                          {
+                            "field": "steps.3.content.from",
+                            "code": "SENDING_DOMAIN_UNVERIFIED",
+                            "message": "news.juniperkitchen.com is not a verified sending domain",
+                            "stepId": "reminder-email"
+                          }
+                        ]
+                      }
+                    }
+                  },
+                  "ready": {
+                    "summary": "Ready to activate",
+                    "value": {
+                      "data": {
+                        "issues": []
                       }
                     }
                   }
@@ -54687,7 +55769,7 @@
         "tags": [
           "templates"
         ],
-        "description": "Returns one published version of a template with its full content and `transactionalDefaults`, and the shared blocks and brand theme it was published with, to view or compare: two versions with the same blocks can still send different footers.\n\nRequires API-key scope: `templates:read`.",
+        "description": "Returns one published version of a template with its full content and `transactionalDefaults`, and the shared blocks and brand kit it was published with, to view or compare: two versions with the same blocks can still send different footers.\n\nRequires API-key scope: `templates:read`.",
         "parameters": [
           {
             "schema": {
@@ -54808,22 +55890,43 @@
                             {
                               "id": "footer-note",
                               "type": "text",
-                              "text": "Acme Shop, 12 Market Street, Lagos. Questions? Reply to this email.",
+                              "text": "Juniper Kitchen, 12 Market Street, London. Questions? Reply to this email.",
                               "align": "center"
                             }
                           ]
                         },
-                        "brandTheme": {
-                          "bodyFontFamily": "Arial, sans-serif",
-                          "headingFontFamily": "Georgia, serif",
-                          "cardBackgroundColor": "#ffffff",
-                          "canvasBackgroundColor": "#f4f1ec",
-                          "textColor": "#1f2933",
-                          "accentColor": "#b4461f",
-                          "linkColor": "#b4461f",
-                          "cardWidth": "600px",
-                          "cardBorderRadius": "6px",
-                          "buttonStyle": "solid"
+                        "brandKit": {
+                          "name": "Acme Shop",
+                          "theme": {
+                            "bodyFontFamily": "Arial, sans-serif",
+                            "headingFontFamily": "Georgia, serif",
+                            "cardBackgroundColor": "#ffffff",
+                            "canvasBackgroundColor": "#f4f1ec",
+                            "textColor": "#1f2933",
+                            "accentColor": "#b4461f",
+                            "linkColor": "#b4461f",
+                            "cardWidth": "600px",
+                            "cardBorderRadius": "6px",
+                            "buttonStyle": "solid",
+                            "headingColor": "#1f2933",
+                            "baseFontSize": "16px"
+                          },
+                          "logo": {
+                            "assetId": "0192f3d2-4d5e-7f60-9b72-8d9e0f1a2b3c",
+                            "url": "https://assets.kirora.io/images/0192f3d2-4d5e-7f60-9b72-8d9e0f1a2b3c.png",
+                            "alt": null,
+                            "width": "140px"
+                          },
+                          "socialLinks": [
+                            {
+                              "label": "Instagram",
+                              "href": "https://instagram.com/acmeshop"
+                            },
+                            {
+                              "label": "LinkedIn",
+                              "href": "https://www.linkedin.com/company/acmeshop"
+                            }
+                          ]
                         }
                       }
                     }
@@ -55256,14 +56359,14 @@
         }
       }
     },
-    "/v1/brand-theme": {
+    "/v1/brand-kit": {
       "get": {
-        "operationId": "getBrandTheme",
-        "summary": "Retrieve the workspace brand theme",
+        "operationId": "getBrandKit",
+        "summary": "Retrieve the workspace brand kit",
         "tags": [
           "templates"
         ],
-        "description": "Returns the workspace brand theme. Every email's `theme` holds only the fields it overrides; the rest come from here. A change restyles templates and draft campaigns and journeys at once. Scheduling or sending a campaign, activating a journey and publishing a template freeze the look that email goes out with, so nothing already approved changes. Templates saved before the brand existed carry every field, so they keep their look until a field is reset.\n\nRequires API-key scope: `templates:read`.",
+        "description": "Returns the workspace brand kit. Until it is saved, it holds the defaults: an empty `theme`, no `name`, logo, links, header or footer, and `updatedAt` null. Every email's `theme` holds only the fields it overrides; the rest come from here. A `header` block without an image shows the brand kit's logo, and a `social` block without links shows its social links. A change restyles templates and draft campaigns and journeys at once. Scheduling or sending a campaign, activating a journey and publishing a template freeze the brand kit that email goes out with, so nothing already approved changes. The default header and footer are what gallery and Kiro designs open and close with; emails that place them follow the shared blocks' own changes.\n\nRequires API-key scope: `templates:read`.",
         "security": [
           {
             "apiKeyAuth": []
@@ -55278,37 +56381,61 @@
         "x-required-scope": "templates:read",
         "responses": {
           "200": {
-            "description": "The brand theme.",
+            "description": "The brand kit.",
             "content": {
               "application/json": {
                 "schema": {
                   "type": "object",
                   "properties": {
                     "data": {
-                      "$ref": "#/components/schemas/EmailTheme"
+                      "$ref": "#/components/schemas/BrandKit"
                     }
                   },
                   "required": [
                     "data"
                   ],
                   "additionalProperties": false,
-                  "description": "The brand theme."
+                  "description": "The brand kit."
                 },
                 "examples": {
                   "brand": {
-                    "summary": "The workspace's brand theme",
+                    "summary": "The workspace's brand kit",
                     "value": {
                       "data": {
-                        "bodyFontFamily": "Arial, sans-serif",
-                        "headingFontFamily": "Georgia, serif",
-                        "cardBackgroundColor": "#ffffff",
-                        "canvasBackgroundColor": "#f4f1ec",
-                        "textColor": "#1f2933",
-                        "accentColor": "#b4461f",
-                        "linkColor": "#b4461f",
-                        "cardWidth": "600px",
-                        "cardBorderRadius": "6px",
-                        "buttonStyle": "solid"
+                        "name": "Acme Shop",
+                        "theme": {
+                          "bodyFontFamily": "Arial, sans-serif",
+                          "headingFontFamily": "Georgia, serif",
+                          "cardBackgroundColor": "#ffffff",
+                          "canvasBackgroundColor": "#f4f1ec",
+                          "textColor": "#1f2933",
+                          "accentColor": "#b4461f",
+                          "linkColor": "#b4461f",
+                          "cardWidth": "600px",
+                          "cardBorderRadius": "6px",
+                          "buttonStyle": "solid",
+                          "headingColor": "#1f2933",
+                          "baseFontSize": "16px"
+                        },
+                        "logo": {
+                          "assetId": "0192f3d2-4d5e-7f60-9b72-8d9e0f1a2b3c",
+                          "url": "https://assets.kirora.io/images/0192f3d2-4d5e-7f60-9b72-8d9e0f1a2b3c.png",
+                          "alt": null,
+                          "width": "140px"
+                        },
+                        "socialLinks": [
+                          {
+                            "label": "Instagram",
+                            "href": "https://instagram.com/acmeshop"
+                          },
+                          {
+                            "label": "LinkedIn",
+                            "href": "https://www.linkedin.com/company/acmeshop"
+                          }
+                        ],
+                        "defaultHeaderId": null,
+                        "defaultFooterId": null,
+                        "updatedAt": "2026-10-01T09:30:00.000Z"
                       }
                     }
                   }
@@ -55517,7 +56644,7 @@
                       {
                         "id": "footer-note",
                         "type": "text",
-                        "text": "Acme Shop, 12 Market Street, Lagos. Questions? Reply to this email.",
+                        "text": "Juniper Kitchen, 12 Market Street, London. Questions? Reply to this email.",
                         "align": "center"
                       }
                     ]
@@ -55568,7 +56695,7 @@
                           {
                             "id": "footer-note",
                             "type": "text",
-                            "text": "Acme Shop, 12 Market Street, Lagos. Questions? Reply to this email.",
+                            "text": "Juniper Kitchen, 12 Market Street, London. Questions? Reply to this email.",
                             "align": "center"
                           }
                         ],
@@ -55703,7 +56830,7 @@
                           {
                             "id": "footer-note",
                             "type": "text",
-                            "text": "Acme Shop, 12 Market Street, Lagos. Questions? Reply to this email.",
+                            "text": "Juniper Kitchen, 12 Market Street, London. Questions? Reply to this email.",
                             "align": "center"
                           }
                         ],
@@ -55834,7 +56961,7 @@
                           {
                             "id": "footer-note",
                             "type": "text",
-                            "text": "Acme Shop, 12 Market Street, Lagos. Questions? Reply to this email.",
+                            "text": "Juniper Kitchen, 12 Market Street, London. Questions? Reply to this email.",
                             "align": "center"
                           }
                         ],
@@ -55899,7 +57026,7 @@
         "tags": [
           "shared-blocks"
         ],
-        "description": "Deletes a shared block. Refused with 409 `IN_USE`, its `details` the usage, while a template, an unsent campaign or a journey not ended places it.\n\nRequires API-key scope: `templates:write`.",
+        "description": "Deletes a shared block. Refused with 409 `IN_USE`, its `details` the usage, while a template, an unsent campaign or a journey not ended places it, or the brand kit names it as its default header or footer.\n\nRequires API-key scope: `templates:write`.",
         "parameters": [
           {
             "schema": {
@@ -56049,6 +57176,7 @@
                             "name": "Welcome series"
                           }
                         ],
+                        "brandKit": false,
                         "hasMore": false
                       }
                     }
@@ -56808,7 +57936,7 @@
                         "journeys": [],
                         "journeysWithEnrollments": [],
                         "messages": [],
-                        "brandTheme": false,
+                        "brandKit": false,
                         "hasMore": false
                       }
                     }
@@ -56999,6 +58127,7 @@
                             "https://acme-shop.com"
                           ],
                           "doubleOptIn": true,
+                          "notifyUserIds": [],
                           "captcha": null,
                           "acceptingSubmissions": true,
                           "closesAt": null,
@@ -57109,6 +58238,7 @@
                       "https://acme-shop.com"
                     ],
                     "doubleOptIn": true,
+                    "notifyUserIds": [],
                     "theme": {
                       "accentColor": "#b4461f",
                       "fontFamily": "sans",
@@ -57207,6 +58337,7 @@
                         ],
                         "refusedOrigins": [],
                         "doubleOptIn": true,
+                        "notifyUserIds": [],
                         "theme": {
                           "accentColor": "#b4461f",
                           "fontFamily": "sans",
@@ -57393,6 +58524,7 @@
                         ],
                         "refusedOrigins": [],
                         "doubleOptIn": true,
+                        "notifyUserIds": [],
                         "theme": {
                           "accentColor": "#b4461f",
                           "fontFamily": "sans",
@@ -57576,6 +58708,7 @@
                         ],
                         "refusedOrigins": [],
                         "doubleOptIn": true,
+                        "notifyUserIds": [],
                         "theme": {
                           "accentColor": "#b4461f",
                           "fontFamily": "sans",
@@ -58111,6 +59244,7 @@
                         ],
                         "refusedOrigins": [],
                         "doubleOptIn": true,
+                        "notifyUserIds": [],
                         "theme": {
                           "accentColor": "#b4461f",
                           "fontFamily": "sans",
@@ -58286,6 +59420,7 @@
                         ],
                         "refusedOrigins": [],
                         "doubleOptIn": true,
+                        "notifyUserIds": [],
                         "theme": {
                           "accentColor": "#b4461f",
                           "fontFamily": "sans",
@@ -58462,6 +59597,7 @@
                         ],
                         "refusedOrigins": [],
                         "doubleOptIn": true,
+                        "notifyUserIds": [],
                         "theme": {
                           "accentColor": "#b4461f",
                           "fontFamily": "sans",
@@ -58540,7 +59676,7 @@
         "tags": [
           "forms"
         ],
-        "description": "Returns an archived form to the list. A form that was published is live again at once, so an agent key cannot unarchive a published form (403 `AGENT_KEY_REFUSED`).\n\nRequires API-key scope: `forms:write`.",
+        "description": "Returns an archived form to the list. A form that was published is live again at once, so an agent key cannot unarchive a published form (403 `AGENT_KEY_REFUSED`). One whose list, or a list its `lists` field offers, was deleted while it was archived comes back as a `draft`: choose its lists and publish it again.\n\nRequires API-key scope: `forms:write`.",
         "parameters": [
           {
             "schema": {
@@ -58638,6 +59774,7 @@
                         ],
                         "refusedOrigins": [],
                         "doubleOptIn": true,
+                        "notifyUserIds": [],
                         "theme": {
                           "accentColor": "#b4461f",
                           "fontFamily": "sans",
@@ -58843,7 +59980,7 @@
                         "window": {
                           "from": "2026-09-07T23:00:00.000Z",
                           "to": "2026-10-07T23:00:00.000Z",
-                          "timezone": "Africa/Lagos"
+                          "timezone": "Europe/London"
                         }
                       }
                     }
@@ -59499,7 +60636,7 @@
         "tags": [
           "messages"
         ],
-        "description": "Lists what each device reported for one push message: any message whose `channel` is `push`, from a campaign, a journey or a transactional send. A push reaches every ready installation of the contact, so a message has one delivery per device. `accepted`: Apple, Google or the browser's push service took it, which is not proof the device showed it. `invalid`: the device is gone and its installation was retired. `rejected`: refused, often the app's key or a payload the provider would not take. `retryable`: will be tried again. `unknown`: the provider may have taken it, so it is not resent. `skipped`: not attempted, as when the app's key was refused for another device of the same app. `pending` and `started` are still in flight. A message that is not a push returns 404.\n\nRequires API-key scope: `messages:read`.",
+        "description": "Lists what each device reported for one push message: any message whose `channel` is `push`, from a campaign, a journey or a transactional send. A push reaches every ready installation of the contact, so a message has one delivery per device. `accepted`: Apple, Google or the browser's push service took it, which is not proof the device showed it. `invalid`: the device is gone and its installation was retired. `rejected`: refused, often the app's key or a payload the provider would not take. `retryable`: will be tried again. `unknown`: the provider may have taken it, so it is not resent. `skipped`: not attempted, as when the app's key was refused for another device of the same app. `pending` and `started` are still in flight. Any other message returns 404 `NOT_FOUND`: a missing one says `Message not found`, and one on another channel names it in `details.channel` (an email's delivery events are on the message itself).\n\nRequires API-key scope: `messages:read`.",
         "parameters": [
           {
             "schema": {
@@ -62650,7 +63787,7 @@
                           "nextAttemptAt": null,
                           "responseStatus": 503,
                           "failureReason": "HTTP 503",
-                          "requestBody": "{\"eventId\":\"01a0f2cf-4444-7555-8666-777788889999\",\"eventType\":\"contact.unsubscribed\",\"occurredAt\":\"2026-10-01T09:30:00.000Z\",\"data\":{\"contact\":{\"id\":\"0192f3a1-7c2e-7d4b-9a10-3e5f6a7b8c9d\",\"externalId\":\"customer-4821\",\"email\":\"amaka@example.com\",\"firstName\":\"Amaka\",\"lastName\":\"Obi\",\"phone\":\"+2348031234567\",\"timezone\":\"Africa/Lagos\",\"country\":\"NG\",\"locale\":\"en-NG\",\"rfm\":{\"group\":\"loyal\",\"recency\":3,\"frequency\":4,\"monetary\":5,\"purchaseCount\":6,\"totalSpent\":{\"currency\":\"USD\",\"value\":412.5},\"lastPurchasedAt\":\"2026-03-02T18:20:00.000Z\"},\"dates\":{\"birthday\":\"1992-03-14\"},\"attributes\":{\"plan\":\"pro\",\"favourite_spice\":\"smoked paprika\",\"orders\":3},\"consent\":{\"email\":false,\"push\":false},\"createdAt\":\"2026-09-12T08:15:00.000Z\",\"updatedAt\":\"2026-10-01T09:30:00.000Z\"},\"channel\":\"email\",\"messageId\":\"0192f3b0-1a2b-7c3d-8e4f-5a6b7c8d9e0f\",\"campaignId\":\"0192f3d3-5e6f-7071-8c83-9e0f1a2b3c4d\",\"topicId\":null}}",
+                          "requestBody": "{\"eventId\":\"01a0f2cf-4444-7555-8666-777788889999\",\"eventType\":\"contact.unsubscribed\",\"occurredAt\":\"2026-10-01T09:30:00.000Z\",\"data\":{\"contact\":{\"id\":\"0192f3a1-7c2e-7d4b-9a10-3e5f6a7b8c9d\",\"externalId\":\"customer-4821\",\"email\":\"amaka@example.com\",\"firstName\":\"Amaka\",\"lastName\":\"Obi\",\"phone\":\"+447700900123\",\"timezone\":\"Europe/London\",\"country\":\"GB\",\"locale\":\"en-NG\",\"rfm\":{\"group\":\"loyal\",\"recency\":3,\"frequency\":4,\"monetary\":5,\"purchaseCount\":6,\"totalSpent\":{\"currency\":\"USD\",\"value\":412.5},\"lastPurchasedAt\":\"2026-03-02T18:20:00.000Z\"},\"dates\":{\"birthday\":\"1992-03-14\"},\"attributes\":{\"plan\":\"pro\",\"favourite_spice\":\"smoked paprika\",\"orders\":3},\"consent\":{\"email\":false,\"push\":false},\"createdAt\":\"2026-09-12T08:15:00.000Z\",\"updatedAt\":\"2026-10-01T09:30:00.000Z\"},\"channel\":\"email\",\"messageId\":\"0192f3b0-1a2b-7c3d-8e4f-5a6b7c8d9e0f\",\"campaignId\":\"0192f3d3-5e6f-7071-8c83-9e0f1a2b3c4d\",\"topicId\":null}}",
                           "responseBody": "Service Unavailable",
                           "createdAt": "2026-10-02T14:05:00.000Z",
                           "deliveredAt": null
@@ -62892,7 +64029,7 @@
                         "nextAttemptAt": "2026-10-02T14:05:00.000Z",
                         "responseStatus": 503,
                         "failureReason": null,
-                        "requestBody": "{\"eventId\":\"01a0f2cf-4444-7555-8666-777788889999\",\"eventType\":\"contact.unsubscribed\",\"occurredAt\":\"2026-10-01T09:30:00.000Z\",\"data\":{\"contact\":{\"id\":\"0192f3a1-7c2e-7d4b-9a10-3e5f6a7b8c9d\",\"externalId\":\"customer-4821\",\"email\":\"amaka@example.com\",\"firstName\":\"Amaka\",\"lastName\":\"Obi\",\"phone\":\"+2348031234567\",\"timezone\":\"Africa/Lagos\",\"country\":\"NG\",\"locale\":\"en-NG\",\"rfm\":{\"group\":\"loyal\",\"recency\":3,\"frequency\":4,\"monetary\":5,\"purchaseCount\":6,\"totalSpent\":{\"currency\":\"USD\",\"value\":412.5},\"lastPurchasedAt\":\"2026-03-02T18:20:00.000Z\"},\"dates\":{\"birthday\":\"1992-03-14\"},\"attributes\":{\"plan\":\"pro\",\"favourite_spice\":\"smoked paprika\",\"orders\":3},\"consent\":{\"email\":false,\"push\":false},\"createdAt\":\"2026-09-12T08:15:00.000Z\",\"updatedAt\":\"2026-10-01T09:30:00.000Z\"},\"channel\":\"email\",\"messageId\":\"0192f3b0-1a2b-7c3d-8e4f-5a6b7c8d9e0f\",\"campaignId\":\"0192f3d3-5e6f-7071-8c83-9e0f1a2b3c4d\",\"topicId\":null}}",
+                        "requestBody": "{\"eventId\":\"01a0f2cf-4444-7555-8666-777788889999\",\"eventType\":\"contact.unsubscribed\",\"occurredAt\":\"2026-10-01T09:30:00.000Z\",\"data\":{\"contact\":{\"id\":\"0192f3a1-7c2e-7d4b-9a10-3e5f6a7b8c9d\",\"externalId\":\"customer-4821\",\"email\":\"amaka@example.com\",\"firstName\":\"Amaka\",\"lastName\":\"Obi\",\"phone\":\"+447700900123\",\"timezone\":\"Europe/London\",\"country\":\"GB\",\"locale\":\"en-NG\",\"rfm\":{\"group\":\"loyal\",\"recency\":3,\"frequency\":4,\"monetary\":5,\"purchaseCount\":6,\"totalSpent\":{\"currency\":\"USD\",\"value\":412.5},\"lastPurchasedAt\":\"2026-03-02T18:20:00.000Z\"},\"dates\":{\"birthday\":\"1992-03-14\"},\"attributes\":{\"plan\":\"pro\",\"favourite_spice\":\"smoked paprika\",\"orders\":3},\"consent\":{\"email\":false,\"push\":false},\"createdAt\":\"2026-09-12T08:15:00.000Z\",\"updatedAt\":\"2026-10-01T09:30:00.000Z\"},\"channel\":\"email\",\"messageId\":\"0192f3b0-1a2b-7c3d-8e4f-5a6b7c8d9e0f\",\"campaignId\":\"0192f3d3-5e6f-7071-8c83-9e0f1a2b3c4d\",\"topicId\":null}}",
                         "responseBody": "Service Unavailable",
                         "createdAt": "2026-10-02T14:05:00.000Z",
                         "deliveredAt": null
@@ -63008,9 +64145,9 @@
                                 "email": "amaka@example.com",
                                 "firstName": "Amaka",
                                 "lastName": "Obi",
-                                "phone": "+2348031234567",
-                                "timezone": "Africa/Lagos",
-                                "country": "NG",
+                                "phone": "+447700900123",
+                                "timezone": "Europe/London",
+                                "country": "GB",
                                 "locale": "en-NG",
                                 "rfm": {
                                   "group": "loyal",
@@ -63326,7 +64463,7 @@
                         "window": {
                           "from": "2026-09-07T23:00:00.000Z",
                           "to": "2026-10-07T23:00:00.000Z",
-                          "timezone": "Africa/Lagos"
+                          "timezone": "Europe/London"
                         }
                       }
                     }
@@ -63469,7 +64606,7 @@
                     "value": {
                       "data": {
                         "generatedAt": "2026-10-08T12:00:00.000Z",
-                        "timezone": "Africa/Lagos",
+                        "timezone": "Europe/London",
                         "from": "2026-09-30T23:00:00.000Z",
                         "to": "2026-10-07T23:00:00.000Z",
                         "previousPeriod": {
@@ -63483,8 +64620,10 @@
                             "opened": 1640,
                             "openedByMachine": 480,
                             "clicked": 384,
+                            "simulated": 0,
                             "feedbackObserved": 4000,
                             "failed": 12,
+                            "failedBeforeSending": 8,
                             "skipped": 80,
                             "bounced": 48,
                             "complained": 4,
@@ -63496,8 +64635,10 @@
                             "opened": 1230,
                             "openedByMachine": 360,
                             "clicked": 288,
+                            "simulated": 0,
                             "feedbackObserved": 3000,
                             "failed": 9,
+                            "failedBeforeSending": 6,
                             "skipped": 60,
                             "bounced": 36,
                             "complained": 3,
@@ -63509,8 +64650,10 @@
                             "opened": 410,
                             "openedByMachine": 120,
                             "clicked": 96,
+                            "simulated": 0,
                             "feedbackObserved": 1000,
                             "failed": 3,
+                            "failedBeforeSending": 2,
                             "skipped": 20,
                             "bounced": 12,
                             "complained": 1,
@@ -63568,14 +64711,16 @@
                           "band": "healthy",
                           "limits": {
                             "watch": {
-                              "bounceRatio": 0.04,
-                              "complaintRatio": 0.0008
+                              "bounceRatio": 0.02,
+                              "complaintRatio": 0.0005
                             },
                             "critical": {
-                              "bounceRatio": 0.1,
-                              "complaintRatio": 0.0015
+                              "bounceRatio": 0.03,
+                              "complaintRatio": 0.0008
                             }
                           },
+                          "bounceRatio": 0.012,
+                          "complaintRatio": 0.00025,
                           "sampleSize": 4000,
                           "minimumSampleSize": 100,
                           "feedbackCoverage": 1,
@@ -63590,8 +64735,10 @@
                               "opened": 410,
                               "openedByMachine": 120,
                               "clicked": 96,
+                              "simulated": 0,
                               "feedbackObserved": 1000,
                               "failed": 3,
+                              "failedBeforeSending": 2,
                               "skipped": 20,
                               "bounced": 12,
                               "complained": 1,
@@ -63619,8 +64766,10 @@
                               "opened": 410,
                               "openedByMachine": 120,
                               "clicked": 96,
+                              "simulated": 0,
                               "feedbackObserved": 1000,
                               "failed": 3,
+                              "failedBeforeSending": 2,
                               "skipped": 20,
                               "bounced": 12,
                               "complained": 1,
@@ -63766,7 +64915,7 @@
                     "value": {
                       "data": {
                         "generatedAt": "2026-10-08T12:00:00.000Z",
-                        "timezone": "Africa/Lagos",
+                        "timezone": "Europe/London",
                         "from": "2026-09-30T23:00:00.000Z",
                         "to": "2026-10-07T23:00:00.000Z",
                         "previousPeriod": {
@@ -63985,7 +65134,7 @@
                     "summary": "Cart to order",
                     "value": {
                       "data": {
-                        "timezone": "Africa/Lagos",
+                        "timezone": "Europe/London",
                         "from": "2026-08-31T23:00:00.000Z",
                         "to": "2026-09-30T23:00:00.000Z",
                         "withinDays": 7,
@@ -64356,9 +65505,9 @@
                         {
                           "id": "0192f3c1-1a2b-7c3d-8e4f-5a6b7c8d9e0f",
                           "externalId": "tenant-lagos-01",
-                          "name": "Acme Shop Lagos",
-                          "country": "NG",
-                          "timezone": "Africa/Lagos",
+                          "name": "Juniper Kitchen London",
+                          "country": "GB",
+                          "timezone": "Europe/London",
                           "status": "active",
                           "suspendedAt": null,
                           "deletionRequestedAt": null,
@@ -64433,10 +65582,10 @@
                 "tenant": {
                   "summary": "A workspace for one of your tenants",
                   "value": {
-                    "name": "Acme Shop Lagos",
+                    "name": "Juniper Kitchen London",
                     "externalId": "tenant-lagos-01",
-                    "country": "NG",
-                    "timezone": "Africa/Lagos"
+                    "country": "GB",
+                    "timezone": "Europe/London"
                   }
                 }
               }
@@ -64479,9 +65628,9 @@
                       "data": {
                         "id": "0192f3c1-1a2b-7c3d-8e4f-5a6b7c8d9e0f",
                         "externalId": "tenant-lagos-01",
-                        "name": "Acme Shop Lagos",
-                        "country": "NG",
-                        "timezone": "Africa/Lagos",
+                        "name": "Juniper Kitchen London",
+                        "country": "GB",
+                        "timezone": "Europe/London",
                         "status": "active",
                         "suspendedAt": null,
                         "deletionRequestedAt": null,
@@ -64563,7 +65712,7 @@
               "type": "string",
               "pattern": "^[A-Za-z0-9._:-]{1,128}$"
             },
-            "example": "tenant-lagos-01",
+            "example": "tenant-london-01",
             "in": "path",
             "name": "externalId",
             "required": true,
@@ -64605,9 +65754,9 @@
                       "data": {
                         "id": "0192f3c1-1a2b-7c3d-8e4f-5a6b7c8d9e0f",
                         "externalId": "tenant-lagos-01",
-                        "name": "Acme Shop Lagos",
-                        "country": "NG",
-                        "timezone": "Africa/Lagos",
+                        "name": "Juniper Kitchen London",
+                        "country": "GB",
+                        "timezone": "Europe/London",
                         "status": "active",
                         "suspendedAt": null,
                         "deletionRequestedAt": null,
@@ -64675,7 +65824,7 @@
                 "rename": {
                   "summary": "Rename the workspace",
                   "value": {
-                    "name": "Acme Shop Nigeria"
+                    "name": "Juniper Kitchen UK"
                   }
                 }
               }
@@ -64688,7 +65837,7 @@
               "type": "string",
               "pattern": "^[A-Za-z0-9._:-]{1,128}$"
             },
-            "example": "tenant-lagos-01",
+            "example": "tenant-london-01",
             "in": "path",
             "name": "externalId",
             "required": true,
@@ -64731,9 +65880,9 @@
                       "data": {
                         "id": "0192f3c1-1a2b-7c3d-8e4f-5a6b7c8d9e0f",
                         "externalId": "tenant-lagos-01",
-                        "name": "Acme Shop Nigeria",
-                        "country": "NG",
-                        "timezone": "Africa/Lagos",
+                        "name": "Juniper Kitchen UK",
+                        "country": "GB",
+                        "timezone": "Europe/London",
                         "status": "active",
                         "suspendedAt": null,
                         "deletionRequestedAt": null,
@@ -64805,7 +65954,7 @@
               "type": "string",
               "pattern": "^[A-Za-z0-9._:-]{1,128}$"
             },
-            "example": "tenant-lagos-01",
+            "example": "tenant-london-01",
             "in": "path",
             "name": "externalId",
             "required": true,
@@ -64848,9 +65997,9 @@
                       "data": {
                         "id": "0192f3c1-1a2b-7c3d-8e4f-5a6b7c8d9e0f",
                         "externalId": "tenant-lagos-01",
-                        "name": "Acme Shop Lagos",
-                        "country": "NG",
-                        "timezone": "Africa/Lagos",
+                        "name": "Juniper Kitchen London",
+                        "country": "GB",
+                        "timezone": "Europe/London",
                         "status": "deleting",
                         "suspendedAt": null,
                         "deletionRequestedAt": "2026-10-02T14:05:00.000Z",
@@ -64918,7 +66067,7 @@
               "type": "string",
               "pattern": "^[A-Za-z0-9._:-]{1,128}$"
             },
-            "example": "tenant-lagos-01",
+            "example": "tenant-london-01",
             "in": "path",
             "name": "externalId",
             "required": true,
@@ -64964,9 +66113,9 @@
                       "data": {
                         "id": "0192f3c1-1a2b-7c3d-8e4f-5a6b7c8d9e0f",
                         "externalId": "tenant-lagos-01",
-                        "name": "Acme Shop Lagos",
-                        "country": "NG",
-                        "timezone": "Africa/Lagos",
+                        "name": "Juniper Kitchen London",
+                        "country": "GB",
+                        "timezone": "Europe/London",
                         "status": "suspended",
                         "suspendedAt": "2026-10-02T14:05:00.000Z",
                         "deletionRequestedAt": null,
@@ -65037,7 +66186,7 @@
               "type": "string",
               "pattern": "^[A-Za-z0-9._:-]{1,128}$"
             },
-            "example": "tenant-lagos-01",
+            "example": "tenant-london-01",
             "in": "path",
             "name": "externalId",
             "required": true,
@@ -65083,9 +66232,9 @@
                       "data": {
                         "id": "0192f3c1-1a2b-7c3d-8e4f-5a6b7c8d9e0f",
                         "externalId": "tenant-lagos-01",
-                        "name": "Acme Shop Lagos",
-                        "country": "NG",
-                        "timezone": "Africa/Lagos",
+                        "name": "Juniper Kitchen London",
+                        "country": "GB",
+                        "timezone": "Europe/London",
                         "status": "active",
                         "suspendedAt": null,
                         "deletionRequestedAt": null,
@@ -65156,7 +66305,7 @@
               "type": "string",
               "pattern": "^[A-Za-z0-9._:-]{1,128}$"
             },
-            "example": "tenant-lagos-01",
+            "example": "tenant-london-01",
             "in": "path",
             "name": "externalId",
             "required": true,
@@ -65202,9 +66351,9 @@
                       "data": {
                         "id": "0192f3c1-1a2b-7c3d-8e4f-5a6b7c8d9e0f",
                         "externalId": "tenant-lagos-01",
-                        "name": "Acme Shop Lagos",
-                        "country": "NG",
-                        "timezone": "Africa/Lagos",
+                        "name": "Juniper Kitchen London",
+                        "country": "GB",
+                        "timezone": "Europe/London",
                         "status": "active",
                         "suspendedAt": null,
                         "deletionRequestedAt": null,
