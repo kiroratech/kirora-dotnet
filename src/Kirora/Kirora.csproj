@@ -1,0 +1,37 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <PackageId>Kirora</PackageId>
+    <IsPackable>true</IsPackable>
+    <Version Condition="'$(KiroraReleaseVersion)' == ''">0.1.0-alpha.1</Version>
+    <Version Condition="'$(KiroraReleaseVersion)' != ''">$(KiroraReleaseVersion)</Version>
+    <Authors>Kirora</Authors>
+    <Description>Typed .NET 8 SDK for the Kirora API with complete pinned-spec endpoint coverage.</Description>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageTags>kirora;customer-engagement;email;push;sdk;api;dotnet</PackageTags>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <DebugType>portable</DebugType>
+    <RepositoryType Condition="'$(KiroraRepositoryUrl)' != ''">git</RepositoryType>
+    <RepositoryUrl Condition="'$(KiroraRepositoryUrl)' != ''">$(KiroraRepositoryUrl)</RepositoryUrl>
+    <PublishRepositoryUrl Condition="'$(KiroraRepositoryUrl)' != ''">true</PublishRepositoryUrl>
+    <PackageLicenseExpression Condition="'$(KiroraPackageLicenseExpression)' != ''">$(KiroraPackageLicenseExpression)</PackageLicenseExpression>
+    <PackageIcon Condition="'$(KiroraPackageIcon)' != ''">$(KiroraPackageIcon)</PackageIcon>
+    <EnableSourceLink Condition="'$(KiroraEnableSourceLink)' == ''">false</EnableSourceLink>
+    <EnableSourceLink Condition="'$(KiroraEnableSourceLink)' == 'true'">true</EnableSourceLink>
+    <IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Http" Version="8.0.1" />
+    <EmbeddedResource Include="../../spec/openapi.json" LogicalName="Kirora.openapi.json" />
+    <EmbeddedResource Include="../../spec/core-unions.json" LogicalName="Kirora.core-unions.json" />
+    <None Include="../../$(KiroraPackageIcon)" Condition="'$(KiroraPackageIcon)' != ''" Pack="true" PackagePath="$(KiroraPackageIcon)" />
+    <None Include="../../THIRD-PARTY-NOTICES.txt" Pack="true" PackagePath="/" />
+    <None Include="../../README.md" Pack="true" PackagePath="/" />
+  </ItemGroup>
+  <Target Name="GenerateSdkVersion" BeforeTargets="CoreCompile">
+    <WriteLinesToFile File="$(IntermediateOutputPath)SdkVersion.g.cs" Overwrite="true" Lines="namespace Kirora.Http { internal static class SdkVersion { internal const string Value = &quot;$(Version)&quot;%3B } }" />
+    <ItemGroup><Compile Include="$(IntermediateOutputPath)SdkVersion.g.cs" /></ItemGroup>
+  </Target>
+</Project>

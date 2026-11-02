@@ -1,0 +1,17 @@
+<Project>
+  <Import Project="$(KiroraReleaseProperties)" Condition="'$(KiroraReleaseProperties)' != ''" />
+  <PropertyGroup>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <Deterministic>true</Deterministic>
+    <IsPackable Condition="'$(MSBuildProjectName)' != 'Kirora'">false</IsPackable>
+    <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
+    <NuGetLockFilePath Condition="'$(PublishAot)' == 'true'">$(MSBuildProjectDirectory)/obj/$(RuntimeIdentifier)/packages.aot.lock.json</NuGetLockFilePath>
+    <NuGetAudit>true</NuGetAudit>
+    <NuGetAuditMode>all</NuGetAuditMode>
+    <!-- Do not infer metadata from an unrelated parent checkout. Release CI opts in after verifying the dedicated Git root. -->
+    <EnableSourceControlManagerQueries Condition="'$(KiroraEnableSourceLink)' != 'true'">false</EnableSourceControlManagerQueries>
+    <PathMap>$(MSBuildThisFileDirectory)=/_/</PathMap>
+  </PropertyGroup>
+</Project>

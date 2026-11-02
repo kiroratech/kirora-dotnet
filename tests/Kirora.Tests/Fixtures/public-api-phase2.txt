@@ -1,0 +1,1309 @@
+C:Kirora.Http.KiroraRateLimit:Void .ctor(Int64, Int64, Int64)
+C:Kirora.Http.KiroraResponseMetadata:Void .ctor(System.Net.HttpStatusCode, System.String, System.Nullable`1[System.TimeSpan], Kirora.Http.KiroraRateLimit, Boolean)
+C:Kirora.KiroraClient:Void .ctor(System.Net.Http.HttpClient, Kirora.KiroraOptions)
+C:Kirora.KiroraOptions:Void .ctor()
+C:Kirora.KiroraRequestOptions:Void .ctor()
+C:Kirora.Models.AddListContactsResponse:Void .ctor()
+C:Kirora.Models.AddedListContacts:Void .ctor()
+C:Kirora.Models.ApiCaller:Void .ctor()
+C:Kirora.Models.ApiCallerApiKey:Void .ctor()
+C:Kirora.Models.ApiCallerWorkspace:Void .ctor()
+C:Kirora.Models.CancelScheduledTransactionalMessageResponse:Void .ctor()
+C:Kirora.Models.ConsentChange:Void .ctor()
+C:Kirora.Models.ConsentStatementInput:Void .ctor()
+C:Kirora.Models.ContactConsent:Void .ctor()
+C:Kirora.Models.ContactDataExport:Void .ctor()
+C:Kirora.Models.ContactDataExportConsentChangesItem:Void .ctor()
+C:Kirora.Models.ContactDataExportConversionsItem:Void .ctor()
+C:Kirora.Models.ContactDataExportEventsItem:Void .ctor()
+C:Kirora.Models.ContactDataExportFormSubmissionsItem:Void .ctor()
+C:Kirora.Models.ContactDataExportJourneysItem:Void .ctor()
+C:Kirora.Models.ContactDataExportListsItem:Void .ctor()
+C:Kirora.Models.ContactDataExportMessagesItem:Void .ctor()
+C:Kirora.Models.ContactDataExportPushDevicesItem:Void .ctor()
+C:Kirora.Models.ContactDataExportSegmentsItem:Void .ctor()
+C:Kirora.Models.ContactDataExportSuppressionsItem:Void .ctor()
+C:Kirora.Models.ContactDataExportTopicsItem:Void .ctor()
+C:Kirora.Models.ContactDetail:Void .ctor()
+C:Kirora.Models.ContactDetailEmailSuppression:Void .ctor()
+C:Kirora.Models.ContactIdentifierByContactId:Void .ctor()
+C:Kirora.Models.ContactIdentifierByEmail:Void .ctor()
+C:Kirora.Models.ContactIdentifierByExternalId:Void .ctor()
+C:Kirora.Models.ContactIdentifierInputByContactId:Void .ctor()
+C:Kirora.Models.ContactIdentifierInputByEmail:Void .ctor()
+C:Kirora.Models.ContactIdentifierInputByExternalId:Void .ctor()
+C:Kirora.Models.ContactListMembership:Void .ctor()
+C:Kirora.Models.ContactListMeta:Void .ctor()
+C:Kirora.Models.ContactListMetaPagination:Void .ctor()
+C:Kirora.Models.ContactRfm:Void .ctor()
+C:Kirora.Models.ContactSegment:Void .ctor()
+C:Kirora.Models.ContactTopic:Void .ctor()
+C:Kirora.Models.ContactTopicChannels:Void .ctor()
+C:Kirora.Models.CreateListInput:Void .ctor()
+C:Kirora.Models.CreateListResponse:Void .ctor()
+C:Kirora.Models.CursorPaginationMeta:Void .ctor()
+C:Kirora.Models.CursorPaginationMetaPagination:Void .ctor()
+C:Kirora.Models.DeleteContactQuery:Void .ctor()
+C:Kirora.Models.DeleteContactsInput:Void .ctor()
+C:Kirora.Models.DeleteContactsResponse:Void .ctor()
+C:Kirora.Models.DeleteContactsResult:Void .ctor()
+C:Kirora.Models.DeleteContactsResultResultsItem:Void .ctor()
+C:Kirora.Models.DeleteListContactsResponse:Void .ctor()
+C:Kirora.Models.DeletePushInstallationQuery:Void .ctor()
+C:Kirora.Models.DeletedListContacts:Void .ctor()
+C:Kirora.Models.DurationOrZero:Void .ctor()
+C:Kirora.Models.DurationOrZeroInput:Void .ctor()
+C:Kirora.Models.EmailAttachmentInput:Void .ctor()
+C:Kirora.Models.EmailThreadingInput:Void .ctor()
+C:Kirora.Models.EventAccepted:Void .ctor()
+C:Kirora.Models.EventAcceptedContact:Void .ctor()
+C:Kirora.Models.EventContext:Void .ctor()
+C:Kirora.Models.EventContextCampaign:Void .ctor()
+C:Kirora.Models.EventContextDevice:Void .ctor()
+C:Kirora.Models.EventContextInput:Void .ctor()
+C:Kirora.Models.EventContextInputCampaign:Void .ctor()
+C:Kirora.Models.EventContextInputDevice:Void .ctor()
+C:Kirora.Models.EventContextInputLibrary:Void .ctor()
+C:Kirora.Models.EventContextInputPage:Void .ctor()
+C:Kirora.Models.EventContextLibrary:Void .ctor()
+C:Kirora.Models.EventContextPage:Void .ctor()
+C:Kirora.Models.EventRejected:Void .ctor()
+C:Kirora.Models.EventRejectedError:Void .ctor()
+C:Kirora.Models.FieldError:Void .ctor()
+C:Kirora.Models.GetContactExportQuery:Void .ctor()
+C:Kirora.Models.GetContactExportResponse:Void .ctor()
+C:Kirora.Models.GetContactQuery:Void .ctor()
+C:Kirora.Models.GetContactResponse:Void .ctor()
+C:Kirora.Models.GetListResponse:Void .ctor()
+C:Kirora.Models.GetListUsageResponse:Void .ctor()
+C:Kirora.Models.GetMessageContentResponse:Void .ctor()
+C:Kirora.Models.GetMessageResponse:Void .ctor()
+C:Kirora.Models.IdentifyContactInput:Void .ctor()
+C:Kirora.Models.IdentifyContactResponse:Void .ctor()
+C:Kirora.Models.IdentifyContactResponseMeta:Void .ctor()
+C:Kirora.Models.IdentifyContactsBatchInput:Void .ctor()
+C:Kirora.Models.IdentifyContactsBatchResponse:Void .ctor()
+C:Kirora.Models.IdentifyContactsBatchResult:Void .ctor()
+C:Kirora.Models.IdentifyContactsBatchResultResultsItemContactRefused:Void .ctor()
+C:Kirora.Models.IdentifyContactsBatchResultResultsItemContactRefusedError:Void .ctor()
+C:Kirora.Models.IdentifyContactsBatchResultResultsItemContactWritten:Void .ctor()
+C:Kirora.Models.JourneyEnrollment:Void .ctor()
+C:Kirora.Models.JourneyEnrollmentCurrentStep:Void .ctor()
+C:Kirora.Models.JourneyEnrollmentJourney:Void .ctor()
+C:Kirora.Models.List:Void .ctor()
+C:Kirora.Models.ListContactConsentChangesQuery:Void .ctor()
+C:Kirora.Models.ListContactConsentChangesResponse:Void .ctor()
+C:Kirora.Models.ListContactEventsQuery:Void .ctor()
+C:Kirora.Models.ListContactEventsResponse:Void .ctor()
+C:Kirora.Models.ListContactJourneysQuery:Void .ctor()
+C:Kirora.Models.ListContactJourneysResponse:Void .ctor()
+C:Kirora.Models.ListContactListsQuery:Void .ctor()
+C:Kirora.Models.ListContactListsResponse:Void .ctor()
+C:Kirora.Models.ListContactMessagesQuery:Void .ctor()
+C:Kirora.Models.ListContactMessagesResponse:Void .ctor()
+C:Kirora.Models.ListContactSegmentsQuery:Void .ctor()
+C:Kirora.Models.ListContactSegmentsResponse:Void .ctor()
+C:Kirora.Models.ListContactTopicsQuery:Void .ctor()
+C:Kirora.Models.ListContactTopicsResponse:Void .ctor()
+C:Kirora.Models.ListContactsInputByContactIds:Void .ctor()
+C:Kirora.Models.ListContactsInputByEmails:Void .ctor()
+C:Kirora.Models.ListContactsInputByExternalIds:Void .ctor()
+C:Kirora.Models.ListContactsQuery:Void .ctor()
+C:Kirora.Models.ListContactsResponse:Void .ctor()
+C:Kirora.Models.ListListsQuery:Void .ctor()
+C:Kirora.Models.ListListsResponse:Void .ctor()
+C:Kirora.Models.ListPushInstallationsQuery:Void .ctor()
+C:Kirora.Models.ListPushInstallationsResponse:Void .ctor()
+C:Kirora.Models.ListUsage:Void .ctor()
+C:Kirora.Models.ListUsageCampaignsItem:Void .ctor()
+C:Kirora.Models.ListUsageFormsItem:Void .ctor()
+C:Kirora.Models.ListUsageJourneysItem:Void .ctor()
+C:Kirora.Models.ListUsageSegmentsItem:Void .ctor()
+C:Kirora.Models.MergeContactInput:Void .ctor()
+C:Kirora.Models.MergeContactsQuery:Void .ctor()
+C:Kirora.Models.MergeContactsResponse:Void .ctor()
+C:Kirora.Models.MessageContent:Void .ctor()
+C:Kirora.Models.MessageContentEmail:Void .ctor()
+C:Kirora.Models.MessageContentPush:Void .ctor()
+C:Kirora.Models.MessageContentPushButtonsItem:Void .ctor()
+C:Kirora.Models.MessageContentPushOverrides:Void .ctor()
+C:Kirora.Models.MessageContentPushOverridesAndroid:Void .ctor()
+C:Kirora.Models.MessageContentPushOverridesAndroidButtonsItem:Void .ctor()
+C:Kirora.Models.MessageContentPushOverridesIos:Void .ctor()
+C:Kirora.Models.MessageContentPushOverridesIosButtonsItem:Void .ctor()
+C:Kirora.Models.MessageContentPushOverridesWeb:Void .ctor()
+C:Kirora.Models.MessageContentPushOverridesWebButtonsItem:Void .ctor()
+C:Kirora.Models.Money:Void .ctor()
+C:Kirora.Models.OutboundMessage:Void .ctor()
+C:Kirora.Models.OutboundMessageBounce:Void .ctor()
+C:Kirora.Models.OutboundMessageCampaign:Void .ctor()
+C:Kirora.Models.OutboundMessageContact:Void .ctor()
+C:Kirora.Models.OutboundMessageFailure:Void .ctor()
+C:Kirora.Models.OutboundMessageJourney:Void .ctor()
+C:Kirora.Models.OutboundMessageSkip:Void .ctor()
+C:Kirora.Models.OutboundMessageTemplate:Void .ctor()
+C:Kirora.Models.PushInstallation:Void .ctor()
+C:Kirora.Models.RegisterPushInstallationInputPermissionDenied:Void .ctor()
+C:Kirora.Models.RegisterPushInstallationInputVariant1NativeToken:Void .ctor()
+C:Kirora.Models.RegisterPushInstallationInputVariant1WebPushSubscription:Void .ctor()
+C:Kirora.Models.RegisterPushInstallationInputVariant1WebPushSubscriptionSubscription:Void .ctor()
+C:Kirora.Models.RegisterPushInstallationInputVariant1WebPushSubscriptionSubscriptionKeys:Void .ctor()
+C:Kirora.Models.RegisterPushInstallationQuery:Void .ctor()
+C:Kirora.Models.RegisterPushInstallationResponse:Void .ctor()
+C:Kirora.Models.SendTransactionalInput:Void .ctor()
+C:Kirora.Models.SendTransactionalInputEmailInlineContent:Void .ctor()
+C:Kirora.Models.SendTransactionalInputEmailStoredTemplate:Void .ctor()
+C:Kirora.Models.SendTransactionalMessageResponse:Void .ctor()
+C:Kirora.Models.SendTransactionalMessagesBatchInput:Void .ctor()
+C:Kirora.Models.SendTransactionalMessagesBatchInputMessagesItem:Void .ctor()
+C:Kirora.Models.SendTransactionalMessagesBatchResponse:Void .ctor()
+C:Kirora.Models.SendTransactionalMessagesBatchResult:Void .ctor()
+C:Kirora.Models.SendTransactionalMessagesBatchResultResultsItemAccepted:Void .ctor()
+C:Kirora.Models.SendTransactionalMessagesBatchResultResultsItemRejected:Void .ctor()
+C:Kirora.Models.SendTransactionalMessagesBatchResultResultsItemRejectedError:Void .ctor()
+C:Kirora.Models.SetContactConsentInput:Void .ctor()
+C:Kirora.Models.SetContactTopicInput:Void .ctor()
+C:Kirora.Models.SetContactTopicQuery:Void .ctor()
+C:Kirora.Models.SetContactTopicResponse:Void .ctor()
+C:Kirora.Models.TrackEventInputByContactId:Void .ctor()
+C:Kirora.Models.TrackEventInputByEmail:Void .ctor()
+C:Kirora.Models.TrackEventInputByExternalId:Void .ctor()
+C:Kirora.Models.TrackEventResponse:Void .ctor()
+C:Kirora.Models.TrackEventsBatchInput:Void .ctor()
+C:Kirora.Models.TrackEventsBatchInputEventsItem:Void .ctor()
+C:Kirora.Models.TrackEventsBatchResponse:Void .ctor()
+C:Kirora.Models.TrackEventsBatchResult:Void .ctor()
+C:Kirora.Models.TrackEventsBatchResultResultsItemEventRecorded:Void .ctor()
+C:Kirora.Models.TrackEventsBatchResultResultsItemEventRefused:Void .ctor()
+C:Kirora.Models.TrackEventsBatchResultResultsItemEventRefusedError:Void .ctor()
+C:Kirora.Models.TrackedEvent:Void .ctor()
+C:Kirora.Models.TransactionalEmailTrackingInput:Void .ctor()
+C:Kirora.Models.TransactionalMessage:Void .ctor()
+C:Kirora.Models.TransactionalPushInput:Void .ctor()
+C:Kirora.Models.TransactionalPushInputButtonsItem:Void .ctor()
+C:Kirora.Models.TransactionalPushInputOverrides:Void .ctor()
+C:Kirora.Models.TransactionalPushInputOverridesAndroid:Void .ctor()
+C:Kirora.Models.TransactionalPushInputOverridesAndroidButtonsItem:Void .ctor()
+C:Kirora.Models.TransactionalPushInputOverridesIos:Void .ctor()
+C:Kirora.Models.TransactionalPushInputOverridesIosButtonsItem:Void .ctor()
+C:Kirora.Models.TransactionalPushInputOverridesWeb:Void .ctor()
+C:Kirora.Models.TransactionalPushInputOverridesWebButtonsItem:Void .ctor()
+C:Kirora.Models.TransactionalRecipientInputByContactId:Void .ctor()
+C:Kirora.Models.TransactionalRecipientInputByEmail:Void .ctor()
+C:Kirora.Models.TransactionalRecipientInputByExternalId:Void .ctor()
+C:Kirora.Models.TransactionalSendResult:Void .ctor()
+C:Kirora.Models.UpdateContactInput:Void .ctor()
+C:Kirora.Models.UpdateContactQuery:Void .ctor()
+C:Kirora.Models.UpdateContactResponse:Void .ctor()
+C:Kirora.Models.UpdateListInput:Void .ctor()
+C:Kirora.Models.UpdateListResponse:Void .ctor()
+C:Kirora.Serialization.Optional`1:Void .ctor(T)
+M:Kirora.Http.KiroraRateLimit:Boolean Equals(Kirora.Http.KiroraRateLimit)
+M:Kirora.Http.KiroraRateLimit:Boolean Equals(System.Object)
+M:Kirora.Http.KiroraRateLimit:Boolean op_Equality(Kirora.Http.KiroraRateLimit, Kirora.Http.KiroraRateLimit)
+M:Kirora.Http.KiroraRateLimit:Boolean op_Inequality(Kirora.Http.KiroraRateLimit, Kirora.Http.KiroraRateLimit)
+M:Kirora.Http.KiroraRateLimit:Int32 GetHashCode()
+M:Kirora.Http.KiroraRateLimit:Kirora.Http.KiroraRateLimit <Clone>$()
+M:Kirora.Http.KiroraRateLimit:System.String ToString()
+M:Kirora.Http.KiroraRateLimit:Void Deconstruct(Int64 ByRef, Int64 ByRef, Int64 ByRef)
+M:Kirora.Http.KiroraResponseMetadata:Boolean Equals(Kirora.Http.KiroraResponseMetadata)
+M:Kirora.Http.KiroraResponseMetadata:Boolean Equals(System.Object)
+M:Kirora.Http.KiroraResponseMetadata:Boolean op_Equality(Kirora.Http.KiroraResponseMetadata, Kirora.Http.KiroraResponseMetadata)
+M:Kirora.Http.KiroraResponseMetadata:Boolean op_Inequality(Kirora.Http.KiroraResponseMetadata, Kirora.Http.KiroraResponseMetadata)
+M:Kirora.Http.KiroraResponseMetadata:Int32 GetHashCode()
+M:Kirora.Http.KiroraResponseMetadata:Kirora.Http.KiroraResponseMetadata <Clone>$()
+M:Kirora.Http.KiroraResponseMetadata:System.String ToString()
+M:Kirora.Http.KiroraResponseMetadata:Void Deconstruct(System.Net.HttpStatusCode ByRef, System.String ByRef, System.Nullable`1[System.TimeSpan] ByRef, Kirora.Http.KiroraRateLimit ByRef, Boolean ByRef)
+M:Kirora.KiroraClient:Kirora.KiroraClient ForWorkspace(System.String)
+M:Kirora.KiroraClient:System.Threading.Tasks.Task`1[Kirora.Models.ApiCaller] GetMeAsync(System.Threading.CancellationToken)
+M:Kirora.Models.ContactIdentifier:Kirora.Models.ContactIdentifier op_Implicit(Kirora.Models.ContactIdentifierByContactId)
+M:Kirora.Models.ContactIdentifier:Kirora.Models.ContactIdentifier op_Implicit(Kirora.Models.ContactIdentifierByEmail)
+M:Kirora.Models.ContactIdentifier:Kirora.Models.ContactIdentifier op_Implicit(Kirora.Models.ContactIdentifierByExternalId)
+M:Kirora.Models.ContactIdentifier:T As[T]()
+M:Kirora.Models.ContactIdentifierInput:Kirora.Models.ContactIdentifierInput op_Implicit(Kirora.Models.ContactIdentifierInputByContactId)
+M:Kirora.Models.ContactIdentifierInput:Kirora.Models.ContactIdentifierInput op_Implicit(Kirora.Models.ContactIdentifierInputByEmail)
+M:Kirora.Models.ContactIdentifierInput:Kirora.Models.ContactIdentifierInput op_Implicit(Kirora.Models.ContactIdentifierInputByExternalId)
+M:Kirora.Models.ContactIdentifierInput:T As[T]()
+M:Kirora.Models.Event:Kirora.Models.Event op_Implicit(Kirora.Models.EventAccepted)
+M:Kirora.Models.Event:Kirora.Models.Event op_Implicit(Kirora.Models.EventRejected)
+M:Kirora.Models.Event:T As[T]()
+M:Kirora.Models.IdentifyContactInputTopicsValue:Kirora.Models.IdentifyContactInputTopicsValue op_Implicit(Boolean)
+M:Kirora.Models.IdentifyContactInputTopicsValue:Kirora.Models.IdentifyContactInputTopicsValue op_Implicit(System.Collections.Generic.Dictionary`2[System.String,System.Boolean])
+M:Kirora.Models.IdentifyContactInputTopicsValue:T As[T]()
+M:Kirora.Models.IdentifyContactsBatchResultResultsItem:Kirora.Models.IdentifyContactsBatchResultResultsItem op_Implicit(Kirora.Models.IdentifyContactsBatchResultResultsItemContactRefused)
+M:Kirora.Models.IdentifyContactsBatchResultResultsItem:Kirora.Models.IdentifyContactsBatchResultResultsItem op_Implicit(Kirora.Models.IdentifyContactsBatchResultResultsItemContactWritten)
+M:Kirora.Models.IdentifyContactsBatchResultResultsItem:T As[T]()
+M:Kirora.Models.ListContactsInput:Kirora.Models.ListContactsInput op_Implicit(Kirora.Models.ListContactsInputByContactIds)
+M:Kirora.Models.ListContactsInput:Kirora.Models.ListContactsInput op_Implicit(Kirora.Models.ListContactsInputByEmails)
+M:Kirora.Models.ListContactsInput:Kirora.Models.ListContactsInput op_Implicit(Kirora.Models.ListContactsInputByExternalIds)
+M:Kirora.Models.ListContactsInput:T As[T]()
+M:Kirora.Models.RegisterPushInstallationInput:Kirora.Models.RegisterPushInstallationInput op_Implicit(Kirora.Models.RegisterPushInstallationInputPermissionDenied)
+M:Kirora.Models.RegisterPushInstallationInput:Kirora.Models.RegisterPushInstallationInput op_Implicit(Kirora.Models.RegisterPushInstallationInputVariant1)
+M:Kirora.Models.RegisterPushInstallationInput:T As[T]()
+M:Kirora.Models.RegisterPushInstallationInputVariant1:Kirora.Models.RegisterPushInstallationInputVariant1 op_Implicit(Kirora.Models.RegisterPushInstallationInputVariant1NativeToken)
+M:Kirora.Models.RegisterPushInstallationInputVariant1:Kirora.Models.RegisterPushInstallationInputVariant1 op_Implicit(Kirora.Models.RegisterPushInstallationInputVariant1WebPushSubscription)
+M:Kirora.Models.RegisterPushInstallationInputVariant1:T As[T]()
+M:Kirora.Models.SendTransactionalInputEmail:Kirora.Models.SendTransactionalInputEmail op_Implicit(Kirora.Models.SendTransactionalInputEmailInlineContent)
+M:Kirora.Models.SendTransactionalInputEmail:Kirora.Models.SendTransactionalInputEmail op_Implicit(Kirora.Models.SendTransactionalInputEmailStoredTemplate)
+M:Kirora.Models.SendTransactionalInputEmail:T As[T]()
+M:Kirora.Models.SendTransactionalMessagesBatchResultResultsItem:Kirora.Models.SendTransactionalMessagesBatchResultResultsItem op_Implicit(Kirora.Models.SendTransactionalMessagesBatchResultResultsItemAccepted)
+M:Kirora.Models.SendTransactionalMessagesBatchResultResultsItem:Kirora.Models.SendTransactionalMessagesBatchResultResultsItem op_Implicit(Kirora.Models.SendTransactionalMessagesBatchResultResultsItemRejected)
+M:Kirora.Models.SendTransactionalMessagesBatchResultResultsItem:T As[T]()
+M:Kirora.Models.SetContactTopicInputSubscribed:Kirora.Models.SetContactTopicInputSubscribed op_Implicit(Boolean)
+M:Kirora.Models.SetContactTopicInputSubscribed:Kirora.Models.SetContactTopicInputSubscribed op_Implicit(System.Collections.Generic.Dictionary`2[System.String,System.Boolean])
+M:Kirora.Models.SetContactTopicInputSubscribed:T As[T]()
+M:Kirora.Models.TrackEventInput:Kirora.Models.TrackEventInput op_Implicit(Kirora.Models.TrackEventInputByContactId)
+M:Kirora.Models.TrackEventInput:Kirora.Models.TrackEventInput op_Implicit(Kirora.Models.TrackEventInputByEmail)
+M:Kirora.Models.TrackEventInput:Kirora.Models.TrackEventInput op_Implicit(Kirora.Models.TrackEventInputByExternalId)
+M:Kirora.Models.TrackEventInput:T As[T]()
+M:Kirora.Models.TrackEventsBatchResultResultsItem:Kirora.Models.TrackEventsBatchResultResultsItem op_Implicit(Kirora.Models.TrackEventsBatchResultResultsItemEventRecorded)
+M:Kirora.Models.TrackEventsBatchResultResultsItem:Kirora.Models.TrackEventsBatchResultResultsItem op_Implicit(Kirora.Models.TrackEventsBatchResultResultsItemEventRefused)
+M:Kirora.Models.TrackEventsBatchResultResultsItem:T As[T]()
+M:Kirora.Models.TransactionalRecipientInput:Kirora.Models.TransactionalRecipientInput op_Implicit(Kirora.Models.TransactionalRecipientInputByContactId)
+M:Kirora.Models.TransactionalRecipientInput:Kirora.Models.TransactionalRecipientInput op_Implicit(Kirora.Models.TransactionalRecipientInputByEmail)
+M:Kirora.Models.TransactionalRecipientInput:Kirora.Models.TransactionalRecipientInput op_Implicit(Kirora.Models.TransactionalRecipientInputByExternalId)
+M:Kirora.Models.TransactionalRecipientInput:T As[T]()
+M:Kirora.Resources.ContactsResource:System.Collections.Generic.IAsyncEnumerable`1[Kirora.Models.ConsentChange] ListConsentChangesAllAsync(System.String, Kirora.Models.ListContactConsentChangesQuery, Kirora.KiroraRequestOptions, System.Threading.CancellationToken)
+M:Kirora.Resources.ContactsResource:System.Collections.Generic.IAsyncEnumerable`1[Kirora.Models.ContactDetail] ListAllAsync(Kirora.Models.ListContactsQuery, Kirora.KiroraRequestOptions, System.Threading.CancellationToken)
+M:Kirora.Resources.ContactsResource:System.Collections.Generic.IAsyncEnumerable`1[Kirora.Models.ContactListMembership] ListListsAllAsync(System.String, Kirora.Models.ListContactListsQuery, Kirora.KiroraRequestOptions, System.Threading.CancellationToken)
+M:Kirora.Resources.ContactsResource:System.Collections.Generic.IAsyncEnumerable`1[Kirora.Models.ContactSegment] ListSegmentsAllAsync(System.String, Kirora.Models.ListContactSegmentsQuery, Kirora.KiroraRequestOptions, System.Threading.CancellationToken)
+M:Kirora.Resources.ContactsResource:System.Collections.Generic.IAsyncEnumerable`1[Kirora.Models.Event] ListEventsAllAsync(System.String, Kirora.Models.ListContactEventsQuery, Kirora.KiroraRequestOptions, System.Threading.CancellationToken)
+M:Kirora.Resources.ContactsResource:System.Collections.Generic.IAsyncEnumerable`1[Kirora.Models.JourneyEnrollment] ListJourneysAllAsync(System.String, Kirora.Models.ListContactJourneysQuery, Kirora.KiroraRequestOptions, System.Threading.CancellationToken)
+M:Kirora.Resources.ContactsResource:System.Collections.Generic.IAsyncEnumerable`1[Kirora.Models.OutboundMessage] ListMessagesAllAsync(System.String, Kirora.Models.ListContactMessagesQuery, Kirora.KiroraRequestOptions, System.Threading.CancellationToken)
+M:Kirora.Resources.ContactsResource:System.Collections.Generic.IAsyncEnumerable`1[Kirora.Models.PushInstallation] ListInstallationsAllAsync(System.String, Kirora.Models.ListPushInstallationsQuery, Kirora.KiroraRequestOptions, System.Threading.CancellationToken)
+M:Kirora.Resources.ContactsResource:System.Threading.Tasks.Task DeleteAsync(System.String, Kirora.Models.DeleteContactQuery, Kirora.KiroraRequestOptions, System.Threading.CancellationToken)
+M:Kirora.Resources.ContactsResource:System.Threading.Tasks.Task DeleteInstallationAsync(System.String, System.String, Kirora.Models.DeletePushInstallationQuery, Kirora.KiroraRequestOptions, System.Threading.CancellationToken)
+M:Kirora.Resources.ContactsResource:System.Threading.Tasks.Task`1[Kirora.Models.DeleteContactsResponse] DeleteBatchAsync(Kirora.Models.DeleteContactsInput, Kirora.KiroraRequestOptions, System.Threading.CancellationToken)
+M:Kirora.Resources.ContactsResource:System.Threading.Tasks.Task`1[Kirora.Models.GetContactExportResponse] ExportAsync(System.String, Kirora.Models.GetContactExportQuery, Kirora.KiroraRequestOptions, System.Threading.CancellationToken)
+M:Kirora.Resources.ContactsResource:System.Threading.Tasks.Task`1[Kirora.Models.GetContactResponse] GetAsync(System.String, Kirora.Models.GetContactQuery, Kirora.KiroraRequestOptions, System.Threading.CancellationToken)
+M:Kirora.Resources.ContactsResource:System.Threading.Tasks.Task`1[Kirora.Models.IdentifyContactResponse] IdentifyAsync(Kirora.Models.IdentifyContactInput, Kirora.KiroraRequestOptions, System.Threading.CancellationToken)
+M:Kirora.Resources.ContactsResource:System.Threading.Tasks.Task`1[Kirora.Models.IdentifyContactsBatchResponse] IdentifyBatchAsync(Kirora.Models.IdentifyContactsBatchInput, Kirora.KiroraRequestOptions, System.Threading.CancellationToken)
+M:Kirora.Resources.ContactsResource:System.Threading.Tasks.Task`1[Kirora.Models.ListContactConsentChangesResponse] ListConsentChangesAsync(System.String, Kirora.Models.ListContactConsentChangesQuery, Kirora.KiroraRequestOptions, System.Threading.CancellationToken)
+M:Kirora.Resources.ContactsResource:System.Threading.Tasks.Task`1[Kirora.Models.ListContactEventsResponse] ListEventsAsync(System.String, Kirora.Models.ListContactEventsQuery, Kirora.KiroraRequestOptions, System.Threading.CancellationToken)
+M:Kirora.Resources.ContactsResource:System.Threading.Tasks.Task`1[Kirora.Models.ListContactJourneysResponse] ListJourneysAsync(System.String, Kirora.Models.ListContactJourneysQuery, Kirora.KiroraRequestOptions, System.Threading.CancellationToken)
+M:Kirora.Resources.ContactsResource:System.Threading.Tasks.Task`1[Kirora.Models.ListContactListsResponse] ListListsAsync(System.String, Kirora.Models.ListContactListsQuery, Kirora.KiroraRequestOptions, System.Threading.CancellationToken)
+M:Kirora.Resources.ContactsResource:System.Threading.Tasks.Task`1[Kirora.Models.ListContactMessagesResponse] ListMessagesAsync(System.String, Kirora.Models.ListContactMessagesQuery, Kirora.KiroraRequestOptions, System.Threading.CancellationToken)
+M:Kirora.Resources.ContactsResource:System.Threading.Tasks.Task`1[Kirora.Models.ListContactSegmentsResponse] ListSegmentsAsync(System.String, Kirora.Models.ListContactSegmentsQuery, Kirora.KiroraRequestOptions, System.Threading.CancellationToken)
+M:Kirora.Resources.ContactsResource:System.Threading.Tasks.Task`1[Kirora.Models.ListContactTopicsResponse] ListTopicsAsync(System.String, Kirora.Models.ListContactTopicsQuery, Kirora.KiroraRequestOptions, System.Threading.CancellationToken)
+M:Kirora.Resources.ContactsResource:System.Threading.Tasks.Task`1[Kirora.Models.ListContactsResponse] ListAsync(Kirora.Models.ListContactsQuery, Kirora.KiroraRequestOptions, System.Threading.CancellationToken)
+M:Kirora.Resources.ContactsResource:System.Threading.Tasks.Task`1[Kirora.Models.ListPushInstallationsResponse] ListInstallationsAsync(System.String, Kirora.Models.ListPushInstallationsQuery, Kirora.KiroraRequestOptions, System.Threading.CancellationToken)
+M:Kirora.Resources.ContactsResource:System.Threading.Tasks.Task`1[Kirora.Models.MergeContactsResponse] MergeAsync(System.String, Kirora.Models.MergeContactInput, Kirora.Models.MergeContactsQuery, Kirora.KiroraRequestOptions, System.Threading.CancellationToken)
+M:Kirora.Resources.ContactsResource:System.Threading.Tasks.Task`1[Kirora.Models.RegisterPushInstallationResponse] RegisterInstallationAsync(System.String, Kirora.Models.RegisterPushInstallationInput, Kirora.Models.RegisterPushInstallationQuery, Kirora.KiroraRequestOptions, System.Threading.CancellationToken)
+M:Kirora.Resources.ContactsResource:System.Threading.Tasks.Task`1[Kirora.Models.SetContactTopicResponse] SetTopicAsync(System.String, System.String, Kirora.Models.SetContactTopicInput, Kirora.Models.SetContactTopicQuery, Kirora.KiroraRequestOptions, System.Threading.CancellationToken)
+M:Kirora.Resources.ContactsResource:System.Threading.Tasks.Task`1[Kirora.Models.UpdateContactResponse] UpdateAsync(System.String, Kirora.Models.UpdateContactInput, Kirora.Models.UpdateContactQuery, Kirora.KiroraRequestOptions, System.Threading.CancellationToken)
+M:Kirora.Resources.EventsResource:System.Threading.Tasks.Task`1[Kirora.Models.TrackEventResponse] TrackAsync(Kirora.Models.TrackEventInput, Kirora.KiroraRequestOptions, System.Threading.CancellationToken)
+M:Kirora.Resources.EventsResource:System.Threading.Tasks.Task`1[Kirora.Models.TrackEventsBatchResponse] TrackBatchAsync(Kirora.Models.TrackEventsBatchInput, Kirora.KiroraRequestOptions, System.Threading.CancellationToken)
+M:Kirora.Resources.ListsResource:System.Collections.Generic.IAsyncEnumerable`1[Kirora.Models.List] ListAllAsync(Kirora.Models.ListListsQuery, Kirora.KiroraRequestOptions, System.Threading.CancellationToken)
+M:Kirora.Resources.ListsResource:System.Threading.Tasks.Task DeleteAsync(System.String, Kirora.KiroraRequestOptions, System.Threading.CancellationToken)
+M:Kirora.Resources.ListsResource:System.Threading.Tasks.Task`1[Kirora.Models.AddListContactsResponse] AddContactsAsync(System.String, Kirora.Models.ListContactsInput, Kirora.KiroraRequestOptions, System.Threading.CancellationToken)
+M:Kirora.Resources.ListsResource:System.Threading.Tasks.Task`1[Kirora.Models.CreateListResponse] CreateAsync(Kirora.Models.CreateListInput, Kirora.KiroraRequestOptions, System.Threading.CancellationToken)
+M:Kirora.Resources.ListsResource:System.Threading.Tasks.Task`1[Kirora.Models.DeleteListContactsResponse] RemoveContactsAsync(System.String, Kirora.Models.ListContactsInput, Kirora.KiroraRequestOptions, System.Threading.CancellationToken)
+M:Kirora.Resources.ListsResource:System.Threading.Tasks.Task`1[Kirora.Models.GetListResponse] GetAsync(System.String, Kirora.KiroraRequestOptions, System.Threading.CancellationToken)
+M:Kirora.Resources.ListsResource:System.Threading.Tasks.Task`1[Kirora.Models.GetListUsageResponse] GetUsageAsync(System.String, Kirora.KiroraRequestOptions, System.Threading.CancellationToken)
+M:Kirora.Resources.ListsResource:System.Threading.Tasks.Task`1[Kirora.Models.ListListsResponse] ListAsync(Kirora.Models.ListListsQuery, Kirora.KiroraRequestOptions, System.Threading.CancellationToken)
+M:Kirora.Resources.ListsResource:System.Threading.Tasks.Task`1[Kirora.Models.UpdateListResponse] UpdateAsync(System.String, Kirora.Models.UpdateListInput, Kirora.KiroraRequestOptions, System.Threading.CancellationToken)
+M:Kirora.Resources.MessagesResource:System.Threading.Tasks.Task`1[Kirora.Models.GetMessageContentResponse] GetContentAsync(System.String, Kirora.KiroraRequestOptions, System.Threading.CancellationToken)
+M:Kirora.Resources.MessagesResource:System.Threading.Tasks.Task`1[Kirora.Models.GetMessageResponse] GetAsync(System.String, Kirora.KiroraRequestOptions, System.Threading.CancellationToken)
+M:Kirora.Resources.TransactionalResource:System.Threading.Tasks.Task`1[Kirora.Models.CancelScheduledTransactionalMessageResponse] CancelAsync(System.String, Kirora.KiroraRequestOptions, System.Threading.CancellationToken)
+M:Kirora.Resources.TransactionalResource:System.Threading.Tasks.Task`1[Kirora.Models.SendTransactionalMessageResponse] SendAsync(Kirora.Models.SendTransactionalInput, Kirora.KiroraRequestOptions, System.Threading.CancellationToken)
+M:Kirora.Resources.TransactionalResource:System.Threading.Tasks.Task`1[Kirora.Models.SendTransactionalMessagesBatchResponse] SendBatchAsync(Kirora.Models.SendTransactionalMessagesBatchInput, Kirora.KiroraRequestOptions, System.Threading.CancellationToken)
+M:Kirora.Serialization.Optional`1:Kirora.Serialization.Optional`1[T] op_Implicit(T)
+M:Microsoft.Extensions.DependencyInjection.KiroraServiceCollectionExtensions:Microsoft.Extensions.DependencyInjection.IHttpClientBuilder AddKirora(Microsoft.Extensions.DependencyInjection.IServiceCollection, System.Action`1[Kirora.KiroraOptions])
+P:Kirora.Exceptions.KiroraApiException:Kirora.Http.KiroraResponseMetadata:Metadata:get=True:set=False
+P:Kirora.Exceptions.KiroraApiException:System.Collections.Generic.IReadOnlyList`1[Kirora.Models.FieldError]:Errors:get=True:set=False
+P:Kirora.Exceptions.KiroraApiException:System.Net.HttpStatusCode:StatusCode:get=True:set=False
+P:Kirora.Exceptions.KiroraApiException:System.Nullable`1[System.Text.Json.JsonElement]:Details:get=True:set=False
+P:Kirora.Exceptions.KiroraApiException:System.String:Code:get=True:set=False
+P:Kirora.Exceptions.KiroraApiException:System.String:RequestId:get=True:set=False
+P:Kirora.Exceptions.KiroraInvalidResponseException:Kirora.Http.KiroraResponseMetadata:Metadata:get=True:set=False
+P:Kirora.Http.KiroraRateLimit:System.Int64:Limit:get=True:set=True
+P:Kirora.Http.KiroraRateLimit:System.Int64:Remaining:get=True:set=True
+P:Kirora.Http.KiroraRateLimit:System.Int64:ResetSeconds:get=True:set=True
+P:Kirora.Http.KiroraResponseMetadata:Kirora.Http.KiroraRateLimit:RateLimit:get=True:set=True
+P:Kirora.Http.KiroraResponseMetadata:System.Boolean:IdempotencyReplay:get=True:set=True
+P:Kirora.Http.KiroraResponseMetadata:System.Net.HttpStatusCode:StatusCode:get=True:set=True
+P:Kirora.Http.KiroraResponseMetadata:System.Nullable`1[System.TimeSpan]:RetryAfter:get=True:set=True
+P:Kirora.Http.KiroraResponseMetadata:System.String:RequestId:get=True:set=True
+P:Kirora.KiroraClient:Kirora.Resources.ContactsResource:Contacts:get=True:set=False
+P:Kirora.KiroraClient:Kirora.Resources.EventsResource:Events:get=True:set=False
+P:Kirora.KiroraClient:Kirora.Resources.ListsResource:Lists:get=True:set=False
+P:Kirora.KiroraClient:Kirora.Resources.MessagesResource:Messages:get=True:set=False
+P:Kirora.KiroraClient:Kirora.Resources.TransactionalResource:Transactional:get=True:set=False
+P:Kirora.KiroraOptions:System.Int32:MaxResponseBytes:get=True:set=True
+P:Kirora.KiroraOptions:System.Int32:MaxRetries:get=True:set=True
+P:Kirora.KiroraOptions:System.String:ApiKey:get=True:set=True
+P:Kirora.KiroraOptions:System.String:WorkspaceExternalId:get=True:set=True
+P:Kirora.KiroraOptions:System.TimeSpan:MaxRetryDelay:get=True:set=True
+P:Kirora.KiroraOptions:System.TimeSpan:RequestTimeout:get=True:set=True
+P:Kirora.KiroraOptions:System.Uri:BaseAddress:get=True:set=True
+P:Kirora.KiroraRequestOptions:System.Action`1[Kirora.Http.KiroraResponseMetadata]:ResponseReceived:get=True:set=True
+P:Kirora.KiroraRequestOptions:System.String:IdempotencyKey:get=True:set=True
+P:Kirora.Models.AddListContactsResponse:Kirora.Models.AddedListContacts:Data:get=True:set=True
+P:Kirora.Models.AddedListContacts:System.Collections.Generic.IReadOnlyList`1[System.String]:NotFound:get=True:set=True
+P:Kirora.Models.AddedListContacts:System.Int64:AddedCount:get=True:set=True
+P:Kirora.Models.ApiCaller:Kirora.Models.ApiCallerApiKey:ApiKey:get=True:set=True
+P:Kirora.Models.ApiCaller:Kirora.Models.ApiCallerWorkspace:Workspace:get=True:set=True
+P:Kirora.Models.ApiCallerApiKey:System.Collections.Generic.IReadOnlyList`1[System.String]:Scopes:get=True:set=True
+P:Kirora.Models.ApiCallerApiKey:System.Guid:Id:get=True:set=True
+P:Kirora.Models.ApiCallerApiKey:System.String:Kind:get=True:set=True
+P:Kirora.Models.ApiCallerApiKey:System.String:Name:get=True:set=True
+P:Kirora.Models.ApiCallerApiKey:System.String:Source:get=True:set=True
+P:Kirora.Models.ApiCallerWorkspace:System.Guid:Id:get=True:set=True
+P:Kirora.Models.ApiCallerWorkspace:System.String:Name:get=True:set=True
+P:Kirora.Models.CancelScheduledTransactionalMessageResponse:Kirora.Models.OutboundMessage:Data:get=True:set=True
+P:Kirora.Models.ConsentChange:System.Boolean:Granted:get=True:set=True
+P:Kirora.Models.ConsentChange:System.DateTimeOffset:OccurredAt:get=True:set=True
+P:Kirora.Models.ConsentChange:System.Guid:Id:get=True:set=True
+P:Kirora.Models.ConsentChange:System.Nullable`1[System.DateTimeOffset]:ConsentedAt:get=True:set=True
+P:Kirora.Models.ConsentChange:System.Nullable`1[System.Guid]:ActorId:get=True:set=True
+P:Kirora.Models.ConsentChange:System.Nullable`1[System.Guid]:SourceId:get=True:set=True
+P:Kirora.Models.ConsentChange:System.Nullable`1[System.Guid]:TopicId:get=True:set=True
+P:Kirora.Models.ConsentChange:System.String:ActorName:get=True:set=True
+P:Kirora.Models.ConsentChange:System.String:ActorType:get=True:set=True
+P:Kirora.Models.ConsentChange:System.String:Basis:get=True:set=True
+P:Kirora.Models.ConsentChange:System.String:Channel:get=True:set=True
+P:Kirora.Models.ConsentChange:System.String:Evidence:get=True:set=True
+P:Kirora.Models.ConsentChange:System.String:Ip:get=True:set=True
+P:Kirora.Models.ConsentChange:System.String:Reason:get=True:set=True
+P:Kirora.Models.ConsentChange:System.String:Source:get=True:set=True
+P:Kirora.Models.ConsentChange:System.String:Wording:get=True:set=True
+P:Kirora.Models.ConsentStatementInput:Kirora.Serialization.Optional`1[System.DateTimeOffset]:ConsentedAt:get=True:set=True
+P:Kirora.Models.ConsentStatementInput:Kirora.Serialization.Optional`1[System.String]:Wording:get=True:set=True
+P:Kirora.Models.ConsentStatementInput:System.String:Basis:get=True:set=True
+P:Kirora.Models.ConsentStatementInput:System.String:Evidence:get=True:set=True
+P:Kirora.Models.ContactConsent:System.Boolean:Email:get=True:set=True
+P:Kirora.Models.ContactConsent:System.Boolean:Push:get=True:set=True
+P:Kirora.Models.ContactDataExport:Kirora.Models.ContactDetail:Contact:get=True:set=True
+P:Kirora.Models.ContactDataExport:System.Collections.Generic.IReadOnlyList`1[Kirora.Models.ContactDataExportConsentChangesItem]:ConsentChanges:get=True:set=True
+P:Kirora.Models.ContactDataExport:System.Collections.Generic.IReadOnlyList`1[Kirora.Models.ContactDataExportConversionsItem]:Conversions:get=True:set=True
+P:Kirora.Models.ContactDataExport:System.Collections.Generic.IReadOnlyList`1[Kirora.Models.ContactDataExportEventsItem]:Events:get=True:set=True
+P:Kirora.Models.ContactDataExport:System.Collections.Generic.IReadOnlyList`1[Kirora.Models.ContactDataExportFormSubmissionsItem]:FormSubmissions:get=True:set=True
+P:Kirora.Models.ContactDataExport:System.Collections.Generic.IReadOnlyList`1[Kirora.Models.ContactDataExportJourneysItem]:Journeys:get=True:set=True
+P:Kirora.Models.ContactDataExport:System.Collections.Generic.IReadOnlyList`1[Kirora.Models.ContactDataExportListsItem]:Lists:get=True:set=True
+P:Kirora.Models.ContactDataExport:System.Collections.Generic.IReadOnlyList`1[Kirora.Models.ContactDataExportMessagesItem]:Messages:get=True:set=True
+P:Kirora.Models.ContactDataExport:System.Collections.Generic.IReadOnlyList`1[Kirora.Models.ContactDataExportPushDevicesItem]:PushDevices:get=True:set=True
+P:Kirora.Models.ContactDataExport:System.Collections.Generic.IReadOnlyList`1[Kirora.Models.ContactDataExportSegmentsItem]:Segments:get=True:set=True
+P:Kirora.Models.ContactDataExport:System.Collections.Generic.IReadOnlyList`1[Kirora.Models.ContactDataExportSuppressionsItem]:Suppressions:get=True:set=True
+P:Kirora.Models.ContactDataExport:System.Collections.Generic.IReadOnlyList`1[Kirora.Models.ContactDataExportTopicsItem]:Topics:get=True:set=True
+P:Kirora.Models.ContactDataExport:System.DateTimeOffset:ExportedAt:get=True:set=True
+P:Kirora.Models.ContactDataExportConsentChangesItem:System.Boolean:Granted:get=True:set=True
+P:Kirora.Models.ContactDataExportConsentChangesItem:System.DateTimeOffset:OccurredAt:get=True:set=True
+P:Kirora.Models.ContactDataExportConsentChangesItem:System.Guid:Id:get=True:set=True
+P:Kirora.Models.ContactDataExportConsentChangesItem:System.Nullable`1[System.DateTimeOffset]:ConsentedAt:get=True:set=True
+P:Kirora.Models.ContactDataExportConsentChangesItem:System.Nullable`1[System.Guid]:ActorId:get=True:set=True
+P:Kirora.Models.ContactDataExportConsentChangesItem:System.Nullable`1[System.Guid]:SourceId:get=True:set=True
+P:Kirora.Models.ContactDataExportConsentChangesItem:System.Nullable`1[System.Guid]:TopicId:get=True:set=True
+P:Kirora.Models.ContactDataExportConsentChangesItem:System.String:ActorType:get=True:set=True
+P:Kirora.Models.ContactDataExportConsentChangesItem:System.String:Basis:get=True:set=True
+P:Kirora.Models.ContactDataExportConsentChangesItem:System.String:Channel:get=True:set=True
+P:Kirora.Models.ContactDataExportConsentChangesItem:System.String:Evidence:get=True:set=True
+P:Kirora.Models.ContactDataExportConsentChangesItem:System.String:Ip:get=True:set=True
+P:Kirora.Models.ContactDataExportConsentChangesItem:System.String:Reason:get=True:set=True
+P:Kirora.Models.ContactDataExportConsentChangesItem:System.String:Source:get=True:set=True
+P:Kirora.Models.ContactDataExportConsentChangesItem:System.String:Wording:get=True:set=True
+P:Kirora.Models.ContactDataExportConversionsItem:Kirora.Models.Money:Value:get=True:set=True
+P:Kirora.Models.ContactDataExportConversionsItem:System.DateTimeOffset:ConvertedAt:get=True:set=True
+P:Kirora.Models.ContactDataExportConversionsItem:System.Guid:ConversionGoalId:get=True:set=True
+P:Kirora.Models.ContactDataExportEventsItem:System.Collections.Generic.Dictionary`2[System.String,System.Text.Json.JsonElement]:Properties:get=True:set=True
+P:Kirora.Models.ContactDataExportEventsItem:System.DateTimeOffset:OccurredAt:get=True:set=True
+P:Kirora.Models.ContactDataExportEventsItem:System.Guid:Id:get=True:set=True
+P:Kirora.Models.ContactDataExportEventsItem:System.String:EventName:get=True:set=True
+P:Kirora.Models.ContactDataExportFormSubmissionsItem:System.Collections.Generic.Dictionary`2[System.String,System.Text.Json.JsonElement]:PendingContact:get=True:set=True
+P:Kirora.Models.ContactDataExportFormSubmissionsItem:System.DateTimeOffset:CreatedAt:get=True:set=True
+P:Kirora.Models.ContactDataExportFormSubmissionsItem:System.Guid:FormId:get=True:set=True
+P:Kirora.Models.ContactDataExportFormSubmissionsItem:System.Nullable`1[System.DateTimeOffset]:ConfirmedAt:get=True:set=True
+P:Kirora.Models.ContactDataExportFormSubmissionsItem:System.String:FormName:get=True:set=True
+P:Kirora.Models.ContactDataExportFormSubmissionsItem:System.String:Outcome:get=True:set=True
+P:Kirora.Models.ContactDataExportJourneysItem:System.DateTimeOffset:EnteredAt:get=True:set=True
+P:Kirora.Models.ContactDataExportJourneysItem:System.Nullable`1[System.DateTimeOffset]:EndedAt:get=True:set=True
+P:Kirora.Models.ContactDataExportJourneysItem:System.Nullable`1[System.Guid]:JourneyId:get=True:set=True
+P:Kirora.Models.ContactDataExportJourneysItem:System.String:JourneyName:get=True:set=True
+P:Kirora.Models.ContactDataExportJourneysItem:System.String:Status:get=True:set=True
+P:Kirora.Models.ContactDataExportListsItem:System.DateTimeOffset:AddedAt:get=True:set=True
+P:Kirora.Models.ContactDataExportListsItem:System.Guid:Id:get=True:set=True
+P:Kirora.Models.ContactDataExportListsItem:System.String:Name:get=True:set=True
+P:Kirora.Models.ContactDataExportMessagesItem:System.DateTimeOffset:CreatedAt:get=True:set=True
+P:Kirora.Models.ContactDataExportMessagesItem:System.Guid:Id:get=True:set=True
+P:Kirora.Models.ContactDataExportMessagesItem:System.Nullable`1[System.DateTimeOffset]:ClickedAt:get=True:set=True
+P:Kirora.Models.ContactDataExportMessagesItem:System.Nullable`1[System.DateTimeOffset]:DeliveredAt:get=True:set=True
+P:Kirora.Models.ContactDataExportMessagesItem:System.Nullable`1[System.DateTimeOffset]:OpenedAt:get=True:set=True
+P:Kirora.Models.ContactDataExportMessagesItem:System.Nullable`1[System.DateTimeOffset]:SentAt:get=True:set=True
+P:Kirora.Models.ContactDataExportMessagesItem:System.Nullable`1[System.DateTimeOffset]:UnsubscribedAt:get=True:set=True
+P:Kirora.Models.ContactDataExportMessagesItem:System.Nullable`1[System.Guid]:CampaignId:get=True:set=True
+P:Kirora.Models.ContactDataExportMessagesItem:System.String:Channel:get=True:set=True
+P:Kirora.Models.ContactDataExportMessagesItem:System.String:MessageType:get=True:set=True
+P:Kirora.Models.ContactDataExportMessagesItem:System.String:RecipientEmail:get=True:set=True
+P:Kirora.Models.ContactDataExportMessagesItem:System.String:Status:get=True:set=True
+P:Kirora.Models.ContactDataExportPushDevicesItem:System.Boolean:Active:get=True:set=True
+P:Kirora.Models.ContactDataExportPushDevicesItem:System.DateTimeOffset:CreatedAt:get=True:set=True
+P:Kirora.Models.ContactDataExportPushDevicesItem:System.DateTimeOffset:LastSeenAt:get=True:set=True
+P:Kirora.Models.ContactDataExportPushDevicesItem:System.String:Kind:get=True:set=True
+P:Kirora.Models.ContactDataExportPushDevicesItem:System.String:Permission:get=True:set=True
+P:Kirora.Models.ContactDataExportSegmentsItem:System.DateTimeOffset:EnteredAt:get=True:set=True
+P:Kirora.Models.ContactDataExportSegmentsItem:System.Guid:Id:get=True:set=True
+P:Kirora.Models.ContactDataExportSegmentsItem:System.String:Name:get=True:set=True
+P:Kirora.Models.ContactDataExportSuppressionsItem:System.DateTimeOffset:CreatedAt:get=True:set=True
+P:Kirora.Models.ContactDataExportSuppressionsItem:System.String:Address:get=True:set=True
+P:Kirora.Models.ContactDataExportSuppressionsItem:System.String:Channel:get=True:set=True
+P:Kirora.Models.ContactDataExportSuppressionsItem:System.String:Reason:get=True:set=True
+P:Kirora.Models.ContactDataExportTopicsItem:System.Boolean:Subscribed:get=True:set=True
+P:Kirora.Models.ContactDataExportTopicsItem:System.DateTimeOffset:UpdatedAt:get=True:set=True
+P:Kirora.Models.ContactDataExportTopicsItem:System.Guid:Id:get=True:set=True
+P:Kirora.Models.ContactDataExportTopicsItem:System.String:Name:get=True:set=True
+P:Kirora.Models.ContactDetail:Kirora.Models.ContactConsent:Consent:get=True:set=True
+P:Kirora.Models.ContactDetail:Kirora.Models.ContactDetailEmailSuppression:EmailSuppression:get=True:set=True
+P:Kirora.Models.ContactDetail:Kirora.Models.ContactRfm:Rfm:get=True:set=True
+P:Kirora.Models.ContactDetail:System.Collections.Generic.Dictionary`2[System.String,System.String]:Dates:get=True:set=True
+P:Kirora.Models.ContactDetail:System.Collections.Generic.Dictionary`2[System.String,System.Text.Json.JsonElement]:Attributes:get=True:set=True
+P:Kirora.Models.ContactDetail:System.Collections.Generic.IReadOnlyList`1[System.Guid]:ListIds:get=True:set=True
+P:Kirora.Models.ContactDetail:System.DateTimeOffset:CreatedAt:get=True:set=True
+P:Kirora.Models.ContactDetail:System.DateTimeOffset:UpdatedAt:get=True:set=True
+P:Kirora.Models.ContactDetail:System.Guid:Id:get=True:set=True
+P:Kirora.Models.ContactDetail:System.String:Country:get=True:set=True
+P:Kirora.Models.ContactDetail:System.String:Email:get=True:set=True
+P:Kirora.Models.ContactDetail:System.String:ExternalId:get=True:set=True
+P:Kirora.Models.ContactDetail:System.String:FirstName:get=True:set=True
+P:Kirora.Models.ContactDetail:System.String:LastName:get=True:set=True
+P:Kirora.Models.ContactDetail:System.String:Locale:get=True:set=True
+P:Kirora.Models.ContactDetail:System.String:Phone:get=True:set=True
+P:Kirora.Models.ContactDetail:System.String:Timezone:get=True:set=True
+P:Kirora.Models.ContactDetailEmailSuppression:System.Boolean:Suppressed:get=True:set=True
+P:Kirora.Models.ContactDetailEmailSuppression:System.String:Reason:get=True:set=True
+P:Kirora.Models.ContactIdentifier:System.Object:Value:get=True:set=False
+P:Kirora.Models.ContactIdentifierByContactId:System.Guid:ContactId:get=True:set=True
+P:Kirora.Models.ContactIdentifierByEmail:System.String:Email:get=True:set=True
+P:Kirora.Models.ContactIdentifierByExternalId:System.String:ExternalId:get=True:set=True
+P:Kirora.Models.ContactIdentifierInput:System.Object:Value:get=True:set=False
+P:Kirora.Models.ContactIdentifierInputByContactId:System.Guid:ContactId:get=True:set=True
+P:Kirora.Models.ContactIdentifierInputByEmail:System.String:Email:get=True:set=True
+P:Kirora.Models.ContactIdentifierInputByExternalId:System.String:ExternalId:get=True:set=True
+P:Kirora.Models.ContactListMembership:System.DateTimeOffset:AddedAt:get=True:set=True
+P:Kirora.Models.ContactListMembership:System.Guid:Id:get=True:set=True
+P:Kirora.Models.ContactListMembership:System.String:Description:get=True:set=True
+P:Kirora.Models.ContactListMembership:System.String:Name:get=True:set=True
+P:Kirora.Models.ContactListMeta:Kirora.Models.ContactListMetaPagination:Pagination:get=True:set=True
+P:Kirora.Models.ContactListMeta:System.Nullable`1[System.Boolean]:CountExact:get=True:set=True
+P:Kirora.Models.ContactListMeta:System.Nullable`1[System.Int64]:Count:get=True:set=True
+P:Kirora.Models.ContactListMetaPagination:System.Int64:Limit:get=True:set=True
+P:Kirora.Models.ContactListMetaPagination:System.String:NextCursor:get=True:set=True
+P:Kirora.Models.ContactRfm:Kirora.Models.Money:TotalSpent:get=True:set=True
+P:Kirora.Models.ContactRfm:System.DateTimeOffset:LastPurchasedAt:get=True:set=True
+P:Kirora.Models.ContactRfm:System.Int64:Frequency:get=True:set=True
+P:Kirora.Models.ContactRfm:System.Int64:Monetary:get=True:set=True
+P:Kirora.Models.ContactRfm:System.Int64:PurchaseCount:get=True:set=True
+P:Kirora.Models.ContactRfm:System.Int64:Recency:get=True:set=True
+P:Kirora.Models.ContactRfm:System.String:Group:get=True:set=True
+P:Kirora.Models.ContactSegment:System.DateTimeOffset:EnteredAt:get=True:set=True
+P:Kirora.Models.ContactSegment:System.Guid:Id:get=True:set=True
+P:Kirora.Models.ContactSegment:System.String:Name:get=True:set=True
+P:Kirora.Models.ContactTopic:Kirora.Models.ContactTopicChannels:Channels:get=True:set=True
+P:Kirora.Models.ContactTopic:System.Boolean:Subscribed:get=True:set=True
+P:Kirora.Models.ContactTopic:System.DateTimeOffset:CreatedAt:get=True:set=True
+P:Kirora.Models.ContactTopic:System.DateTimeOffset:UpdatedAt:get=True:set=True
+P:Kirora.Models.ContactTopic:System.Guid:Id:get=True:set=True
+P:Kirora.Models.ContactTopic:System.String:Description:get=True:set=True
+P:Kirora.Models.ContactTopic:System.String:Mode:get=True:set=True
+P:Kirora.Models.ContactTopic:System.String:Name:get=True:set=True
+P:Kirora.Models.ContactTopicChannels:System.Boolean:Email:get=True:set=True
+P:Kirora.Models.ContactTopicChannels:System.Boolean:Push:get=True:set=True
+P:Kirora.Models.CreateListInput:Kirora.Serialization.Optional`1[System.String]:Description:get=True:set=True
+P:Kirora.Models.CreateListInput:System.String:Name:get=True:set=True
+P:Kirora.Models.CreateListResponse:Kirora.Models.List:Data:get=True:set=True
+P:Kirora.Models.CursorPaginationMeta:Kirora.Models.CursorPaginationMetaPagination:Pagination:get=True:set=True
+P:Kirora.Models.CursorPaginationMetaPagination:System.Int64:Limit:get=True:set=True
+P:Kirora.Models.CursorPaginationMetaPagination:System.String:NextCursor:get=True:set=True
+P:Kirora.Models.DeleteContactQuery:Kirora.Serialization.Optional`1[System.String]:IdType:get=True:set=True
+P:Kirora.Models.DeleteContactsInput:System.Collections.Generic.IReadOnlyList`1[Kirora.Models.ContactIdentifierInput]:Contacts:get=True:set=True
+P:Kirora.Models.DeleteContactsResponse:Kirora.Models.DeleteContactsResult:Data:get=True:set=True
+P:Kirora.Models.DeleteContactsResult:System.Collections.Generic.IReadOnlyList`1[Kirora.Models.DeleteContactsResultResultsItem]:Results:get=True:set=True
+P:Kirora.Models.DeleteContactsResultResultsItem:Kirora.Models.ContactIdentifier:Contact:get=True:set=True
+P:Kirora.Models.DeleteContactsResultResultsItem:System.String:Outcome:get=True:set=True
+P:Kirora.Models.DeleteListContactsResponse:Kirora.Models.DeletedListContacts:Data:get=True:set=True
+P:Kirora.Models.DeletePushInstallationQuery:Kirora.Serialization.Optional`1[System.String]:IdType:get=True:set=True
+P:Kirora.Models.DeletedListContacts:System.Collections.Generic.IReadOnlyList`1[System.String]:NotFound:get=True:set=True
+P:Kirora.Models.DeletedListContacts:System.Int64:DeletedCount:get=True:set=True
+P:Kirora.Models.DurationOrZero:System.Int64:Value:get=True:set=True
+P:Kirora.Models.DurationOrZero:System.String:Unit:get=True:set=True
+P:Kirora.Models.DurationOrZeroInput:System.Int64:Value:get=True:set=True
+P:Kirora.Models.DurationOrZeroInput:System.String:Unit:get=True:set=True
+P:Kirora.Models.EmailAttachmentInput:Kirora.Serialization.Optional`1[System.String]:ContentId:get=True:set=True
+P:Kirora.Models.EmailAttachmentInput:System.String:Content:get=True:set=True
+P:Kirora.Models.EmailAttachmentInput:System.String:Filename:get=True:set=True
+P:Kirora.Models.EmailThreadingInput:Kirora.Serialization.Optional`1[System.Collections.Generic.IReadOnlyList`1[System.String]]:References:get=True:set=True
+P:Kirora.Models.EmailThreadingInput:System.String:InReplyTo:get=True:set=True
+P:Kirora.Models.Event:System.Object:Value:get=True:set=False
+P:Kirora.Models.EventAccepted:Kirora.Models.EventAcceptedContact:Contact:get=True:set=True
+P:Kirora.Models.EventAccepted:Kirora.Models.EventContext:Context:get=True:set=True
+P:Kirora.Models.EventAccepted:System.Collections.Generic.Dictionary`2[System.String,System.Text.Json.JsonElement]:Properties:get=True:set=True
+P:Kirora.Models.EventAccepted:System.DateTimeOffset:OccurredAt:get=True:set=True
+P:Kirora.Models.EventAccepted:System.DateTimeOffset:ReceivedAt:get=True:set=True
+P:Kirora.Models.EventAccepted:System.Guid:Id:get=True:set=True
+P:Kirora.Models.EventAccepted:System.String:Name:get=True:set=True
+P:Kirora.Models.EventAccepted:System.String:Source:get=True:set=True
+P:Kirora.Models.EventAccepted:System.String:Status:get=True:set=True
+P:Kirora.Models.EventAcceptedContact:System.Guid:Id:get=True:set=True
+P:Kirora.Models.EventAcceptedContact:System.String:Email:get=True:set=True
+P:Kirora.Models.EventAcceptedContact:System.String:ExternalId:get=True:set=True
+P:Kirora.Models.EventContext:Kirora.Serialization.Optional`1[Kirora.Models.EventContextCampaign]:Campaign:get=True:set=True
+P:Kirora.Models.EventContext:Kirora.Serialization.Optional`1[Kirora.Models.EventContextDevice]:Device:get=True:set=True
+P:Kirora.Models.EventContext:Kirora.Serialization.Optional`1[Kirora.Models.EventContextLibrary]:Library:get=True:set=True
+P:Kirora.Models.EventContext:Kirora.Serialization.Optional`1[Kirora.Models.EventContextPage]:Page:get=True:set=True
+P:Kirora.Models.EventContext:Kirora.Serialization.Optional`1[System.String]:Ip:get=True:set=True
+P:Kirora.Models.EventContext:Kirora.Serialization.Optional`1[System.String]:Locale:get=True:set=True
+P:Kirora.Models.EventContext:Kirora.Serialization.Optional`1[System.String]:SessionId:get=True:set=True
+P:Kirora.Models.EventContext:Kirora.Serialization.Optional`1[System.String]:Timezone:get=True:set=True
+P:Kirora.Models.EventContext:Kirora.Serialization.Optional`1[System.String]:UserAgent:get=True:set=True
+P:Kirora.Models.EventContextCampaign:Kirora.Serialization.Optional`1[System.String]:Content:get=True:set=True
+P:Kirora.Models.EventContextCampaign:Kirora.Serialization.Optional`1[System.String]:Medium:get=True:set=True
+P:Kirora.Models.EventContextCampaign:Kirora.Serialization.Optional`1[System.String]:Name:get=True:set=True
+P:Kirora.Models.EventContextCampaign:Kirora.Serialization.Optional`1[System.String]:Source:get=True:set=True
+P:Kirora.Models.EventContextCampaign:Kirora.Serialization.Optional`1[System.String]:Term:get=True:set=True
+P:Kirora.Models.EventContextDevice:Kirora.Serialization.Optional`1[System.String]:Id:get=True:set=True
+P:Kirora.Models.EventContextInput:Kirora.Serialization.Optional`1[Kirora.Models.EventContextInputCampaign]:Campaign:get=True:set=True
+P:Kirora.Models.EventContextInput:Kirora.Serialization.Optional`1[Kirora.Models.EventContextInputDevice]:Device:get=True:set=True
+P:Kirora.Models.EventContextInput:Kirora.Serialization.Optional`1[Kirora.Models.EventContextInputLibrary]:Library:get=True:set=True
+P:Kirora.Models.EventContextInput:Kirora.Serialization.Optional`1[Kirora.Models.EventContextInputPage]:Page:get=True:set=True
+P:Kirora.Models.EventContextInput:Kirora.Serialization.Optional`1[System.String]:Ip:get=True:set=True
+P:Kirora.Models.EventContextInput:Kirora.Serialization.Optional`1[System.String]:Locale:get=True:set=True
+P:Kirora.Models.EventContextInput:Kirora.Serialization.Optional`1[System.String]:SessionId:get=True:set=True
+P:Kirora.Models.EventContextInput:Kirora.Serialization.Optional`1[System.String]:Timezone:get=True:set=True
+P:Kirora.Models.EventContextInput:Kirora.Serialization.Optional`1[System.String]:UserAgent:get=True:set=True
+P:Kirora.Models.EventContextInputCampaign:Kirora.Serialization.Optional`1[System.String]:Content:get=True:set=True
+P:Kirora.Models.EventContextInputCampaign:Kirora.Serialization.Optional`1[System.String]:Medium:get=True:set=True
+P:Kirora.Models.EventContextInputCampaign:Kirora.Serialization.Optional`1[System.String]:Name:get=True:set=True
+P:Kirora.Models.EventContextInputCampaign:Kirora.Serialization.Optional`1[System.String]:Source:get=True:set=True
+P:Kirora.Models.EventContextInputCampaign:Kirora.Serialization.Optional`1[System.String]:Term:get=True:set=True
+P:Kirora.Models.EventContextInputDevice:Kirora.Serialization.Optional`1[System.String]:Id:get=True:set=True
+P:Kirora.Models.EventContextInputLibrary:Kirora.Serialization.Optional`1[System.String]:Name:get=True:set=True
+P:Kirora.Models.EventContextInputLibrary:Kirora.Serialization.Optional`1[System.String]:Version:get=True:set=True
+P:Kirora.Models.EventContextInputPage:Kirora.Serialization.Optional`1[System.String]:Path:get=True:set=True
+P:Kirora.Models.EventContextInputPage:Kirora.Serialization.Optional`1[System.String]:Referrer:get=True:set=True
+P:Kirora.Models.EventContextInputPage:Kirora.Serialization.Optional`1[System.String]:Title:get=True:set=True
+P:Kirora.Models.EventContextInputPage:Kirora.Serialization.Optional`1[System.String]:Url:get=True:set=True
+P:Kirora.Models.EventContextLibrary:Kirora.Serialization.Optional`1[System.String]:Name:get=True:set=True
+P:Kirora.Models.EventContextLibrary:Kirora.Serialization.Optional`1[System.String]:Version:get=True:set=True
+P:Kirora.Models.EventContextPage:Kirora.Serialization.Optional`1[System.String]:Path:get=True:set=True
+P:Kirora.Models.EventContextPage:Kirora.Serialization.Optional`1[System.String]:Referrer:get=True:set=True
+P:Kirora.Models.EventContextPage:Kirora.Serialization.Optional`1[System.String]:Title:get=True:set=True
+P:Kirora.Models.EventContextPage:Kirora.Serialization.Optional`1[System.String]:Url:get=True:set=True
+P:Kirora.Models.EventRejected:Kirora.Models.EventRejectedError:Error:get=True:set=True
+P:Kirora.Models.EventRejected:System.DateTimeOffset:ReceivedAt:get=True:set=True
+P:Kirora.Models.EventRejected:System.Guid:Id:get=True:set=True
+P:Kirora.Models.EventRejected:System.Nullable`1[System.DateTimeOffset]:OccurredAt:get=True:set=True
+P:Kirora.Models.EventRejected:System.String:Name:get=True:set=True
+P:Kirora.Models.EventRejected:System.String:Source:get=True:set=True
+P:Kirora.Models.EventRejected:System.String:Status:get=True:set=True
+P:Kirora.Models.EventRejected:System.Text.Json.JsonElement:Payload:get=True:set=True
+P:Kirora.Models.EventRejectedError:Kirora.Serialization.Optional`1[System.Collections.Generic.IReadOnlyList`1[Kirora.Models.FieldError]]:Errors:get=True:set=True
+P:Kirora.Models.EventRejectedError:Kirora.Serialization.Optional`1[System.String]:RequestId:get=True:set=True
+P:Kirora.Models.EventRejectedError:Kirora.Serialization.Optional`1[System.Text.Json.JsonElement]:Details:get=True:set=True
+P:Kirora.Models.EventRejectedError:System.String:Code:get=True:set=True
+P:Kirora.Models.EventRejectedError:System.String:Message:get=True:set=True
+P:Kirora.Models.FieldError:System.Nullable`1[System.Double]:Maximum:get=True:set=True
+P:Kirora.Models.FieldError:System.Nullable`1[System.Double]:Minimum:get=True:set=True
+P:Kirora.Models.FieldError:System.String:Code:get=True:set=True
+P:Kirora.Models.FieldError:System.String:Field:get=True:set=True
+P:Kirora.Models.FieldError:System.String:In:get=True:set=True
+P:Kirora.Models.FieldError:System.String:Message:get=True:set=True
+P:Kirora.Models.GetContactExportQuery:Kirora.Serialization.Optional`1[System.String]:IdType:get=True:set=True
+P:Kirora.Models.GetContactExportResponse:Kirora.Models.ContactDataExport:Data:get=True:set=True
+P:Kirora.Models.GetContactQuery:Kirora.Serialization.Optional`1[System.String]:IdType:get=True:set=True
+P:Kirora.Models.GetContactResponse:Kirora.Models.ContactDetail:Data:get=True:set=True
+P:Kirora.Models.GetListResponse:Kirora.Models.List:Data:get=True:set=True
+P:Kirora.Models.GetListUsageResponse:Kirora.Models.ListUsage:Data:get=True:set=True
+P:Kirora.Models.GetMessageContentResponse:Kirora.Models.MessageContent:Data:get=True:set=True
+P:Kirora.Models.GetMessageResponse:Kirora.Models.OutboundMessage:Data:get=True:set=True
+P:Kirora.Models.IdentifyContactInput:Kirora.Serialization.Optional`1[Kirora.Models.SetContactConsentInput]:Consent:get=True:set=True
+P:Kirora.Models.IdentifyContactInput:Kirora.Serialization.Optional`1[System.Collections.Generic.Dictionary`2[System.String,Kirora.Models.IdentifyContactInputTopicsValue]]:Topics:get=True:set=True
+P:Kirora.Models.IdentifyContactInput:Kirora.Serialization.Optional`1[System.Collections.Generic.Dictionary`2[System.String,System.String]]:Dates:get=True:set=True
+P:Kirora.Models.IdentifyContactInput:Kirora.Serialization.Optional`1[System.Collections.Generic.Dictionary`2[System.String,System.Text.Json.JsonElement]]:Attributes:get=True:set=True
+P:Kirora.Models.IdentifyContactInput:Kirora.Serialization.Optional`1[System.Collections.Generic.IReadOnlyList`1[System.String]]:Lists:get=True:set=True
+P:Kirora.Models.IdentifyContactInput:Kirora.Serialization.Optional`1[System.String]:Country:get=True:set=True
+P:Kirora.Models.IdentifyContactInput:Kirora.Serialization.Optional`1[System.String]:Email:get=True:set=True
+P:Kirora.Models.IdentifyContactInput:Kirora.Serialization.Optional`1[System.String]:ExternalId:get=True:set=True
+P:Kirora.Models.IdentifyContactInput:Kirora.Serialization.Optional`1[System.String]:FirstName:get=True:set=True
+P:Kirora.Models.IdentifyContactInput:Kirora.Serialization.Optional`1[System.String]:LastName:get=True:set=True
+P:Kirora.Models.IdentifyContactInput:Kirora.Serialization.Optional`1[System.String]:Locale:get=True:set=True
+P:Kirora.Models.IdentifyContactInput:Kirora.Serialization.Optional`1[System.String]:Phone:get=True:set=True
+P:Kirora.Models.IdentifyContactInput:Kirora.Serialization.Optional`1[System.String]:Timezone:get=True:set=True
+P:Kirora.Models.IdentifyContactInputTopicsValue:System.Object:Value:get=True:set=False
+P:Kirora.Models.IdentifyContactResponse:Kirora.Models.ContactDetail:Data:get=True:set=True
+P:Kirora.Models.IdentifyContactResponse:Kirora.Models.IdentifyContactResponseMeta:Meta:get=True:set=True
+P:Kirora.Models.IdentifyContactResponseMeta:System.Boolean:Created:get=True:set=True
+P:Kirora.Models.IdentifyContactsBatchInput:System.Collections.Generic.IReadOnlyList`1[Kirora.Models.IdentifyContactInput]:Contacts:get=True:set=True
+P:Kirora.Models.IdentifyContactsBatchResponse:Kirora.Models.IdentifyContactsBatchResult:Data:get=True:set=True
+P:Kirora.Models.IdentifyContactsBatchResult:System.Collections.Generic.IReadOnlyList`1[Kirora.Models.IdentifyContactsBatchResultResultsItem]:Results:get=True:set=True
+P:Kirora.Models.IdentifyContactsBatchResultResultsItem:System.Object:Value:get=True:set=False
+P:Kirora.Models.IdentifyContactsBatchResultResultsItemContactRefused:Kirora.Models.IdentifyContactsBatchResultResultsItemContactRefusedError:Error:get=True:set=True
+P:Kirora.Models.IdentifyContactsBatchResultResultsItemContactRefusedError:Kirora.Serialization.Optional`1[System.Collections.Generic.IReadOnlyList`1[Kirora.Models.FieldError]]:Errors:get=True:set=True
+P:Kirora.Models.IdentifyContactsBatchResultResultsItemContactRefusedError:Kirora.Serialization.Optional`1[System.String]:RequestId:get=True:set=True
+P:Kirora.Models.IdentifyContactsBatchResultResultsItemContactRefusedError:Kirora.Serialization.Optional`1[System.Text.Json.JsonElement]:Details:get=True:set=True
+P:Kirora.Models.IdentifyContactsBatchResultResultsItemContactRefusedError:System.String:Code:get=True:set=True
+P:Kirora.Models.IdentifyContactsBatchResultResultsItemContactRefusedError:System.String:Message:get=True:set=True
+P:Kirora.Models.IdentifyContactsBatchResultResultsItemContactWritten:Kirora.Models.ContactDetail:Contact:get=True:set=True
+P:Kirora.Models.IdentifyContactsBatchResultResultsItemContactWritten:System.Boolean:Created:get=True:set=True
+P:Kirora.Models.JourneyEnrollment:Kirora.Models.JourneyEnrollmentCurrentStep:CurrentStep:get=True:set=True
+P:Kirora.Models.JourneyEnrollment:Kirora.Models.JourneyEnrollmentJourney:Journey:get=True:set=True
+P:Kirora.Models.JourneyEnrollment:System.DateTimeOffset:EnteredAt:get=True:set=True
+P:Kirora.Models.JourneyEnrollment:System.Guid:Id:get=True:set=True
+P:Kirora.Models.JourneyEnrollment:System.Nullable`1[System.DateTimeOffset]:EndedAt:get=True:set=True
+P:Kirora.Models.JourneyEnrollment:System.String:ExitReason:get=True:set=True
+P:Kirora.Models.JourneyEnrollment:System.String:Status:get=True:set=True
+P:Kirora.Models.JourneyEnrollmentCurrentStep:System.String:Id:get=True:set=True
+P:Kirora.Models.JourneyEnrollmentCurrentStep:System.String:Name:get=True:set=True
+P:Kirora.Models.JourneyEnrollmentJourney:System.Guid:Id:get=True:set=True
+P:Kirora.Models.JourneyEnrollmentJourney:System.String:Name:get=True:set=True
+P:Kirora.Models.JourneyEnrollmentJourney:System.String:Status:get=True:set=True
+P:Kirora.Models.List:System.DateTimeOffset:CreatedAt:get=True:set=True
+P:Kirora.Models.List:System.DateTimeOffset:UpdatedAt:get=True:set=True
+P:Kirora.Models.List:System.Guid:Id:get=True:set=True
+P:Kirora.Models.List:System.String:Description:get=True:set=True
+P:Kirora.Models.List:System.String:Name:get=True:set=True
+P:Kirora.Models.ListContactConsentChangesQuery:Kirora.Serialization.Optional`1[System.Int64]:Limit:get=True:set=True
+P:Kirora.Models.ListContactConsentChangesQuery:Kirora.Serialization.Optional`1[System.String]:Cursor:get=True:set=True
+P:Kirora.Models.ListContactConsentChangesQuery:Kirora.Serialization.Optional`1[System.String]:IdType:get=True:set=True
+P:Kirora.Models.ListContactConsentChangesResponse:Kirora.Models.CursorPaginationMeta:Meta:get=True:set=True
+P:Kirora.Models.ListContactConsentChangesResponse:System.Collections.Generic.IReadOnlyList`1[Kirora.Models.ConsentChange]:Data:get=True:set=True
+P:Kirora.Models.ListContactEventsQuery:Kirora.Serialization.Optional`1[System.DateTimeOffset]:OccurredAfter:get=True:set=True
+P:Kirora.Models.ListContactEventsQuery:Kirora.Serialization.Optional`1[System.DateTimeOffset]:OccurredBefore:get=True:set=True
+P:Kirora.Models.ListContactEventsQuery:Kirora.Serialization.Optional`1[System.Int64]:Limit:get=True:set=True
+P:Kirora.Models.ListContactEventsQuery:Kirora.Serialization.Optional`1[System.String]:Cursor:get=True:set=True
+P:Kirora.Models.ListContactEventsQuery:Kirora.Serialization.Optional`1[System.String]:IdType:get=True:set=True
+P:Kirora.Models.ListContactEventsQuery:Kirora.Serialization.Optional`1[System.String]:Name:get=True:set=True
+P:Kirora.Models.ListContactEventsResponse:Kirora.Models.CursorPaginationMeta:Meta:get=True:set=True
+P:Kirora.Models.ListContactEventsResponse:System.Collections.Generic.IReadOnlyList`1[Kirora.Models.Event]:Data:get=True:set=True
+P:Kirora.Models.ListContactJourneysQuery:Kirora.Serialization.Optional`1[System.Int64]:Limit:get=True:set=True
+P:Kirora.Models.ListContactJourneysQuery:Kirora.Serialization.Optional`1[System.String]:Cursor:get=True:set=True
+P:Kirora.Models.ListContactJourneysQuery:Kirora.Serialization.Optional`1[System.String]:IdType:get=True:set=True
+P:Kirora.Models.ListContactJourneysQuery:Kirora.Serialization.Optional`1[System.String]:Status:get=True:set=True
+P:Kirora.Models.ListContactJourneysResponse:Kirora.Models.CursorPaginationMeta:Meta:get=True:set=True
+P:Kirora.Models.ListContactJourneysResponse:System.Collections.Generic.IReadOnlyList`1[Kirora.Models.JourneyEnrollment]:Data:get=True:set=True
+P:Kirora.Models.ListContactListsQuery:Kirora.Serialization.Optional`1[System.Int64]:Limit:get=True:set=True
+P:Kirora.Models.ListContactListsQuery:Kirora.Serialization.Optional`1[System.String]:Cursor:get=True:set=True
+P:Kirora.Models.ListContactListsQuery:Kirora.Serialization.Optional`1[System.String]:IdType:get=True:set=True
+P:Kirora.Models.ListContactListsResponse:Kirora.Models.CursorPaginationMeta:Meta:get=True:set=True
+P:Kirora.Models.ListContactListsResponse:System.Collections.Generic.IReadOnlyList`1[Kirora.Models.ContactListMembership]:Data:get=True:set=True
+P:Kirora.Models.ListContactMessagesQuery:Kirora.Serialization.Optional`1[System.DateTimeOffset]:CreatedAfter:get=True:set=True
+P:Kirora.Models.ListContactMessagesQuery:Kirora.Serialization.Optional`1[System.DateTimeOffset]:CreatedBefore:get=True:set=True
+P:Kirora.Models.ListContactMessagesQuery:Kirora.Serialization.Optional`1[System.Int64]:Limit:get=True:set=True
+P:Kirora.Models.ListContactMessagesQuery:Kirora.Serialization.Optional`1[System.String]:Channel:get=True:set=True
+P:Kirora.Models.ListContactMessagesQuery:Kirora.Serialization.Optional`1[System.String]:Cursor:get=True:set=True
+P:Kirora.Models.ListContactMessagesQuery:Kirora.Serialization.Optional`1[System.String]:IdType:get=True:set=True
+P:Kirora.Models.ListContactMessagesQuery:Kirora.Serialization.Optional`1[System.String]:MessageType:get=True:set=True
+P:Kirora.Models.ListContactMessagesQuery:Kirora.Serialization.Optional`1[System.String]:Status:get=True:set=True
+P:Kirora.Models.ListContactMessagesResponse:Kirora.Models.CursorPaginationMeta:Meta:get=True:set=True
+P:Kirora.Models.ListContactMessagesResponse:System.Collections.Generic.IReadOnlyList`1[Kirora.Models.OutboundMessage]:Data:get=True:set=True
+P:Kirora.Models.ListContactSegmentsQuery:Kirora.Serialization.Optional`1[System.Int64]:Limit:get=True:set=True
+P:Kirora.Models.ListContactSegmentsQuery:Kirora.Serialization.Optional`1[System.String]:Cursor:get=True:set=True
+P:Kirora.Models.ListContactSegmentsQuery:Kirora.Serialization.Optional`1[System.String]:IdType:get=True:set=True
+P:Kirora.Models.ListContactSegmentsQuery:Kirora.Serialization.Optional`1[System.String]:Query:get=True:set=True
+P:Kirora.Models.ListContactSegmentsResponse:Kirora.Models.CursorPaginationMeta:Meta:get=True:set=True
+P:Kirora.Models.ListContactSegmentsResponse:System.Collections.Generic.IReadOnlyList`1[Kirora.Models.ContactSegment]:Data:get=True:set=True
+P:Kirora.Models.ListContactTopicsQuery:Kirora.Serialization.Optional`1[System.String]:IdType:get=True:set=True
+P:Kirora.Models.ListContactTopicsResponse:System.Collections.Generic.IReadOnlyList`1[Kirora.Models.ContactTopic]:Data:get=True:set=True
+P:Kirora.Models.ListContactsInput:System.Object:Value:get=True:set=False
+P:Kirora.Models.ListContactsInputByContactIds:System.Collections.Generic.IReadOnlyList`1[System.Guid]:ContactIds:get=True:set=True
+P:Kirora.Models.ListContactsInputByEmails:System.Collections.Generic.IReadOnlyList`1[System.String]:Emails:get=True:set=True
+P:Kirora.Models.ListContactsInputByExternalIds:System.Collections.Generic.IReadOnlyList`1[System.String]:ExternalIds:get=True:set=True
+P:Kirora.Models.ListContactsQuery:Kirora.Serialization.Optional`1[System.DateTimeOffset]:CreatedAfter:get=True:set=True
+P:Kirora.Models.ListContactsQuery:Kirora.Serialization.Optional`1[System.DateTimeOffset]:CreatedBefore:get=True:set=True
+P:Kirora.Models.ListContactsQuery:Kirora.Serialization.Optional`1[System.Guid]:ListId:get=True:set=True
+P:Kirora.Models.ListContactsQuery:Kirora.Serialization.Optional`1[System.Guid]:SegmentId:get=True:set=True
+P:Kirora.Models.ListContactsQuery:Kirora.Serialization.Optional`1[System.Int64]:Limit:get=True:set=True
+P:Kirora.Models.ListContactsQuery:Kirora.Serialization.Optional`1[System.String]:Consent:get=True:set=True
+P:Kirora.Models.ListContactsQuery:Kirora.Serialization.Optional`1[System.String]:Cursor:get=True:set=True
+P:Kirora.Models.ListContactsQuery:Kirora.Serialization.Optional`1[System.String]:Query:get=True:set=True
+P:Kirora.Models.ListContactsQuery:Kirora.Serialization.Optional`1[System.String]:Suppressed:get=True:set=True
+P:Kirora.Models.ListContactsResponse:Kirora.Models.ContactListMeta:Meta:get=True:set=True
+P:Kirora.Models.ListContactsResponse:System.Collections.Generic.IReadOnlyList`1[Kirora.Models.ContactDetail]:Data:get=True:set=True
+P:Kirora.Models.ListListsQuery:Kirora.Serialization.Optional`1[System.Int64]:Limit:get=True:set=True
+P:Kirora.Models.ListListsQuery:Kirora.Serialization.Optional`1[System.String]:Cursor:get=True:set=True
+P:Kirora.Models.ListListsQuery:Kirora.Serialization.Optional`1[System.String]:Query:get=True:set=True
+P:Kirora.Models.ListListsResponse:Kirora.Models.CursorPaginationMeta:Meta:get=True:set=True
+P:Kirora.Models.ListListsResponse:System.Collections.Generic.IReadOnlyList`1[Kirora.Models.List]:Data:get=True:set=True
+P:Kirora.Models.ListPushInstallationsQuery:Kirora.Serialization.Optional`1[System.Int64]:Limit:get=True:set=True
+P:Kirora.Models.ListPushInstallationsQuery:Kirora.Serialization.Optional`1[System.String]:Cursor:get=True:set=True
+P:Kirora.Models.ListPushInstallationsQuery:Kirora.Serialization.Optional`1[System.String]:IdType:get=True:set=True
+P:Kirora.Models.ListPushInstallationsResponse:Kirora.Models.CursorPaginationMeta:Meta:get=True:set=True
+P:Kirora.Models.ListPushInstallationsResponse:System.Collections.Generic.IReadOnlyList`1[Kirora.Models.PushInstallation]:Data:get=True:set=True
+P:Kirora.Models.ListUsage:System.Boolean:HasMore:get=True:set=True
+P:Kirora.Models.ListUsage:System.Collections.Generic.IReadOnlyList`1[Kirora.Models.ListUsageCampaignsItem]:Campaigns:get=True:set=True
+P:Kirora.Models.ListUsage:System.Collections.Generic.IReadOnlyList`1[Kirora.Models.ListUsageFormsItem]:Forms:get=True:set=True
+P:Kirora.Models.ListUsage:System.Collections.Generic.IReadOnlyList`1[Kirora.Models.ListUsageJourneysItem]:Journeys:get=True:set=True
+P:Kirora.Models.ListUsage:System.Collections.Generic.IReadOnlyList`1[Kirora.Models.ListUsageSegmentsItem]:Segments:get=True:set=True
+P:Kirora.Models.ListUsageCampaignsItem:System.Guid:Id:get=True:set=True
+P:Kirora.Models.ListUsageCampaignsItem:System.String:Name:get=True:set=True
+P:Kirora.Models.ListUsageCampaignsItem:System.String:Status:get=True:set=True
+P:Kirora.Models.ListUsageFormsItem:System.Guid:Id:get=True:set=True
+P:Kirora.Models.ListUsageFormsItem:System.String:Name:get=True:set=True
+P:Kirora.Models.ListUsageJourneysItem:System.Guid:Id:get=True:set=True
+P:Kirora.Models.ListUsageJourneysItem:System.String:Name:get=True:set=True
+P:Kirora.Models.ListUsageJourneysItem:System.String:Status:get=True:set=True
+P:Kirora.Models.ListUsageSegmentsItem:System.Guid:Id:get=True:set=True
+P:Kirora.Models.ListUsageSegmentsItem:System.String:Name:get=True:set=True
+P:Kirora.Models.MergeContactInput:Kirora.Models.ContactIdentifierInput:Keep:get=True:set=True
+P:Kirora.Models.MergeContactsQuery:Kirora.Serialization.Optional`1[System.String]:IdType:get=True:set=True
+P:Kirora.Models.MergeContactsResponse:Kirora.Models.ContactDetail:Data:get=True:set=True
+P:Kirora.Models.MessageContent:Kirora.Models.MessageContentEmail:Email:get=True:set=True
+P:Kirora.Models.MessageContent:Kirora.Models.MessageContentPush:Push:get=True:set=True
+P:Kirora.Models.MessageContent:System.String:Channel:get=True:set=True
+P:Kirora.Models.MessageContentEmail:Kirora.Serialization.Optional`1[System.String]:PreviewText:get=True:set=True
+P:Kirora.Models.MessageContentEmail:Kirora.Serialization.Optional`1[System.String]:ReplyTo:get=True:set=True
+P:Kirora.Models.MessageContentEmail:Kirora.Serialization.Optional`1[System.String]:Text:get=True:set=True
+P:Kirora.Models.MessageContentEmail:System.String:From:get=True:set=True
+P:Kirora.Models.MessageContentEmail:System.String:Html:get=True:set=True
+P:Kirora.Models.MessageContentEmail:System.String:Subject:get=True:set=True
+P:Kirora.Models.MessageContentPush:Kirora.Serialization.Optional`1[Kirora.Models.DurationOrZero]:Ttl:get=True:set=True
+P:Kirora.Models.MessageContentPush:Kirora.Serialization.Optional`1[Kirora.Models.MessageContentPushOverrides]:Overrides:get=True:set=True
+P:Kirora.Models.MessageContentPush:Kirora.Serialization.Optional`1[System.Collections.Generic.Dictionary`2[System.String,System.String]]:Data:get=True:set=True
+P:Kirora.Models.MessageContentPush:Kirora.Serialization.Optional`1[System.Collections.Generic.IReadOnlyList`1[Kirora.Models.MessageContentPushButtonsItem]]:Buttons:get=True:set=True
+P:Kirora.Models.MessageContentPush:Kirora.Serialization.Optional`1[System.Int64]:Badge:get=True:set=True
+P:Kirora.Models.MessageContentPush:Kirora.Serialization.Optional`1[System.String]:ActionUrl:get=True:set=True
+P:Kirora.Models.MessageContentPush:Kirora.Serialization.Optional`1[System.String]:CollapseKey:get=True:set=True
+P:Kirora.Models.MessageContentPush:Kirora.Serialization.Optional`1[System.String]:IconUrl:get=True:set=True
+P:Kirora.Models.MessageContentPush:Kirora.Serialization.Optional`1[System.String]:ImageUrl:get=True:set=True
+P:Kirora.Models.MessageContentPush:Kirora.Serialization.Optional`1[System.String]:Sound:get=True:set=True
+P:Kirora.Models.MessageContentPush:Kirora.Serialization.Optional`1[System.String]:Urgency:get=True:set=True
+P:Kirora.Models.MessageContentPush:System.String:Body:get=True:set=True
+P:Kirora.Models.MessageContentPush:System.String:Title:get=True:set=True
+P:Kirora.Models.MessageContentPushButtonsItem:System.String:Title:get=True:set=True
+P:Kirora.Models.MessageContentPushButtonsItem:System.String:Url:get=True:set=True
+P:Kirora.Models.MessageContentPushOverrides:Kirora.Serialization.Optional`1[Kirora.Models.MessageContentPushOverridesAndroid]:Android:get=True:set=True
+P:Kirora.Models.MessageContentPushOverrides:Kirora.Serialization.Optional`1[Kirora.Models.MessageContentPushOverridesIos]:Ios:get=True:set=True
+P:Kirora.Models.MessageContentPushOverrides:Kirora.Serialization.Optional`1[Kirora.Models.MessageContentPushOverridesWeb]:Web:get=True:set=True
+P:Kirora.Models.MessageContentPushOverridesAndroid:Kirora.Serialization.Optional`1[Kirora.Models.DurationOrZero]:Ttl:get=True:set=True
+P:Kirora.Models.MessageContentPushOverridesAndroid:Kirora.Serialization.Optional`1[System.Collections.Generic.Dictionary`2[System.String,System.String]]:Data:get=True:set=True
+P:Kirora.Models.MessageContentPushOverridesAndroid:Kirora.Serialization.Optional`1[System.Collections.Generic.IReadOnlyList`1[Kirora.Models.MessageContentPushOverridesAndroidButtonsItem]]:Buttons:get=True:set=True
+P:Kirora.Models.MessageContentPushOverridesAndroid:Kirora.Serialization.Optional`1[System.Int64]:Badge:get=True:set=True
+P:Kirora.Models.MessageContentPushOverridesAndroid:Kirora.Serialization.Optional`1[System.String]:ActionUrl:get=True:set=True
+P:Kirora.Models.MessageContentPushOverridesAndroid:Kirora.Serialization.Optional`1[System.String]:Body:get=True:set=True
+P:Kirora.Models.MessageContentPushOverridesAndroid:Kirora.Serialization.Optional`1[System.String]:ChannelId:get=True:set=True
+P:Kirora.Models.MessageContentPushOverridesAndroid:Kirora.Serialization.Optional`1[System.String]:CollapseKey:get=True:set=True
+P:Kirora.Models.MessageContentPushOverridesAndroid:Kirora.Serialization.Optional`1[System.String]:IconUrl:get=True:set=True
+P:Kirora.Models.MessageContentPushOverridesAndroid:Kirora.Serialization.Optional`1[System.String]:ImageUrl:get=True:set=True
+P:Kirora.Models.MessageContentPushOverridesAndroid:Kirora.Serialization.Optional`1[System.String]:Sound:get=True:set=True
+P:Kirora.Models.MessageContentPushOverridesAndroid:Kirora.Serialization.Optional`1[System.String]:Title:get=True:set=True
+P:Kirora.Models.MessageContentPushOverridesAndroid:Kirora.Serialization.Optional`1[System.String]:Urgency:get=True:set=True
+P:Kirora.Models.MessageContentPushOverridesAndroidButtonsItem:System.String:Title:get=True:set=True
+P:Kirora.Models.MessageContentPushOverridesAndroidButtonsItem:System.String:Url:get=True:set=True
+P:Kirora.Models.MessageContentPushOverridesIos:Kirora.Serialization.Optional`1[Kirora.Models.DurationOrZero]:Ttl:get=True:set=True
+P:Kirora.Models.MessageContentPushOverridesIos:Kirora.Serialization.Optional`1[System.Collections.Generic.Dictionary`2[System.String,System.String]]:Data:get=True:set=True
+P:Kirora.Models.MessageContentPushOverridesIos:Kirora.Serialization.Optional`1[System.Collections.Generic.IReadOnlyList`1[Kirora.Models.MessageContentPushOverridesIosButtonsItem]]:Buttons:get=True:set=True
+P:Kirora.Models.MessageContentPushOverridesIos:Kirora.Serialization.Optional`1[System.Int64]:Badge:get=True:set=True
+P:Kirora.Models.MessageContentPushOverridesIos:Kirora.Serialization.Optional`1[System.String]:ActionUrl:get=True:set=True
+P:Kirora.Models.MessageContentPushOverridesIos:Kirora.Serialization.Optional`1[System.String]:Body:get=True:set=True
+P:Kirora.Models.MessageContentPushOverridesIos:Kirora.Serialization.Optional`1[System.String]:CollapseKey:get=True:set=True
+P:Kirora.Models.MessageContentPushOverridesIos:Kirora.Serialization.Optional`1[System.String]:IconUrl:get=True:set=True
+P:Kirora.Models.MessageContentPushOverridesIos:Kirora.Serialization.Optional`1[System.String]:ImageUrl:get=True:set=True
+P:Kirora.Models.MessageContentPushOverridesIos:Kirora.Serialization.Optional`1[System.String]:InterruptionLevel:get=True:set=True
+P:Kirora.Models.MessageContentPushOverridesIos:Kirora.Serialization.Optional`1[System.String]:Sound:get=True:set=True
+P:Kirora.Models.MessageContentPushOverridesIos:Kirora.Serialization.Optional`1[System.String]:ThreadId:get=True:set=True
+P:Kirora.Models.MessageContentPushOverridesIos:Kirora.Serialization.Optional`1[System.String]:Title:get=True:set=True
+P:Kirora.Models.MessageContentPushOverridesIos:Kirora.Serialization.Optional`1[System.String]:Urgency:get=True:set=True
+P:Kirora.Models.MessageContentPushOverridesIosButtonsItem:System.String:Title:get=True:set=True
+P:Kirora.Models.MessageContentPushOverridesIosButtonsItem:System.String:Url:get=True:set=True
+P:Kirora.Models.MessageContentPushOverridesWeb:Kirora.Serialization.Optional`1[Kirora.Models.DurationOrZero]:Ttl:get=True:set=True
+P:Kirora.Models.MessageContentPushOverridesWeb:Kirora.Serialization.Optional`1[System.Collections.Generic.Dictionary`2[System.String,System.String]]:Data:get=True:set=True
+P:Kirora.Models.MessageContentPushOverridesWeb:Kirora.Serialization.Optional`1[System.Collections.Generic.IReadOnlyList`1[Kirora.Models.MessageContentPushOverridesWebButtonsItem]]:Buttons:get=True:set=True
+P:Kirora.Models.MessageContentPushOverridesWeb:Kirora.Serialization.Optional`1[System.Int64]:Badge:get=True:set=True
+P:Kirora.Models.MessageContentPushOverridesWeb:Kirora.Serialization.Optional`1[System.String]:ActionUrl:get=True:set=True
+P:Kirora.Models.MessageContentPushOverridesWeb:Kirora.Serialization.Optional`1[System.String]:Body:get=True:set=True
+P:Kirora.Models.MessageContentPushOverridesWeb:Kirora.Serialization.Optional`1[System.String]:CollapseKey:get=True:set=True
+P:Kirora.Models.MessageContentPushOverridesWeb:Kirora.Serialization.Optional`1[System.String]:IconUrl:get=True:set=True
+P:Kirora.Models.MessageContentPushOverridesWeb:Kirora.Serialization.Optional`1[System.String]:ImageUrl:get=True:set=True
+P:Kirora.Models.MessageContentPushOverridesWeb:Kirora.Serialization.Optional`1[System.String]:Sound:get=True:set=True
+P:Kirora.Models.MessageContentPushOverridesWeb:Kirora.Serialization.Optional`1[System.String]:Title:get=True:set=True
+P:Kirora.Models.MessageContentPushOverridesWeb:Kirora.Serialization.Optional`1[System.String]:Urgency:get=True:set=True
+P:Kirora.Models.MessageContentPushOverridesWebButtonsItem:System.String:Title:get=True:set=True
+P:Kirora.Models.MessageContentPushOverridesWebButtonsItem:System.String:Url:get=True:set=True
+P:Kirora.Models.Money:System.Decimal:Value:get=True:set=True
+P:Kirora.Models.Money:System.String:Currency:get=True:set=True
+P:Kirora.Models.OutboundMessage:Kirora.Models.OutboundMessageBounce:Bounce:get=True:set=True
+P:Kirora.Models.OutboundMessage:Kirora.Models.OutboundMessageCampaign:Campaign:get=True:set=True
+P:Kirora.Models.OutboundMessage:Kirora.Models.OutboundMessageContact:Contact:get=True:set=True
+P:Kirora.Models.OutboundMessage:Kirora.Models.OutboundMessageFailure:Failure:get=True:set=True
+P:Kirora.Models.OutboundMessage:Kirora.Models.OutboundMessageJourney:Journey:get=True:set=True
+P:Kirora.Models.OutboundMessage:Kirora.Models.OutboundMessageSkip:Skip:get=True:set=True
+P:Kirora.Models.OutboundMessage:Kirora.Models.OutboundMessageTemplate:Template:get=True:set=True
+P:Kirora.Models.OutboundMessage:System.Boolean:ClickedByMachine:get=True:set=True
+P:Kirora.Models.OutboundMessage:System.Boolean:OpenedByMachine:get=True:set=True
+P:Kirora.Models.OutboundMessage:System.Boolean:Simulated:get=True:set=True
+P:Kirora.Models.OutboundMessage:System.DateTimeOffset:CreatedAt:get=True:set=True
+P:Kirora.Models.OutboundMessage:System.Guid:Id:get=True:set=True
+P:Kirora.Models.OutboundMessage:System.Nullable`1[System.DateTimeOffset]:ClickedAt:get=True:set=True
+P:Kirora.Models.OutboundMessage:System.Nullable`1[System.DateTimeOffset]:ComplainedAt:get=True:set=True
+P:Kirora.Models.OutboundMessage:System.Nullable`1[System.DateTimeOffset]:DeliveredAt:get=True:set=True
+P:Kirora.Models.OutboundMessage:System.Nullable`1[System.DateTimeOffset]:OpenedAt:get=True:set=True
+P:Kirora.Models.OutboundMessage:System.Nullable`1[System.DateTimeOffset]:SendAt:get=True:set=True
+P:Kirora.Models.OutboundMessage:System.Nullable`1[System.DateTimeOffset]:SentAt:get=True:set=True
+P:Kirora.Models.OutboundMessage:System.String:Channel:get=True:set=True
+P:Kirora.Models.OutboundMessage:System.String:CorrelationId:get=True:set=True
+P:Kirora.Models.OutboundMessage:System.String:MessageType:get=True:set=True
+P:Kirora.Models.OutboundMessage:System.String:RecipientEmail:get=True:set=True
+P:Kirora.Models.OutboundMessage:System.String:Status:get=True:set=True
+P:Kirora.Models.OutboundMessageBounce:System.DateTimeOffset:OccurredAt:get=True:set=True
+P:Kirora.Models.OutboundMessageBounce:System.String:Detail:get=True:set=True
+P:Kirora.Models.OutboundMessageBounce:System.String:Type:get=True:set=True
+P:Kirora.Models.OutboundMessageCampaign:System.Guid:Id:get=True:set=True
+P:Kirora.Models.OutboundMessageCampaign:System.String:Name:get=True:set=True
+P:Kirora.Models.OutboundMessageContact:System.Guid:Id:get=True:set=True
+P:Kirora.Models.OutboundMessageContact:System.String:Email:get=True:set=True
+P:Kirora.Models.OutboundMessageContact:System.String:ExternalId:get=True:set=True
+P:Kirora.Models.OutboundMessageFailure:System.DateTimeOffset:OccurredAt:get=True:set=True
+P:Kirora.Models.OutboundMessageFailure:System.String:Reason:get=True:set=True
+P:Kirora.Models.OutboundMessageJourney:System.Boolean:Deleted:get=True:set=True
+P:Kirora.Models.OutboundMessageJourney:System.Guid:EnrollmentId:get=True:set=True
+P:Kirora.Models.OutboundMessageJourney:System.Nullable`1[System.Guid]:Id:get=True:set=True
+P:Kirora.Models.OutboundMessageJourney:System.String:Name:get=True:set=True
+P:Kirora.Models.OutboundMessageJourney:System.String:StepId:get=True:set=True
+P:Kirora.Models.OutboundMessageSkip:System.DateTimeOffset:OccurredAt:get=True:set=True
+P:Kirora.Models.OutboundMessageSkip:System.String:Reason:get=True:set=True
+P:Kirora.Models.OutboundMessageSkip:System.String:SuppressionReason:get=True:set=True
+P:Kirora.Models.OutboundMessageTemplate:System.Guid:Id:get=True:set=True
+P:Kirora.Models.OutboundMessageTemplate:System.Int64:Version:get=True:set=True
+P:Kirora.Models.PushInstallation:System.Boolean:Active:get=True:set=True
+P:Kirora.Models.PushInstallation:System.DateTimeOffset:CreatedAt:get=True:set=True
+P:Kirora.Models.PushInstallation:System.DateTimeOffset:LastSeenAt:get=True:set=True
+P:Kirora.Models.PushInstallation:System.Guid:ContactId:get=True:set=True
+P:Kirora.Models.PushInstallation:System.Guid:Id:get=True:set=True
+P:Kirora.Models.PushInstallation:System.Guid:PushAppId:get=True:set=True
+P:Kirora.Models.PushInstallation:System.Nullable`1[System.DateTimeOffset]:InvalidatedAt:get=True:set=True
+P:Kirora.Models.PushInstallation:System.String:Environment:get=True:set=True
+P:Kirora.Models.PushInstallation:System.String:ExternalInstallationId:get=True:set=True
+P:Kirora.Models.PushInstallation:System.String:Permission:get=True:set=True
+P:Kirora.Models.PushInstallation:System.String:Platform:get=True:set=True
+P:Kirora.Models.PushInstallation:System.String:Sdk:get=True:set=True
+P:Kirora.Models.RegisterPushInstallationInput:System.Object:Value:get=True:set=False
+P:Kirora.Models.RegisterPushInstallationInputPermissionDenied:System.DateTimeOffset:LastSeenAt:get=True:set=True
+P:Kirora.Models.RegisterPushInstallationInputPermissionDenied:System.Guid:PushAppId:get=True:set=True
+P:Kirora.Models.RegisterPushInstallationInputPermissionDenied:System.String:ExternalInstallationId:get=True:set=True
+P:Kirora.Models.RegisterPushInstallationInputPermissionDenied:System.String:Permission:get=True:set=True
+P:Kirora.Models.RegisterPushInstallationInputVariant1:System.Object:Value:get=True:set=False
+P:Kirora.Models.RegisterPushInstallationInputVariant1NativeToken:System.Guid:PushAppId:get=True:set=True
+P:Kirora.Models.RegisterPushInstallationInputVariant1NativeToken:System.String:ExternalInstallationId:get=True:set=True
+P:Kirora.Models.RegisterPushInstallationInputVariant1NativeToken:System.String:Permission:get=True:set=True
+P:Kirora.Models.RegisterPushInstallationInputVariant1NativeToken:System.String:Target:get=True:set=True
+P:Kirora.Models.RegisterPushInstallationInputVariant1NativeToken:System.String:TargetKind:get=True:set=True
+P:Kirora.Models.RegisterPushInstallationInputVariant1WebPushSubscription:Kirora.Models.RegisterPushInstallationInputVariant1WebPushSubscriptionSubscription:Subscription:get=True:set=True
+P:Kirora.Models.RegisterPushInstallationInputVariant1WebPushSubscription:System.Guid:PushAppId:get=True:set=True
+P:Kirora.Models.RegisterPushInstallationInputVariant1WebPushSubscription:System.String:ExternalInstallationId:get=True:set=True
+P:Kirora.Models.RegisterPushInstallationInputVariant1WebPushSubscription:System.String:Permission:get=True:set=True
+P:Kirora.Models.RegisterPushInstallationInputVariant1WebPushSubscription:System.String:TargetKind:get=True:set=True
+P:Kirora.Models.RegisterPushInstallationInputVariant1WebPushSubscriptionSubscription:Kirora.Models.RegisterPushInstallationInputVariant1WebPushSubscriptionSubscriptionKeys:Keys:get=True:set=True
+P:Kirora.Models.RegisterPushInstallationInputVariant1WebPushSubscriptionSubscription:Kirora.Serialization.Optional`1[System.Nullable`1[System.Int64]]:ExpirationTime:get=True:set=True
+P:Kirora.Models.RegisterPushInstallationInputVariant1WebPushSubscriptionSubscription:System.String:Endpoint:get=True:set=True
+P:Kirora.Models.RegisterPushInstallationInputVariant1WebPushSubscriptionSubscriptionKeys:System.String:Auth:get=True:set=True
+P:Kirora.Models.RegisterPushInstallationInputVariant1WebPushSubscriptionSubscriptionKeys:System.String:P256dh:get=True:set=True
+P:Kirora.Models.RegisterPushInstallationQuery:Kirora.Serialization.Optional`1[System.String]:IdType:get=True:set=True
+P:Kirora.Models.RegisterPushInstallationResponse:Kirora.Models.PushInstallation:Data:get=True:set=True
+P:Kirora.Models.SendTransactionalInput:Kirora.Models.TransactionalRecipientInput:To:get=True:set=True
+P:Kirora.Models.SendTransactionalInput:Kirora.Serialization.Optional`1[Kirora.Models.SendTransactionalInputEmail]:Email:get=True:set=True
+P:Kirora.Models.SendTransactionalInput:Kirora.Serialization.Optional`1[Kirora.Models.TransactionalPushInput]:Push:get=True:set=True
+P:Kirora.Models.SendTransactionalInput:Kirora.Serialization.Optional`1[System.Boolean]:Sensitive:get=True:set=True
+P:Kirora.Models.SendTransactionalInput:Kirora.Serialization.Optional`1[System.Collections.Generic.Dictionary`2[System.String,System.Text.Json.JsonElement]]:Data:get=True:set=True
+P:Kirora.Models.SendTransactionalInput:Kirora.Serialization.Optional`1[System.DateTimeOffset]:SendAt:get=True:set=True
+P:Kirora.Models.SendTransactionalInput:Kirora.Serialization.Optional`1[System.String]:CorrelationId:get=True:set=True
+P:Kirora.Models.SendTransactionalInput:Kirora.Serialization.Optional`1[System.String]:Deliver:get=True:set=True
+P:Kirora.Models.SendTransactionalInputEmail:System.Object:Value:get=True:set=False
+P:Kirora.Models.SendTransactionalInputEmailInlineContent:Kirora.Serialization.Optional`1[Kirora.Models.EmailThreadingInput]:Threading:get=True:set=True
+P:Kirora.Models.SendTransactionalInputEmailInlineContent:Kirora.Serialization.Optional`1[Kirora.Models.TransactionalEmailTrackingInput]:Tracking:get=True:set=True
+P:Kirora.Models.SendTransactionalInputEmailInlineContent:Kirora.Serialization.Optional`1[System.Collections.Generic.IReadOnlyList`1[Kirora.Models.EmailAttachmentInput]]:Attachments:get=True:set=True
+P:Kirora.Models.SendTransactionalInputEmailInlineContent:Kirora.Serialization.Optional`1[System.String]:PreviewText:get=True:set=True
+P:Kirora.Models.SendTransactionalInputEmailInlineContent:Kirora.Serialization.Optional`1[System.String]:ReplyTo:get=True:set=True
+P:Kirora.Models.SendTransactionalInputEmailInlineContent:Kirora.Serialization.Optional`1[System.String]:Text:get=True:set=True
+P:Kirora.Models.SendTransactionalInputEmailInlineContent:System.String:From:get=True:set=True
+P:Kirora.Models.SendTransactionalInputEmailInlineContent:System.String:Html:get=True:set=True
+P:Kirora.Models.SendTransactionalInputEmailInlineContent:System.String:Subject:get=True:set=True
+P:Kirora.Models.SendTransactionalInputEmailStoredTemplate:Kirora.Serialization.Optional`1[Kirora.Models.EmailThreadingInput]:Threading:get=True:set=True
+P:Kirora.Models.SendTransactionalInputEmailStoredTemplate:Kirora.Serialization.Optional`1[Kirora.Models.TransactionalEmailTrackingInput]:Tracking:get=True:set=True
+P:Kirora.Models.SendTransactionalInputEmailStoredTemplate:Kirora.Serialization.Optional`1[System.Collections.Generic.IReadOnlyList`1[Kirora.Models.EmailAttachmentInput]]:Attachments:get=True:set=True
+P:Kirora.Models.SendTransactionalInputEmailStoredTemplate:Kirora.Serialization.Optional`1[System.String]:From:get=True:set=True
+P:Kirora.Models.SendTransactionalInputEmailStoredTemplate:Kirora.Serialization.Optional`1[System.String]:PreviewText:get=True:set=True
+P:Kirora.Models.SendTransactionalInputEmailStoredTemplate:Kirora.Serialization.Optional`1[System.String]:ReplyTo:get=True:set=True
+P:Kirora.Models.SendTransactionalInputEmailStoredTemplate:Kirora.Serialization.Optional`1[System.String]:Subject:get=True:set=True
+P:Kirora.Models.SendTransactionalInputEmailStoredTemplate:System.String:Template:get=True:set=True
+P:Kirora.Models.SendTransactionalMessageResponse:Kirora.Models.TransactionalSendResult:Data:get=True:set=True
+P:Kirora.Models.SendTransactionalMessagesBatchInput:System.Collections.Generic.IReadOnlyList`1[Kirora.Models.SendTransactionalMessagesBatchInputMessagesItem]:Messages:get=True:set=True
+P:Kirora.Models.SendTransactionalMessagesBatchInputMessagesItem:Kirora.Models.SendTransactionalInput:Message:get=True:set=True
+P:Kirora.Models.SendTransactionalMessagesBatchInputMessagesItem:Kirora.Serialization.Optional`1[System.String]:IdempotencyKey:get=True:set=True
+P:Kirora.Models.SendTransactionalMessagesBatchResponse:Kirora.Models.SendTransactionalMessagesBatchResult:Data:get=True:set=True
+P:Kirora.Models.SendTransactionalMessagesBatchResult:System.Collections.Generic.IReadOnlyList`1[Kirora.Models.SendTransactionalMessagesBatchResultResultsItem]:Results:get=True:set=True
+P:Kirora.Models.SendTransactionalMessagesBatchResultResultsItem:System.Object:Value:get=True:set=False
+P:Kirora.Models.SendTransactionalMessagesBatchResultResultsItemAccepted:System.Boolean:Replayed:get=True:set=True
+P:Kirora.Models.SendTransactionalMessagesBatchResultResultsItemAccepted:System.Collections.Generic.IReadOnlyList`1[Kirora.Models.TransactionalMessage]:Messages:get=True:set=True
+P:Kirora.Models.SendTransactionalMessagesBatchResultResultsItemAccepted:System.String:IdempotencyKey:get=True:set=True
+P:Kirora.Models.SendTransactionalMessagesBatchResultResultsItemRejected:Kirora.Models.SendTransactionalMessagesBatchResultResultsItemRejectedError:Error:get=True:set=True
+P:Kirora.Models.SendTransactionalMessagesBatchResultResultsItemRejected:System.String:IdempotencyKey:get=True:set=True
+P:Kirora.Models.SendTransactionalMessagesBatchResultResultsItemRejectedError:Kirora.Serialization.Optional`1[System.Collections.Generic.IReadOnlyList`1[Kirora.Models.FieldError]]:Errors:get=True:set=True
+P:Kirora.Models.SendTransactionalMessagesBatchResultResultsItemRejectedError:Kirora.Serialization.Optional`1[System.String]:RequestId:get=True:set=True
+P:Kirora.Models.SendTransactionalMessagesBatchResultResultsItemRejectedError:Kirora.Serialization.Optional`1[System.Text.Json.JsonElement]:Details:get=True:set=True
+P:Kirora.Models.SendTransactionalMessagesBatchResultResultsItemRejectedError:System.String:Code:get=True:set=True
+P:Kirora.Models.SendTransactionalMessagesBatchResultResultsItemRejectedError:System.String:Message:get=True:set=True
+P:Kirora.Models.SetContactConsentInput:Kirora.Serialization.Optional`1[Kirora.Models.ConsentStatementInput]:Statement:get=True:set=True
+P:Kirora.Models.SetContactConsentInput:Kirora.Serialization.Optional`1[System.Boolean]:Email:get=True:set=True
+P:Kirora.Models.SetContactConsentInput:Kirora.Serialization.Optional`1[System.Boolean]:Push:get=True:set=True
+P:Kirora.Models.SetContactTopicInput:Kirora.Models.SetContactTopicInputSubscribed:Subscribed:get=True:set=True
+P:Kirora.Models.SetContactTopicInput:Kirora.Serialization.Optional`1[Kirora.Models.ConsentStatementInput]:Statement:get=True:set=True
+P:Kirora.Models.SetContactTopicInputSubscribed:System.Object:Value:get=True:set=False
+P:Kirora.Models.SetContactTopicQuery:Kirora.Serialization.Optional`1[System.String]:IdType:get=True:set=True
+P:Kirora.Models.SetContactTopicResponse:Kirora.Models.ContactTopic:Data:get=True:set=True
+P:Kirora.Models.TrackEventInput:System.Object:Value:get=True:set=False
+P:Kirora.Models.TrackEventInputByContactId:Kirora.Serialization.Optional`1[Kirora.Models.EventContextInput]:Context:get=True:set=True
+P:Kirora.Models.TrackEventInputByContactId:Kirora.Serialization.Optional`1[System.Collections.Generic.Dictionary`2[System.String,System.Text.Json.JsonElement]]:Properties:get=True:set=True
+P:Kirora.Models.TrackEventInputByContactId:Kirora.Serialization.Optional`1[System.DateTimeOffset]:OccurredAt:get=True:set=True
+P:Kirora.Models.TrackEventInputByContactId:System.Guid:ContactId:get=True:set=True
+P:Kirora.Models.TrackEventInputByContactId:System.String:Name:get=True:set=True
+P:Kirora.Models.TrackEventInputByEmail:Kirora.Serialization.Optional`1[Kirora.Models.EventContextInput]:Context:get=True:set=True
+P:Kirora.Models.TrackEventInputByEmail:Kirora.Serialization.Optional`1[System.Collections.Generic.Dictionary`2[System.String,System.Text.Json.JsonElement]]:Properties:get=True:set=True
+P:Kirora.Models.TrackEventInputByEmail:Kirora.Serialization.Optional`1[System.DateTimeOffset]:OccurredAt:get=True:set=True
+P:Kirora.Models.TrackEventInputByEmail:System.String:Email:get=True:set=True
+P:Kirora.Models.TrackEventInputByEmail:System.String:Name:get=True:set=True
+P:Kirora.Models.TrackEventInputByExternalId:Kirora.Serialization.Optional`1[Kirora.Models.EventContextInput]:Context:get=True:set=True
+P:Kirora.Models.TrackEventInputByExternalId:Kirora.Serialization.Optional`1[System.Collections.Generic.Dictionary`2[System.String,System.Text.Json.JsonElement]]:Properties:get=True:set=True
+P:Kirora.Models.TrackEventInputByExternalId:Kirora.Serialization.Optional`1[System.DateTimeOffset]:OccurredAt:get=True:set=True
+P:Kirora.Models.TrackEventInputByExternalId:System.String:ExternalId:get=True:set=True
+P:Kirora.Models.TrackEventInputByExternalId:System.String:Name:get=True:set=True
+P:Kirora.Models.TrackEventResponse:Kirora.Models.TrackedEvent:Data:get=True:set=True
+P:Kirora.Models.TrackEventsBatchInput:System.Collections.Generic.IReadOnlyList`1[Kirora.Models.TrackEventsBatchInputEventsItem]:Events:get=True:set=True
+P:Kirora.Models.TrackEventsBatchInputEventsItem:Kirora.Models.TrackEventInput:Event:get=True:set=True
+P:Kirora.Models.TrackEventsBatchInputEventsItem:Kirora.Serialization.Optional`1[System.String]:IdempotencyKey:get=True:set=True
+P:Kirora.Models.TrackEventsBatchResponse:Kirora.Models.TrackEventsBatchResult:Data:get=True:set=True
+P:Kirora.Models.TrackEventsBatchResult:System.Collections.Generic.IReadOnlyList`1[Kirora.Models.TrackEventsBatchResultResultsItem]:Results:get=True:set=True
+P:Kirora.Models.TrackEventsBatchResultResultsItem:System.Object:Value:get=True:set=False
+P:Kirora.Models.TrackEventsBatchResultResultsItemEventRecorded:Kirora.Models.TrackedEvent:Event:get=True:set=True
+P:Kirora.Models.TrackEventsBatchResultResultsItemEventRecorded:System.Boolean:Replayed:get=True:set=True
+P:Kirora.Models.TrackEventsBatchResultResultsItemEventRecorded:System.String:IdempotencyKey:get=True:set=True
+P:Kirora.Models.TrackEventsBatchResultResultsItemEventRefused:Kirora.Models.TrackEventsBatchResultResultsItemEventRefusedError:Error:get=True:set=True
+P:Kirora.Models.TrackEventsBatchResultResultsItemEventRefused:System.String:IdempotencyKey:get=True:set=True
+P:Kirora.Models.TrackEventsBatchResultResultsItemEventRefusedError:Kirora.Serialization.Optional`1[System.Collections.Generic.IReadOnlyList`1[Kirora.Models.FieldError]]:Errors:get=True:set=True
+P:Kirora.Models.TrackEventsBatchResultResultsItemEventRefusedError:Kirora.Serialization.Optional`1[System.String]:RequestId:get=True:set=True
+P:Kirora.Models.TrackEventsBatchResultResultsItemEventRefusedError:Kirora.Serialization.Optional`1[System.Text.Json.JsonElement]:Details:get=True:set=True
+P:Kirora.Models.TrackEventsBatchResultResultsItemEventRefusedError:System.String:Code:get=True:set=True
+P:Kirora.Models.TrackEventsBatchResultResultsItemEventRefusedError:System.String:Message:get=True:set=True
+P:Kirora.Models.TrackedEvent:System.DateTimeOffset:OccurredAt:get=True:set=True
+P:Kirora.Models.TrackedEvent:System.Guid:Id:get=True:set=True
+P:Kirora.Models.TransactionalEmailTrackingInput:Kirora.Serialization.Optional`1[System.Boolean]:Clicks:get=True:set=True
+P:Kirora.Models.TransactionalEmailTrackingInput:Kirora.Serialization.Optional`1[System.Boolean]:Opens:get=True:set=True
+P:Kirora.Models.TransactionalMessage:System.DateTimeOffset:CreatedAt:get=True:set=True
+P:Kirora.Models.TransactionalMessage:System.Guid:Id:get=True:set=True
+P:Kirora.Models.TransactionalMessage:System.Nullable`1[System.DateTimeOffset]:SendAt:get=True:set=True
+P:Kirora.Models.TransactionalMessage:System.String:Channel:get=True:set=True
+P:Kirora.Models.TransactionalMessage:System.String:CorrelationId:get=True:set=True
+P:Kirora.Models.TransactionalMessage:System.String:Status:get=True:set=True
+P:Kirora.Models.TransactionalPushInput:Kirora.Serialization.Optional`1[Kirora.Models.DurationOrZeroInput]:Ttl:get=True:set=True
+P:Kirora.Models.TransactionalPushInput:Kirora.Serialization.Optional`1[Kirora.Models.TransactionalPushInputOverrides]:Overrides:get=True:set=True
+P:Kirora.Models.TransactionalPushInput:Kirora.Serialization.Optional`1[System.Collections.Generic.Dictionary`2[System.String,System.String]]:Data:get=True:set=True
+P:Kirora.Models.TransactionalPushInput:Kirora.Serialization.Optional`1[System.Collections.Generic.IReadOnlyList`1[Kirora.Models.TransactionalPushInputButtonsItem]]:Buttons:get=True:set=True
+P:Kirora.Models.TransactionalPushInput:Kirora.Serialization.Optional`1[System.Guid]:PushProjectId:get=True:set=True
+P:Kirora.Models.TransactionalPushInput:Kirora.Serialization.Optional`1[System.Int64]:Badge:get=True:set=True
+P:Kirora.Models.TransactionalPushInput:Kirora.Serialization.Optional`1[System.String]:ActionUrl:get=True:set=True
+P:Kirora.Models.TransactionalPushInput:Kirora.Serialization.Optional`1[System.String]:CollapseKey:get=True:set=True
+P:Kirora.Models.TransactionalPushInput:Kirora.Serialization.Optional`1[System.String]:IconUrl:get=True:set=True
+P:Kirora.Models.TransactionalPushInput:Kirora.Serialization.Optional`1[System.String]:ImageUrl:get=True:set=True
+P:Kirora.Models.TransactionalPushInput:Kirora.Serialization.Optional`1[System.String]:Sound:get=True:set=True
+P:Kirora.Models.TransactionalPushInput:Kirora.Serialization.Optional`1[System.String]:Urgency:get=True:set=True
+P:Kirora.Models.TransactionalPushInput:System.String:Body:get=True:set=True
+P:Kirora.Models.TransactionalPushInput:System.String:Title:get=True:set=True
+P:Kirora.Models.TransactionalPushInputButtonsItem:System.String:Title:get=True:set=True
+P:Kirora.Models.TransactionalPushInputButtonsItem:System.String:Url:get=True:set=True
+P:Kirora.Models.TransactionalPushInputOverrides:Kirora.Serialization.Optional`1[Kirora.Models.TransactionalPushInputOverridesAndroid]:Android:get=True:set=True
+P:Kirora.Models.TransactionalPushInputOverrides:Kirora.Serialization.Optional`1[Kirora.Models.TransactionalPushInputOverridesIos]:Ios:get=True:set=True
+P:Kirora.Models.TransactionalPushInputOverrides:Kirora.Serialization.Optional`1[Kirora.Models.TransactionalPushInputOverridesWeb]:Web:get=True:set=True
+P:Kirora.Models.TransactionalPushInputOverridesAndroid:Kirora.Serialization.Optional`1[Kirora.Models.DurationOrZeroInput]:Ttl:get=True:set=True
+P:Kirora.Models.TransactionalPushInputOverridesAndroid:Kirora.Serialization.Optional`1[System.Collections.Generic.Dictionary`2[System.String,System.String]]:Data:get=True:set=True
+P:Kirora.Models.TransactionalPushInputOverridesAndroid:Kirora.Serialization.Optional`1[System.Collections.Generic.IReadOnlyList`1[Kirora.Models.TransactionalPushInputOverridesAndroidButtonsItem]]:Buttons:get=True:set=True
+P:Kirora.Models.TransactionalPushInputOverridesAndroid:Kirora.Serialization.Optional`1[System.Int64]:Badge:get=True:set=True
+P:Kirora.Models.TransactionalPushInputOverridesAndroid:Kirora.Serialization.Optional`1[System.String]:ActionUrl:get=True:set=True
+P:Kirora.Models.TransactionalPushInputOverridesAndroid:Kirora.Serialization.Optional`1[System.String]:Body:get=True:set=True
+P:Kirora.Models.TransactionalPushInputOverridesAndroid:Kirora.Serialization.Optional`1[System.String]:ChannelId:get=True:set=True
+P:Kirora.Models.TransactionalPushInputOverridesAndroid:Kirora.Serialization.Optional`1[System.String]:CollapseKey:get=True:set=True
+P:Kirora.Models.TransactionalPushInputOverridesAndroid:Kirora.Serialization.Optional`1[System.String]:IconUrl:get=True:set=True
+P:Kirora.Models.TransactionalPushInputOverridesAndroid:Kirora.Serialization.Optional`1[System.String]:ImageUrl:get=True:set=True
+P:Kirora.Models.TransactionalPushInputOverridesAndroid:Kirora.Serialization.Optional`1[System.String]:Sound:get=True:set=True
+P:Kirora.Models.TransactionalPushInputOverridesAndroid:Kirora.Serialization.Optional`1[System.String]:Title:get=True:set=True
+P:Kirora.Models.TransactionalPushInputOverridesAndroid:Kirora.Serialization.Optional`1[System.String]:Urgency:get=True:set=True
+P:Kirora.Models.TransactionalPushInputOverridesAndroidButtonsItem:System.String:Title:get=True:set=True
+P:Kirora.Models.TransactionalPushInputOverridesAndroidButtonsItem:System.String:Url:get=True:set=True
+P:Kirora.Models.TransactionalPushInputOverridesIos:Kirora.Serialization.Optional`1[Kirora.Models.DurationOrZeroInput]:Ttl:get=True:set=True
+P:Kirora.Models.TransactionalPushInputOverridesIos:Kirora.Serialization.Optional`1[System.Collections.Generic.Dictionary`2[System.String,System.String]]:Data:get=True:set=True
+P:Kirora.Models.TransactionalPushInputOverridesIos:Kirora.Serialization.Optional`1[System.Collections.Generic.IReadOnlyList`1[Kirora.Models.TransactionalPushInputOverridesIosButtonsItem]]:Buttons:get=True:set=True
+P:Kirora.Models.TransactionalPushInputOverridesIos:Kirora.Serialization.Optional`1[System.Int64]:Badge:get=True:set=True
+P:Kirora.Models.TransactionalPushInputOverridesIos:Kirora.Serialization.Optional`1[System.String]:ActionUrl:get=True:set=True
+P:Kirora.Models.TransactionalPushInputOverridesIos:Kirora.Serialization.Optional`1[System.String]:Body:get=True:set=True
+P:Kirora.Models.TransactionalPushInputOverridesIos:Kirora.Serialization.Optional`1[System.String]:CollapseKey:get=True:set=True
+P:Kirora.Models.TransactionalPushInputOverridesIos:Kirora.Serialization.Optional`1[System.String]:IconUrl:get=True:set=True
+P:Kirora.Models.TransactionalPushInputOverridesIos:Kirora.Serialization.Optional`1[System.String]:ImageUrl:get=True:set=True
+P:Kirora.Models.TransactionalPushInputOverridesIos:Kirora.Serialization.Optional`1[System.String]:InterruptionLevel:get=True:set=True
+P:Kirora.Models.TransactionalPushInputOverridesIos:Kirora.Serialization.Optional`1[System.String]:Sound:get=True:set=True
+P:Kirora.Models.TransactionalPushInputOverridesIos:Kirora.Serialization.Optional`1[System.String]:ThreadId:get=True:set=True
+P:Kirora.Models.TransactionalPushInputOverridesIos:Kirora.Serialization.Optional`1[System.String]:Title:get=True:set=True
+P:Kirora.Models.TransactionalPushInputOverridesIos:Kirora.Serialization.Optional`1[System.String]:Urgency:get=True:set=True
+P:Kirora.Models.TransactionalPushInputOverridesIosButtonsItem:System.String:Title:get=True:set=True
+P:Kirora.Models.TransactionalPushInputOverridesIosButtonsItem:System.String:Url:get=True:set=True
+P:Kirora.Models.TransactionalPushInputOverridesWeb:Kirora.Serialization.Optional`1[Kirora.Models.DurationOrZeroInput]:Ttl:get=True:set=True
+P:Kirora.Models.TransactionalPushInputOverridesWeb:Kirora.Serialization.Optional`1[System.Collections.Generic.Dictionary`2[System.String,System.String]]:Data:get=True:set=True
+P:Kirora.Models.TransactionalPushInputOverridesWeb:Kirora.Serialization.Optional`1[System.Collections.Generic.IReadOnlyList`1[Kirora.Models.TransactionalPushInputOverridesWebButtonsItem]]:Buttons:get=True:set=True
+P:Kirora.Models.TransactionalPushInputOverridesWeb:Kirora.Serialization.Optional`1[System.Int64]:Badge:get=True:set=True
+P:Kirora.Models.TransactionalPushInputOverridesWeb:Kirora.Serialization.Optional`1[System.String]:ActionUrl:get=True:set=True
+P:Kirora.Models.TransactionalPushInputOverridesWeb:Kirora.Serialization.Optional`1[System.String]:Body:get=True:set=True
+P:Kirora.Models.TransactionalPushInputOverridesWeb:Kirora.Serialization.Optional`1[System.String]:CollapseKey:get=True:set=True
+P:Kirora.Models.TransactionalPushInputOverridesWeb:Kirora.Serialization.Optional`1[System.String]:IconUrl:get=True:set=True
+P:Kirora.Models.TransactionalPushInputOverridesWeb:Kirora.Serialization.Optional`1[System.String]:ImageUrl:get=True:set=True
+P:Kirora.Models.TransactionalPushInputOverridesWeb:Kirora.Serialization.Optional`1[System.String]:Sound:get=True:set=True
+P:Kirora.Models.TransactionalPushInputOverridesWeb:Kirora.Serialization.Optional`1[System.String]:Title:get=True:set=True
+P:Kirora.Models.TransactionalPushInputOverridesWeb:Kirora.Serialization.Optional`1[System.String]:Urgency:get=True:set=True
+P:Kirora.Models.TransactionalPushInputOverridesWebButtonsItem:System.String:Title:get=True:set=True
+P:Kirora.Models.TransactionalPushInputOverridesWebButtonsItem:System.String:Url:get=True:set=True
+P:Kirora.Models.TransactionalRecipientInput:System.Object:Value:get=True:set=False
+P:Kirora.Models.TransactionalRecipientInputByContactId:System.Guid:ContactId:get=True:set=True
+P:Kirora.Models.TransactionalRecipientInputByEmail:System.String:Email:get=True:set=True
+P:Kirora.Models.TransactionalRecipientInputByExternalId:System.String:ExternalId:get=True:set=True
+P:Kirora.Models.TransactionalSendResult:System.Collections.Generic.IReadOnlyList`1[Kirora.Models.TransactionalMessage]:Messages:get=True:set=True
+P:Kirora.Models.UpdateContactInput:Kirora.Serialization.Optional`1[Kirora.Models.SetContactConsentInput]:Consent:get=True:set=True
+P:Kirora.Models.UpdateContactInput:Kirora.Serialization.Optional`1[System.Collections.Generic.Dictionary`2[System.String,System.String]]:Dates:get=True:set=True
+P:Kirora.Models.UpdateContactInput:Kirora.Serialization.Optional`1[System.Collections.Generic.Dictionary`2[System.String,System.Text.Json.JsonElement]]:Attributes:get=True:set=True
+P:Kirora.Models.UpdateContactInput:Kirora.Serialization.Optional`1[System.String]:Country:get=True:set=True
+P:Kirora.Models.UpdateContactInput:Kirora.Serialization.Optional`1[System.String]:Email:get=True:set=True
+P:Kirora.Models.UpdateContactInput:Kirora.Serialization.Optional`1[System.String]:ExternalId:get=True:set=True
+P:Kirora.Models.UpdateContactInput:Kirora.Serialization.Optional`1[System.String]:FirstName:get=True:set=True
+P:Kirora.Models.UpdateContactInput:Kirora.Serialization.Optional`1[System.String]:LastName:get=True:set=True
+P:Kirora.Models.UpdateContactInput:Kirora.Serialization.Optional`1[System.String]:Locale:get=True:set=True
+P:Kirora.Models.UpdateContactInput:Kirora.Serialization.Optional`1[System.String]:Phone:get=True:set=True
+P:Kirora.Models.UpdateContactInput:Kirora.Serialization.Optional`1[System.String]:Timezone:get=True:set=True
+P:Kirora.Models.UpdateContactQuery:Kirora.Serialization.Optional`1[System.String]:IdType:get=True:set=True
+P:Kirora.Models.UpdateContactResponse:Kirora.Models.ContactDetail:Data:get=True:set=True
+P:Kirora.Models.UpdateListInput:Kirora.Serialization.Optional`1[System.String]:Description:get=True:set=True
+P:Kirora.Models.UpdateListInput:Kirora.Serialization.Optional`1[System.String]:Name:get=True:set=True
+P:Kirora.Models.UpdateListResponse:Kirora.Models.List:Data:get=True:set=True
+P:Kirora.Serialization.Optional`1:System.Boolean:IsSet:get=True:set=False
+P:Kirora.Serialization.Optional`1:T:Value:get=True:set=False
+T:Kirora.Exceptions.KiroraApiException:System.Exception:False:False
+T:Kirora.Exceptions.KiroraAuthenticationException:Kirora.Exceptions.KiroraApiException:True:False
+T:Kirora.Exceptions.KiroraConflictException:Kirora.Exceptions.KiroraApiException:True:False
+T:Kirora.Exceptions.KiroraForbiddenException:Kirora.Exceptions.KiroraApiException:True:False
+T:Kirora.Exceptions.KiroraInvalidResponseException:System.Exception:True:False
+T:Kirora.Exceptions.KiroraNotFoundException:Kirora.Exceptions.KiroraApiException:True:False
+T:Kirora.Exceptions.KiroraRateLimitException:Kirora.Exceptions.KiroraApiException:True:False
+T:Kirora.Exceptions.KiroraTimeoutException:Kirora.Exceptions.KiroraTransportException:True:False
+T:Kirora.Exceptions.KiroraTransportException:System.Exception:False:False
+T:Kirora.Exceptions.KiroraValidationException:Kirora.Exceptions.KiroraApiException:True:False
+T:Kirora.Http.KiroraRateLimit:System.Object:True:False
+T:Kirora.Http.KiroraResponseMetadata:System.Object:True:False
+T:Kirora.KiroraClient:System.Object:True:False
+T:Kirora.KiroraOptions:System.Object:True:False
+T:Kirora.KiroraRequestOptions:System.Object:True:False
+T:Kirora.Models.AddListContactsResponse:System.Object:True:False
+T:Kirora.Models.AddedListContacts:System.Object:True:False
+T:Kirora.Models.ApiCaller:System.Object:True:False
+T:Kirora.Models.ApiCallerApiKey:System.Object:True:False
+T:Kirora.Models.ApiCallerWorkspace:System.Object:True:False
+T:Kirora.Models.CancelScheduledTransactionalMessageResponse:System.Object:True:False
+T:Kirora.Models.ConsentChange:System.Object:True:False
+T:Kirora.Models.ConsentStatementInput:System.Object:True:False
+T:Kirora.Models.ContactConsent:System.Object:True:False
+T:Kirora.Models.ContactDataExport:System.Object:True:False
+T:Kirora.Models.ContactDataExportConsentChangesItem:System.Object:True:False
+T:Kirora.Models.ContactDataExportConversionsItem:System.Object:True:False
+T:Kirora.Models.ContactDataExportEventsItem:System.Object:True:False
+T:Kirora.Models.ContactDataExportFormSubmissionsItem:System.Object:True:False
+T:Kirora.Models.ContactDataExportJourneysItem:System.Object:True:False
+T:Kirora.Models.ContactDataExportListsItem:System.Object:True:False
+T:Kirora.Models.ContactDataExportMessagesItem:System.Object:True:False
+T:Kirora.Models.ContactDataExportPushDevicesItem:System.Object:True:False
+T:Kirora.Models.ContactDataExportSegmentsItem:System.Object:True:False
+T:Kirora.Models.ContactDataExportSuppressionsItem:System.Object:True:False
+T:Kirora.Models.ContactDataExportTopicsItem:System.Object:True:False
+T:Kirora.Models.ContactDetail:System.Object:True:False
+T:Kirora.Models.ContactDetailEmailSuppression:System.Object:True:False
+T:Kirora.Models.ContactIdentifier:System.Object:True:False
+T:Kirora.Models.ContactIdentifierByContactId:System.Object:True:False
+T:Kirora.Models.ContactIdentifierByEmail:System.Object:True:False
+T:Kirora.Models.ContactIdentifierByExternalId:System.Object:True:False
+T:Kirora.Models.ContactIdentifierInput:System.Object:True:False
+T:Kirora.Models.ContactIdentifierInputByContactId:System.Object:True:False
+T:Kirora.Models.ContactIdentifierInputByEmail:System.Object:True:False
+T:Kirora.Models.ContactIdentifierInputByExternalId:System.Object:True:False
+T:Kirora.Models.ContactListMembership:System.Object:True:False
+T:Kirora.Models.ContactListMeta:System.Object:True:False
+T:Kirora.Models.ContactListMetaPagination:System.Object:True:False
+T:Kirora.Models.ContactRfm:System.Object:True:False
+T:Kirora.Models.ContactSegment:System.Object:True:False
+T:Kirora.Models.ContactTopic:System.Object:True:False
+T:Kirora.Models.ContactTopicChannels:System.Object:True:False
+T:Kirora.Models.CreateListInput:System.Object:True:False
+T:Kirora.Models.CreateListResponse:System.Object:True:False
+T:Kirora.Models.CursorPaginationMeta:System.Object:True:False
+T:Kirora.Models.CursorPaginationMetaPagination:System.Object:True:False
+T:Kirora.Models.DeleteContactQuery:System.Object:True:False
+T:Kirora.Models.DeleteContactsInput:System.Object:True:False
+T:Kirora.Models.DeleteContactsResponse:System.Object:True:False
+T:Kirora.Models.DeleteContactsResult:System.Object:True:False
+T:Kirora.Models.DeleteContactsResultResultsItem:System.Object:True:False
+T:Kirora.Models.DeleteListContactsResponse:System.Object:True:False
+T:Kirora.Models.DeletePushInstallationQuery:System.Object:True:False
+T:Kirora.Models.DeletedListContacts:System.Object:True:False
+T:Kirora.Models.DurationOrZero:System.Object:True:False
+T:Kirora.Models.DurationOrZeroInput:System.Object:True:False
+T:Kirora.Models.EmailAttachmentInput:System.Object:True:False
+T:Kirora.Models.EmailThreadingInput:System.Object:True:False
+T:Kirora.Models.Event:System.Object:True:False
+T:Kirora.Models.EventAccepted:System.Object:True:False
+T:Kirora.Models.EventAcceptedContact:System.Object:True:False
+T:Kirora.Models.EventContext:System.Object:True:False
+T:Kirora.Models.EventContextCampaign:System.Object:True:False
+T:Kirora.Models.EventContextDevice:System.Object:True:False
+T:Kirora.Models.EventContextInput:System.Object:True:False
+T:Kirora.Models.EventContextInputCampaign:System.Object:True:False
+T:Kirora.Models.EventContextInputDevice:System.Object:True:False
+T:Kirora.Models.EventContextInputLibrary:System.Object:True:False
+T:Kirora.Models.EventContextInputPage:System.Object:True:False
+T:Kirora.Models.EventContextLibrary:System.Object:True:False
+T:Kirora.Models.EventContextPage:System.Object:True:False
+T:Kirora.Models.EventRejected:System.Object:True:False
+T:Kirora.Models.EventRejectedError:System.Object:True:False
+T:Kirora.Models.FieldError:System.Object:True:False
+T:Kirora.Models.GetContactExportQuery:System.Object:True:False
+T:Kirora.Models.GetContactExportResponse:System.Object:True:False
+T:Kirora.Models.GetContactQuery:System.Object:True:False
+T:Kirora.Models.GetContactResponse:System.Object:True:False
+T:Kirora.Models.GetListResponse:System.Object:True:False
+T:Kirora.Models.GetListUsageResponse:System.Object:True:False
+T:Kirora.Models.GetMessageContentResponse:System.Object:True:False
+T:Kirora.Models.GetMessageResponse:System.Object:True:False
+T:Kirora.Models.IdentifyContactInput:System.Object:True:False
+T:Kirora.Models.IdentifyContactInputTopicsValue:System.Object:True:False
+T:Kirora.Models.IdentifyContactResponse:System.Object:True:False
+T:Kirora.Models.IdentifyContactResponseMeta:System.Object:True:False
+T:Kirora.Models.IdentifyContactsBatchInput:System.Object:True:False
+T:Kirora.Models.IdentifyContactsBatchResponse:System.Object:True:False
+T:Kirora.Models.IdentifyContactsBatchResult:System.Object:True:False
+T:Kirora.Models.IdentifyContactsBatchResultResultsItem:System.Object:True:False
+T:Kirora.Models.IdentifyContactsBatchResultResultsItemContactRefused:System.Object:True:False
+T:Kirora.Models.IdentifyContactsBatchResultResultsItemContactRefusedError:System.Object:True:False
+T:Kirora.Models.IdentifyContactsBatchResultResultsItemContactWritten:System.Object:True:False
+T:Kirora.Models.JourneyEnrollment:System.Object:True:False
+T:Kirora.Models.JourneyEnrollmentCurrentStep:System.Object:True:False
+T:Kirora.Models.JourneyEnrollmentJourney:System.Object:True:False
+T:Kirora.Models.List:System.Object:True:False
+T:Kirora.Models.ListContactConsentChangesQuery:System.Object:True:False
+T:Kirora.Models.ListContactConsentChangesResponse:System.Object:True:False
+T:Kirora.Models.ListContactEventsQuery:System.Object:True:False
+T:Kirora.Models.ListContactEventsResponse:System.Object:True:False
+T:Kirora.Models.ListContactJourneysQuery:System.Object:True:False
+T:Kirora.Models.ListContactJourneysResponse:System.Object:True:False
+T:Kirora.Models.ListContactListsQuery:System.Object:True:False
+T:Kirora.Models.ListContactListsResponse:System.Object:True:False
+T:Kirora.Models.ListContactMessagesQuery:System.Object:True:False
+T:Kirora.Models.ListContactMessagesResponse:System.Object:True:False
+T:Kirora.Models.ListContactSegmentsQuery:System.Object:True:False
+T:Kirora.Models.ListContactSegmentsResponse:System.Object:True:False
+T:Kirora.Models.ListContactTopicsQuery:System.Object:True:False
+T:Kirora.Models.ListContactTopicsResponse:System.Object:True:False
+T:Kirora.Models.ListContactsInput:System.Object:True:False
+T:Kirora.Models.ListContactsInputByContactIds:System.Object:True:False
+T:Kirora.Models.ListContactsInputByEmails:System.Object:True:False
+T:Kirora.Models.ListContactsInputByExternalIds:System.Object:True:False
+T:Kirora.Models.ListContactsQuery:System.Object:True:False
+T:Kirora.Models.ListContactsResponse:System.Object:True:False
+T:Kirora.Models.ListListsQuery:System.Object:True:False
+T:Kirora.Models.ListListsResponse:System.Object:True:False
+T:Kirora.Models.ListPushInstallationsQuery:System.Object:True:False
+T:Kirora.Models.ListPushInstallationsResponse:System.Object:True:False
+T:Kirora.Models.ListUsage:System.Object:True:False
+T:Kirora.Models.ListUsageCampaignsItem:System.Object:True:False
+T:Kirora.Models.ListUsageFormsItem:System.Object:True:False
+T:Kirora.Models.ListUsageJourneysItem:System.Object:True:False
+T:Kirora.Models.ListUsageSegmentsItem:System.Object:True:False
+T:Kirora.Models.MergeContactInput:System.Object:True:False
+T:Kirora.Models.MergeContactsQuery:System.Object:True:False
+T:Kirora.Models.MergeContactsResponse:System.Object:True:False
+T:Kirora.Models.MessageContent:System.Object:True:False
+T:Kirora.Models.MessageContentEmail:System.Object:True:False
+T:Kirora.Models.MessageContentPush:System.Object:True:False
+T:Kirora.Models.MessageContentPushButtonsItem:System.Object:True:False
+T:Kirora.Models.MessageContentPushOverrides:System.Object:True:False
+T:Kirora.Models.MessageContentPushOverridesAndroid:System.Object:True:False
+T:Kirora.Models.MessageContentPushOverridesAndroidButtonsItem:System.Object:True:False
+T:Kirora.Models.MessageContentPushOverridesIos:System.Object:True:False
+T:Kirora.Models.MessageContentPushOverridesIosButtonsItem:System.Object:True:False
+T:Kirora.Models.MessageContentPushOverridesWeb:System.Object:True:False
+T:Kirora.Models.MessageContentPushOverridesWebButtonsItem:System.Object:True:False
+T:Kirora.Models.Money:System.Object:True:False
+T:Kirora.Models.OutboundMessage:System.Object:True:False
+T:Kirora.Models.OutboundMessageBounce:System.Object:True:False
+T:Kirora.Models.OutboundMessageCampaign:System.Object:True:False
+T:Kirora.Models.OutboundMessageContact:System.Object:True:False
+T:Kirora.Models.OutboundMessageFailure:System.Object:True:False
+T:Kirora.Models.OutboundMessageJourney:System.Object:True:False
+T:Kirora.Models.OutboundMessageSkip:System.Object:True:False
+T:Kirora.Models.OutboundMessageTemplate:System.Object:True:False
+T:Kirora.Models.PushInstallation:System.Object:True:False
+T:Kirora.Models.RegisterPushInstallationInput:System.Object:True:False
+T:Kirora.Models.RegisterPushInstallationInputPermissionDenied:System.Object:True:False
+T:Kirora.Models.RegisterPushInstallationInputVariant1:System.Object:True:False
+T:Kirora.Models.RegisterPushInstallationInputVariant1NativeToken:System.Object:True:False
+T:Kirora.Models.RegisterPushInstallationInputVariant1WebPushSubscription:System.Object:True:False
+T:Kirora.Models.RegisterPushInstallationInputVariant1WebPushSubscriptionSubscription:System.Object:True:False
+T:Kirora.Models.RegisterPushInstallationInputVariant1WebPushSubscriptionSubscriptionKeys:System.Object:True:False
+T:Kirora.Models.RegisterPushInstallationQuery:System.Object:True:False
+T:Kirora.Models.RegisterPushInstallationResponse:System.Object:True:False
+T:Kirora.Models.SendTransactionalInput:System.Object:True:False
+T:Kirora.Models.SendTransactionalInputEmail:System.Object:True:False
+T:Kirora.Models.SendTransactionalInputEmailInlineContent:System.Object:True:False
+T:Kirora.Models.SendTransactionalInputEmailStoredTemplate:System.Object:True:False
+T:Kirora.Models.SendTransactionalMessageResponse:System.Object:True:False
+T:Kirora.Models.SendTransactionalMessagesBatchInput:System.Object:True:False
+T:Kirora.Models.SendTransactionalMessagesBatchInputMessagesItem:System.Object:True:False
+T:Kirora.Models.SendTransactionalMessagesBatchResponse:System.Object:True:False
+T:Kirora.Models.SendTransactionalMessagesBatchResult:System.Object:True:False
+T:Kirora.Models.SendTransactionalMessagesBatchResultResultsItem:System.Object:True:False
+T:Kirora.Models.SendTransactionalMessagesBatchResultResultsItemAccepted:System.Object:True:False
+T:Kirora.Models.SendTransactionalMessagesBatchResultResultsItemRejected:System.Object:True:False
+T:Kirora.Models.SendTransactionalMessagesBatchResultResultsItemRejectedError:System.Object:True:False
+T:Kirora.Models.SetContactConsentInput:System.Object:True:False
+T:Kirora.Models.SetContactTopicInput:System.Object:True:False
+T:Kirora.Models.SetContactTopicInputSubscribed:System.Object:True:False
+T:Kirora.Models.SetContactTopicQuery:System.Object:True:False
+T:Kirora.Models.SetContactTopicResponse:System.Object:True:False
+T:Kirora.Models.TrackEventInput:System.Object:True:False
+T:Kirora.Models.TrackEventInputByContactId:System.Object:True:False
+T:Kirora.Models.TrackEventInputByEmail:System.Object:True:False
+T:Kirora.Models.TrackEventInputByExternalId:System.Object:True:False
+T:Kirora.Models.TrackEventResponse:System.Object:True:False
+T:Kirora.Models.TrackEventsBatchInput:System.Object:True:False
+T:Kirora.Models.TrackEventsBatchInputEventsItem:System.Object:True:False
+T:Kirora.Models.TrackEventsBatchResponse:System.Object:True:False
+T:Kirora.Models.TrackEventsBatchResult:System.Object:True:False
+T:Kirora.Models.TrackEventsBatchResultResultsItem:System.Object:True:False
+T:Kirora.Models.TrackEventsBatchResultResultsItemEventRecorded:System.Object:True:False
+T:Kirora.Models.TrackEventsBatchResultResultsItemEventRefused:System.Object:True:False
+T:Kirora.Models.TrackEventsBatchResultResultsItemEventRefusedError:System.Object:True:False
+T:Kirora.Models.TrackedEvent:System.Object:True:False
+T:Kirora.Models.TransactionalEmailTrackingInput:System.Object:True:False
+T:Kirora.Models.TransactionalMessage:System.Object:True:False
+T:Kirora.Models.TransactionalPushInput:System.Object:True:False
+T:Kirora.Models.TransactionalPushInputButtonsItem:System.Object:True:False
+T:Kirora.Models.TransactionalPushInputOverrides:System.Object:True:False
+T:Kirora.Models.TransactionalPushInputOverridesAndroid:System.Object:True:False
+T:Kirora.Models.TransactionalPushInputOverridesAndroidButtonsItem:System.Object:True:False
+T:Kirora.Models.TransactionalPushInputOverridesIos:System.Object:True:False
+T:Kirora.Models.TransactionalPushInputOverridesIosButtonsItem:System.Object:True:False
+T:Kirora.Models.TransactionalPushInputOverridesWeb:System.Object:True:False
+T:Kirora.Models.TransactionalPushInputOverridesWebButtonsItem:System.Object:True:False
+T:Kirora.Models.TransactionalRecipientInput:System.Object:True:False
+T:Kirora.Models.TransactionalRecipientInputByContactId:System.Object:True:False
+T:Kirora.Models.TransactionalRecipientInputByEmail:System.Object:True:False
+T:Kirora.Models.TransactionalRecipientInputByExternalId:System.Object:True:False
+T:Kirora.Models.TransactionalSendResult:System.Object:True:False
+T:Kirora.Models.UpdateContactInput:System.Object:True:False
+T:Kirora.Models.UpdateContactQuery:System.Object:True:False
+T:Kirora.Models.UpdateContactResponse:System.Object:True:False
+T:Kirora.Models.UpdateListInput:System.Object:True:False
+T:Kirora.Models.UpdateListResponse:System.Object:True:False
+T:Kirora.Resources.ContactsResource:System.Object:True:False
+T:Kirora.Resources.EventsResource:System.Object:True:False
+T:Kirora.Resources.ListsResource:System.Object:True:False
+T:Kirora.Resources.MessagesResource:System.Object:True:False
+T:Kirora.Resources.TransactionalResource:System.Object:True:False
+T:Kirora.Serialization.Optional`1:System.ValueType:True:False
+T:Microsoft.Extensions.DependencyInjection.KiroraServiceCollectionExtensions:System.Object:True:True

@@ -1,0 +1,100 @@
+name: Publish approved NuGet alpha
+on:
+  workflow_dispatch:
+    inputs:
+      confirmation:
+        description: 'Type PUBLISH KIRORA ALPHA after reviewing the release checklist'
+        required: true
+        type: string
+permissions:
+  contents: read
+concurrency:
+  group: kirora-alpha-publication
+  cancel-in-progress: false
+env:
+  KIRORA_RUN_INTEGRATION: '0'
+  DOTNET_NOLOGO: '1'
+  DOTNET_CLI_TELEMETRY_OPTOUT: '1'
+jobs:
+  preflight:
+    if: github.ref_name == github.event.repository.default_branch && inputs.confirmation == 'PUBLISH KIRORA ALPHA'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      actions: read
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
+        with:
+          python-version: '3.12'
+      - name: Verify approved repository and licensing decisions
+        run: python tools/release-properties.py
+      - name: Verify environment approval rules before accessing any publication secret
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python tools/check-publication-gate.py
+  publish:
+    needs: preflight
+    runs-on: ubuntu-latest
+    environment: nuget-alpha
+    env:
+      KiroraReleaseProperties: ${{ github.workspace }}/artifacts/approved-release.props
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-dotnet@67a3573c9a986a3f9c594539f4ab511d57bb3ce9 # v4
+        with:
+          dotnet-version: '8.0.x'
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
+        with:
+          python-version: '3.12'
+      - run: python tools/release-properties.py
+      - run: sh tools/check-generated.sh
+      - run: dotnet restore --locked-mode
+      - run: dotnet build --configuration Release --no-restore -p:KiroraReleaseProperties=${{ github.workspace }}/artifacts/approved-release.props
+      - run: dotnet test --configuration Release --no-build
+      - run: python tools/check-public-api.py
+      - run: python tools/check-dependencies.py
+      - name: Pack approved metadata and SourceLink
+        run: dotnet pack --configuration Release --no-build -p:KiroraReleaseProperties=${{ github.workspace }}/artifacts/approved-release.props
+      - name: Validate approved artifact
+        shell: bash
+        run: |
+          python - <<'PYCODE'
+          import json,subprocess
+          from pathlib import Path
+          config=json.loads(Path('eng/release.json').read_text())
+          package='src/Kirora/bin/Release/'+config['packageId']+'.'+config['version']+'.nupkg'
+          subprocess.run(['python','tools/validate-package.py',package,'--release'],check=True)
+          PYCODE
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: approved-alpha
+          path: |
+            src/Kirora/bin/Release/*.nupkg
+            src/Kirora/bin/Release/*.snupkg
+      - name: Publish only the explicitly approved alpha package
+        env:
+          NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -n "$NUGET_API_KEY"
+          python - <<'PYCODE'
+          import json,os,subprocess
+          from pathlib import Path
+          config=json.loads(Path('eng/release.json').read_text())
+          package='src/Kirora/bin/Release/'+config['packageId']+'.'+config['version']+'.nupkg'
+          # The key is supplied only by the protected environment and is never printed.
+          try:
+              result=subprocess.run(['dotnet','nuget','push',package,'--source','https://api.nuget.org/v3/index.json','--api-key',os.environ['NUGET_API_KEY']],check=False)
+          except OSError:
+              raise SystemExit('Could not start NuGet publication; credential details omitted.')
+          if result.returncode:
+              raise SystemExit('NuGet publication failed; do not print subprocess arguments or credentials.')
+          PYCODE
