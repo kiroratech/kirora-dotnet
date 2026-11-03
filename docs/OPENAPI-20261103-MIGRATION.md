@@ -1,0 +1,484 @@
+# SDK migration to official OpenAPI 80060d50
+
+The [assessment](OPENAPI-20261103-ASSESSMENT.md) was written before implementation. The previous pin/snapshot and historical migration manifests remain unchanged. The new checksum-pinned source is 80060d50bfa80f3c82b89a363a229c5b1c39506a. All 184 operation IDs, methods, paths and resource method names remain unchanged.
+
+## How to update callers
+
+- Replace SendTransactionalInput.Deliver with FallbackOrder. Old `all` means omit FallbackOrder; old ordered first means the same ordered email/push array. Both obsolete union classes were removed because they no longer describe accepted API input.
+- Choose CreateDesignTemplateInput or CreateHtmlTemplateInput and assign it to the CreateTemplateInput union through its implicit conversion. HTML requires Kind="html" and Html. Valid design JSON can still omit kind; tests preserve that wire compatibility.
+- Read Template.Value/As<DesignTemplate>() or As<HtmlTemplate>(); versions and snapshots have analogous variants. A direct Blocks/Theme property on the union would misrepresent HTML, so no misleading shim was introduced.
+- Render a draft using Draft=true; render current published content by omitting Version/Draft; select a specific positive integer Version. Context is marketing or transactional.
+- For condition operators, use scalar Value strings and separate Values arrays for in. Explicitly convert numeric/boolean values according to the documented field semantics; the SDK does not silently coerce invalid legacy JSON.
+- Topics are TopicChoiceInput objects; subscribed and channels are distinct optional fields. Hidden form values require source=fixed/value or source=link/param. Submit scalar strings in Fields and selected arrays in Choices. Set width=fixed and WidthPx rather than numeric width.
+
+## Compatibility boundaries
+
+Unchanged resource method signatures and nonaffected DTOs are retained. Model signatures, constructors, nested generated types, required flags and unions necessarily change where the wire contract changes. No obsolete fields are emitted, no invalid legacy route is invented, and authentication/HTTP behavior is unchanged. All aliases/translations above are migration instructions for callers, not hidden compatibility layers.
+
+System.Text.Json normally ignores unknown DTO properties; deserializing a legacy request is not an automatic migration. Rebuild strongly typed requests against this version to avoid dropped obsolete fields.
+
+New baseline: 7123 public signatures. Compared with 30043317: 396 removed/replaced, 316 added. Signature differences count replacements twice (old removal/new addition). Historical Phase 2/3 deltas and the previous-pin delta are all enforced exactly, with no blanket suppression.
+
+The [machine-readable manifest](../tests/Kirora.Tests/Fixtures/migration-20261103-api-changes.json) includes every removed signature, every added signature and existing-model member/required changes. The old baseline files are immutable. Required/nullability source changes below supplement reflection signatures, which do not fully encode those C# semantics.
+
+## Every removed or replaced signature from 30043317
+
+- `C:Kirora.Models.CampaignAbTestVersionsItemEmailTemplateSnapshot:Void .ctor()`
+- `C:Kirora.Models.CampaignContentEmailTemplateSnapshot:Void .ctor()`
+- `C:Kirora.Models.CreateFormInputHiddenFieldsValueVariant2:Void .ctor()`
+- `C:Kirora.Models.CreateTemplateInput:Void .ctor()`
+- `C:Kirora.Models.CreateTemplateInputTransactionalDefaults:Void .ctor()`
+- `C:Kirora.Models.FormHiddenFieldsValueVariant2:Void .ctor()`
+- `C:Kirora.Models.RenderTemplateContentInput:Void .ctor()`
+- `C:Kirora.Models.SendTemplateTestInput:Void .ctor()`
+- `C:Kirora.Models.Template:Void .ctor()`
+- `C:Kirora.Models.TemplateSnapshot:Void .ctor()`
+- `C:Kirora.Models.TemplateSnapshotInput:Void .ctor()`
+- `C:Kirora.Models.TemplateVersion:Void .ctor()`
+- `C:Kirora.Models.TemplateVersionBrandKit:Void .ctor()`
+- `C:Kirora.Models.TemplateVersionBrandKitLogo:Void .ctor()`
+- `C:Kirora.Models.TemplateVersionBrandKitSocialLinksItem:Void .ctor()`
+- `C:Kirora.Models.TransactionalDeliverFirstInput:Void .ctor()`
+- `C:Kirora.Models.UpdateFormInputHiddenFieldsValueVariant2:Void .ctor()`
+- `M:Kirora.Models.AttributeConditionInputValue:Kirora.Models.AttributeConditionInputValue op_Implicit(Kirora.Models.AttributeConditionInputValueVariant1)`
+- `M:Kirora.Models.AttributeConditionInputValue:Kirora.Models.AttributeConditionInputValue op_Implicit(Kirora.Models.AttributeConditionInputValueVariant2Item[])`
+- `M:Kirora.Models.AttributeConditionInputValue:T As[T]()`
+- `M:Kirora.Models.AttributeConditionInputValueVariant1:Kirora.Models.AttributeConditionInputValueVariant1 op_Implicit(Boolean)`
+- `M:Kirora.Models.AttributeConditionInputValueVariant1:Kirora.Models.AttributeConditionInputValueVariant1 op_Implicit(System.Decimal)`
+- `M:Kirora.Models.AttributeConditionInputValueVariant1:Kirora.Models.AttributeConditionInputValueVariant1 op_Implicit(System.String)`
+- `M:Kirora.Models.AttributeConditionInputValueVariant1:T As[T]()`
+- `M:Kirora.Models.AttributeConditionInputValueVariant2Item:Kirora.Models.AttributeConditionInputValueVariant2Item op_Implicit(Boolean)`
+- `M:Kirora.Models.AttributeConditionInputValueVariant2Item:Kirora.Models.AttributeConditionInputValueVariant2Item op_Implicit(System.Decimal)`
+- `M:Kirora.Models.AttributeConditionInputValueVariant2Item:Kirora.Models.AttributeConditionInputValueVariant2Item op_Implicit(System.String)`
+- `M:Kirora.Models.AttributeConditionInputValueVariant2Item:T As[T]()`
+- `M:Kirora.Models.AttributeConditionValue:Kirora.Models.AttributeConditionValue op_Implicit(Kirora.Models.AttributeConditionValueVariant1)`
+- `M:Kirora.Models.AttributeConditionValue:Kirora.Models.AttributeConditionValue op_Implicit(Kirora.Models.AttributeConditionValueVariant2Item[])`
+- `M:Kirora.Models.AttributeConditionValue:T As[T]()`
+- `M:Kirora.Models.AttributeConditionValueVariant1:Kirora.Models.AttributeConditionValueVariant1 op_Implicit(Boolean)`
+- `M:Kirora.Models.AttributeConditionValueVariant1:Kirora.Models.AttributeConditionValueVariant1 op_Implicit(System.Decimal)`
+- `M:Kirora.Models.AttributeConditionValueVariant1:Kirora.Models.AttributeConditionValueVariant1 op_Implicit(System.String)`
+- `M:Kirora.Models.AttributeConditionValueVariant1:T As[T]()`
+- `M:Kirora.Models.AttributeConditionValueVariant2Item:Kirora.Models.AttributeConditionValueVariant2Item op_Implicit(Boolean)`
+- `M:Kirora.Models.AttributeConditionValueVariant2Item:Kirora.Models.AttributeConditionValueVariant2Item op_Implicit(System.Decimal)`
+- `M:Kirora.Models.AttributeConditionValueVariant2Item:Kirora.Models.AttributeConditionValueVariant2Item op_Implicit(System.String)`
+- `M:Kirora.Models.AttributeConditionValueVariant2Item:T As[T]()`
+- `M:Kirora.Models.ContactFieldConditionInputValue:Kirora.Models.ContactFieldConditionInputValue op_Implicit(Kirora.Models.ContactFieldConditionInputValueVariant1)`
+- `M:Kirora.Models.ContactFieldConditionInputValue:Kirora.Models.ContactFieldConditionInputValue op_Implicit(Kirora.Models.ContactFieldConditionInputValueVariant2Item[])`
+- `M:Kirora.Models.ContactFieldConditionInputValue:T As[T]()`
+- `M:Kirora.Models.ContactFieldConditionInputValueVariant1:Kirora.Models.ContactFieldConditionInputValueVariant1 op_Implicit(Boolean)`
+- `M:Kirora.Models.ContactFieldConditionInputValueVariant1:Kirora.Models.ContactFieldConditionInputValueVariant1 op_Implicit(System.Decimal)`
+- `M:Kirora.Models.ContactFieldConditionInputValueVariant1:Kirora.Models.ContactFieldConditionInputValueVariant1 op_Implicit(System.String)`
+- `M:Kirora.Models.ContactFieldConditionInputValueVariant1:T As[T]()`
+- `M:Kirora.Models.ContactFieldConditionInputValueVariant2Item:Kirora.Models.ContactFieldConditionInputValueVariant2Item op_Implicit(Boolean)`
+- `M:Kirora.Models.ContactFieldConditionInputValueVariant2Item:Kirora.Models.ContactFieldConditionInputValueVariant2Item op_Implicit(System.Decimal)`
+- `M:Kirora.Models.ContactFieldConditionInputValueVariant2Item:Kirora.Models.ContactFieldConditionInputValueVariant2Item op_Implicit(System.String)`
+- `M:Kirora.Models.ContactFieldConditionInputValueVariant2Item:T As[T]()`
+- `M:Kirora.Models.ContactFieldConditionValue:Kirora.Models.ContactFieldConditionValue op_Implicit(Kirora.Models.ContactFieldConditionValueVariant1)`
+- `M:Kirora.Models.ContactFieldConditionValue:Kirora.Models.ContactFieldConditionValue op_Implicit(Kirora.Models.ContactFieldConditionValueVariant2Item[])`
+- `M:Kirora.Models.ContactFieldConditionValue:T As[T]()`
+- `M:Kirora.Models.ContactFieldConditionValueVariant1:Kirora.Models.ContactFieldConditionValueVariant1 op_Implicit(Boolean)`
+- `M:Kirora.Models.ContactFieldConditionValueVariant1:Kirora.Models.ContactFieldConditionValueVariant1 op_Implicit(System.Decimal)`
+- `M:Kirora.Models.ContactFieldConditionValueVariant1:Kirora.Models.ContactFieldConditionValueVariant1 op_Implicit(System.String)`
+- `M:Kirora.Models.ContactFieldConditionValueVariant1:T As[T]()`
+- `M:Kirora.Models.ContactFieldConditionValueVariant2Item:Kirora.Models.ContactFieldConditionValueVariant2Item op_Implicit(Boolean)`
+- `M:Kirora.Models.ContactFieldConditionValueVariant2Item:Kirora.Models.ContactFieldConditionValueVariant2Item op_Implicit(System.Decimal)`
+- `M:Kirora.Models.ContactFieldConditionValueVariant2Item:Kirora.Models.ContactFieldConditionValueVariant2Item op_Implicit(System.String)`
+- `M:Kirora.Models.ContactFieldConditionValueVariant2Item:T As[T]()`
+- `M:Kirora.Models.ConversionGoalWhereItemValue:Kirora.Models.ConversionGoalWhereItemValue op_Implicit(Boolean)`
+- `M:Kirora.Models.ConversionGoalWhereItemValue:Kirora.Models.ConversionGoalWhereItemValue op_Implicit(System.Decimal)`
+- `M:Kirora.Models.ConversionGoalWhereItemValue:Kirora.Models.ConversionGoalWhereItemValue op_Implicit(System.String)`
+- `M:Kirora.Models.ConversionGoalWhereItemValue:T As[T]()`
+- `M:Kirora.Models.CreateConversionGoalInputWhereItemValue:Kirora.Models.CreateConversionGoalInputWhereItemValue op_Implicit(Boolean)`
+- `M:Kirora.Models.CreateConversionGoalInputWhereItemValue:Kirora.Models.CreateConversionGoalInputWhereItemValue op_Implicit(System.Decimal)`
+- `M:Kirora.Models.CreateConversionGoalInputWhereItemValue:Kirora.Models.CreateConversionGoalInputWhereItemValue op_Implicit(System.String)`
+- `M:Kirora.Models.CreateConversionGoalInputWhereItemValue:T As[T]()`
+- `M:Kirora.Models.CreateFormInputHiddenFieldsValue:Kirora.Models.CreateFormInputHiddenFieldsValue op_Implicit(Kirora.Models.CreateFormInputHiddenFieldsValueVariant2)`
+- `M:Kirora.Models.CreateFormInputHiddenFieldsValue:Kirora.Models.CreateFormInputHiddenFieldsValue op_Implicit(System.String)`
+- `M:Kirora.Models.CreateFormInputHiddenFieldsValue:T As[T]()`
+- `M:Kirora.Models.CreateJourneyInputExitConditionsItemEventExitWhereItemValue:Kirora.Models.CreateJourneyInputExitConditionsItemEventExitWhereItemValue op_Implicit(Boolean)`
+- `M:Kirora.Models.CreateJourneyInputExitConditionsItemEventExitWhereItemValue:Kirora.Models.CreateJourneyInputExitConditionsItemEventExitWhereItemValue op_Implicit(System.Decimal)`
+- `M:Kirora.Models.CreateJourneyInputExitConditionsItemEventExitWhereItemValue:Kirora.Models.CreateJourneyInputExitConditionsItemEventExitWhereItemValue op_Implicit(System.String)`
+- `M:Kirora.Models.CreateJourneyInputExitConditionsItemEventExitWhereItemValue:T As[T]()`
+- `M:Kirora.Models.CreateJourneyInputStepsItemBranchStepWhereItemValue:Kirora.Models.CreateJourneyInputStepsItemBranchStepWhereItemValue op_Implicit(Boolean)`
+- `M:Kirora.Models.CreateJourneyInputStepsItemBranchStepWhereItemValue:Kirora.Models.CreateJourneyInputStepsItemBranchStepWhereItemValue op_Implicit(System.Decimal)`
+- `M:Kirora.Models.CreateJourneyInputStepsItemBranchStepWhereItemValue:Kirora.Models.CreateJourneyInputStepsItemBranchStepWhereItemValue op_Implicit(System.String)`
+- `M:Kirora.Models.CreateJourneyInputStepsItemBranchStepWhereItemValue:T As[T]()`
+- `M:Kirora.Models.CreateJourneyInputStepsItemWaitUntilStepEventWhereItemValue:Kirora.Models.CreateJourneyInputStepsItemWaitUntilStepEventWhereItemValue op_Implicit(Boolean)`
+- `M:Kirora.Models.CreateJourneyInputStepsItemWaitUntilStepEventWhereItemValue:Kirora.Models.CreateJourneyInputStepsItemWaitUntilStepEventWhereItemValue op_Implicit(System.Decimal)`
+- `M:Kirora.Models.CreateJourneyInputStepsItemWaitUntilStepEventWhereItemValue:Kirora.Models.CreateJourneyInputStepsItemWaitUntilStepEventWhereItemValue op_Implicit(System.String)`
+- `M:Kirora.Models.CreateJourneyInputStepsItemWaitUntilStepEventWhereItemValue:T As[T]()`
+- `M:Kirora.Models.EndedJourneyExitConditionsItemEventExitWhereItemValue:Kirora.Models.EndedJourneyExitConditionsItemEventExitWhereItemValue op_Implicit(Boolean)`
+- `M:Kirora.Models.EndedJourneyExitConditionsItemEventExitWhereItemValue:Kirora.Models.EndedJourneyExitConditionsItemEventExitWhereItemValue op_Implicit(System.Decimal)`
+- `M:Kirora.Models.EndedJourneyExitConditionsItemEventExitWhereItemValue:Kirora.Models.EndedJourneyExitConditionsItemEventExitWhereItemValue op_Implicit(System.String)`
+- `M:Kirora.Models.EndedJourneyExitConditionsItemEventExitWhereItemValue:T As[T]()`
+- `M:Kirora.Models.EventConditionInputWhereItemValue:Kirora.Models.EventConditionInputWhereItemValue op_Implicit(Boolean)`
+- `M:Kirora.Models.EventConditionInputWhereItemValue:Kirora.Models.EventConditionInputWhereItemValue op_Implicit(System.Decimal)`
+- `M:Kirora.Models.EventConditionInputWhereItemValue:Kirora.Models.EventConditionInputWhereItemValue op_Implicit(System.String)`
+- `M:Kirora.Models.EventConditionInputWhereItemValue:T As[T]()`
+- `M:Kirora.Models.EventConditionWhereItemValue:Kirora.Models.EventConditionWhereItemValue op_Implicit(Boolean)`
+- `M:Kirora.Models.EventConditionWhereItemValue:Kirora.Models.EventConditionWhereItemValue op_Implicit(System.Decimal)`
+- `M:Kirora.Models.EventConditionWhereItemValue:Kirora.Models.EventConditionWhereItemValue op_Implicit(System.String)`
+- `M:Kirora.Models.EventConditionWhereItemValue:T As[T]()`
+- `M:Kirora.Models.FormHiddenFieldsValue:Kirora.Models.FormHiddenFieldsValue op_Implicit(Kirora.Models.FormHiddenFieldsValueVariant2)`
+- `M:Kirora.Models.FormHiddenFieldsValue:Kirora.Models.FormHiddenFieldsValue op_Implicit(System.String)`
+- `M:Kirora.Models.FormHiddenFieldsValue:T As[T]()`
+- `M:Kirora.Models.FormThemeInputInputsWidth:Kirora.Models.FormThemeInputInputsWidth op_Implicit(Int64)`
+- `M:Kirora.Models.FormThemeInputInputsWidth:Kirora.Models.FormThemeInputInputsWidth op_Implicit(System.String)`
+- `M:Kirora.Models.FormThemeInputInputsWidth:T As[T]()`
+- `M:Kirora.Models.FormThemeInputsWidth:Kirora.Models.FormThemeInputsWidth op_Implicit(Int64)`
+- `M:Kirora.Models.FormThemeInputsWidth:Kirora.Models.FormThemeInputsWidth op_Implicit(System.String)`
+- `M:Kirora.Models.FormThemeInputsWidth:T As[T]()`
+- `M:Kirora.Models.FunnelDefinitionInputStepsItemWhereItemValue:Kirora.Models.FunnelDefinitionInputStepsItemWhereItemValue op_Implicit(Boolean)`
+- `M:Kirora.Models.FunnelDefinitionInputStepsItemWhereItemValue:Kirora.Models.FunnelDefinitionInputStepsItemWhereItemValue op_Implicit(System.Decimal)`
+- `M:Kirora.Models.FunnelDefinitionInputStepsItemWhereItemValue:Kirora.Models.FunnelDefinitionInputStepsItemWhereItemValue op_Implicit(System.String)`
+- `M:Kirora.Models.FunnelDefinitionInputStepsItemWhereItemValue:T As[T]()`
+- `M:Kirora.Models.IdentifyContactInputTopicsValue:Kirora.Models.IdentifyContactInputTopicsValue op_Implicit(Boolean)`
+- `M:Kirora.Models.IdentifyContactInputTopicsValue:Kirora.Models.IdentifyContactInputTopicsValue op_Implicit(System.Collections.Generic.Dictionary`2[System.String,System.Boolean])`
+- `M:Kirora.Models.IdentifyContactInputTopicsValue:T As[T]()`
+- `M:Kirora.Models.JourneyExitConditionsItemEventExitWhereItemValue:Kirora.Models.JourneyExitConditionsItemEventExitWhereItemValue op_Implicit(Boolean)`
+- `M:Kirora.Models.JourneyExitConditionsItemEventExitWhereItemValue:Kirora.Models.JourneyExitConditionsItemEventExitWhereItemValue op_Implicit(System.Decimal)`
+- `M:Kirora.Models.JourneyExitConditionsItemEventExitWhereItemValue:Kirora.Models.JourneyExitConditionsItemEventExitWhereItemValue op_Implicit(System.String)`
+- `M:Kirora.Models.JourneyExitConditionsItemEventExitWhereItemValue:T As[T]()`
+- `M:Kirora.Models.JourneyStepBranchStepWhereItemValue:Kirora.Models.JourneyStepBranchStepWhereItemValue op_Implicit(Boolean)`
+- `M:Kirora.Models.JourneyStepBranchStepWhereItemValue:Kirora.Models.JourneyStepBranchStepWhereItemValue op_Implicit(System.Decimal)`
+- `M:Kirora.Models.JourneyStepBranchStepWhereItemValue:Kirora.Models.JourneyStepBranchStepWhereItemValue op_Implicit(System.String)`
+- `M:Kirora.Models.JourneyStepBranchStepWhereItemValue:T As[T]()`
+- `M:Kirora.Models.JourneyStepWaitUntilStepEventWhereItemValue:Kirora.Models.JourneyStepWaitUntilStepEventWhereItemValue op_Implicit(Boolean)`
+- `M:Kirora.Models.JourneyStepWaitUntilStepEventWhereItemValue:Kirora.Models.JourneyStepWaitUntilStepEventWhereItemValue op_Implicit(System.Decimal)`
+- `M:Kirora.Models.JourneyStepWaitUntilStepEventWhereItemValue:Kirora.Models.JourneyStepWaitUntilStepEventWhereItemValue op_Implicit(System.String)`
+- `M:Kirora.Models.JourneyStepWaitUntilStepEventWhereItemValue:T As[T]()`
+- `M:Kirora.Models.JourneyTriggerAttributeTriggerWhereItemValue:Kirora.Models.JourneyTriggerAttributeTriggerWhereItemValue op_Implicit(Boolean)`
+- `M:Kirora.Models.JourneyTriggerAttributeTriggerWhereItemValue:Kirora.Models.JourneyTriggerAttributeTriggerWhereItemValue op_Implicit(System.Decimal)`
+- `M:Kirora.Models.JourneyTriggerAttributeTriggerWhereItemValue:Kirora.Models.JourneyTriggerAttributeTriggerWhereItemValue op_Implicit(System.String)`
+- `M:Kirora.Models.JourneyTriggerAttributeTriggerWhereItemValue:T As[T]()`
+- `M:Kirora.Models.JourneyTriggerEventTriggerWhereItemValue:Kirora.Models.JourneyTriggerEventTriggerWhereItemValue op_Implicit(Boolean)`
+- `M:Kirora.Models.JourneyTriggerEventTriggerWhereItemValue:Kirora.Models.JourneyTriggerEventTriggerWhereItemValue op_Implicit(System.Decimal)`
+- `M:Kirora.Models.JourneyTriggerEventTriggerWhereItemValue:Kirora.Models.JourneyTriggerEventTriggerWhereItemValue op_Implicit(System.String)`
+- `M:Kirora.Models.JourneyTriggerEventTriggerWhereItemValue:T As[T]()`
+- `M:Kirora.Models.JourneyTriggerFormTriggerWhereItemValue:Kirora.Models.JourneyTriggerFormTriggerWhereItemValue op_Implicit(Boolean)`
+- `M:Kirora.Models.JourneyTriggerFormTriggerWhereItemValue:Kirora.Models.JourneyTriggerFormTriggerWhereItemValue op_Implicit(System.Decimal)`
+- `M:Kirora.Models.JourneyTriggerFormTriggerWhereItemValue:Kirora.Models.JourneyTriggerFormTriggerWhereItemValue op_Implicit(System.String)`
+- `M:Kirora.Models.JourneyTriggerFormTriggerWhereItemValue:T As[T]()`
+- `M:Kirora.Models.JourneyTriggerInputAttributeTriggerWhereItemValue:Kirora.Models.JourneyTriggerInputAttributeTriggerWhereItemValue op_Implicit(Boolean)`
+- `M:Kirora.Models.JourneyTriggerInputAttributeTriggerWhereItemValue:Kirora.Models.JourneyTriggerInputAttributeTriggerWhereItemValue op_Implicit(System.Decimal)`
+- `M:Kirora.Models.JourneyTriggerInputAttributeTriggerWhereItemValue:Kirora.Models.JourneyTriggerInputAttributeTriggerWhereItemValue op_Implicit(System.String)`
+- `M:Kirora.Models.JourneyTriggerInputAttributeTriggerWhereItemValue:T As[T]()`
+- `M:Kirora.Models.JourneyTriggerInputEventTriggerWhereItemValue:Kirora.Models.JourneyTriggerInputEventTriggerWhereItemValue op_Implicit(Boolean)`
+- `M:Kirora.Models.JourneyTriggerInputEventTriggerWhereItemValue:Kirora.Models.JourneyTriggerInputEventTriggerWhereItemValue op_Implicit(System.Decimal)`
+- `M:Kirora.Models.JourneyTriggerInputEventTriggerWhereItemValue:Kirora.Models.JourneyTriggerInputEventTriggerWhereItemValue op_Implicit(System.String)`
+- `M:Kirora.Models.JourneyTriggerInputEventTriggerWhereItemValue:T As[T]()`
+- `M:Kirora.Models.JourneyTriggerInputFormTriggerWhereItemValue:Kirora.Models.JourneyTriggerInputFormTriggerWhereItemValue op_Implicit(Boolean)`
+- `M:Kirora.Models.JourneyTriggerInputFormTriggerWhereItemValue:Kirora.Models.JourneyTriggerInputFormTriggerWhereItemValue op_Implicit(System.Decimal)`
+- `M:Kirora.Models.JourneyTriggerInputFormTriggerWhereItemValue:Kirora.Models.JourneyTriggerInputFormTriggerWhereItemValue op_Implicit(System.String)`
+- `M:Kirora.Models.JourneyTriggerInputFormTriggerWhereItemValue:T As[T]()`
+- `M:Kirora.Models.RenderTemplateInputVersion:Kirora.Models.RenderTemplateInputVersion op_Implicit(Int64)`
+- `M:Kirora.Models.RenderTemplateInputVersion:Kirora.Models.RenderTemplateInputVersion op_Implicit(System.String)`
+- `M:Kirora.Models.RenderTemplateInputVersion:T As[T]()`
+- `M:Kirora.Models.SetContactTopicInputSubscribed:Kirora.Models.SetContactTopicInputSubscribed op_Implicit(Boolean)`
+- `M:Kirora.Models.SetContactTopicInputSubscribed:Kirora.Models.SetContactTopicInputSubscribed op_Implicit(System.Collections.Generic.Dictionary`2[System.String,System.Boolean])`
+- `M:Kirora.Models.SetContactTopicInputSubscribed:T As[T]()`
+- `M:Kirora.Models.SubmitFormInputFieldsValue:Kirora.Models.SubmitFormInputFieldsValue op_Implicit(System.String)`
+- `M:Kirora.Models.SubmitFormInputFieldsValue:Kirora.Models.SubmitFormInputFieldsValue op_Implicit(System.String[])`
+- `M:Kirora.Models.SubmitFormInputFieldsValue:T As[T]()`
+- `M:Kirora.Models.TransactionalDeliverInput:Kirora.Models.TransactionalDeliverInput op_Implicit(Kirora.Models.TransactionalDeliverFirstInput)`
+- `M:Kirora.Models.TransactionalDeliverInput:Kirora.Models.TransactionalDeliverInput op_Implicit(System.String)`
+- `M:Kirora.Models.TransactionalDeliverInput:T As[T]()`
+- `M:Kirora.Models.UpdateFormInputHiddenFieldsValue:Kirora.Models.UpdateFormInputHiddenFieldsValue op_Implicit(Kirora.Models.UpdateFormInputHiddenFieldsValueVariant2)`
+- `M:Kirora.Models.UpdateFormInputHiddenFieldsValue:Kirora.Models.UpdateFormInputHiddenFieldsValue op_Implicit(System.String)`
+- `M:Kirora.Models.UpdateFormInputHiddenFieldsValue:T As[T]()`
+- `M:Kirora.Models.UpdateJourneyInputExitConditionsItemEventExitWhereItemValue:Kirora.Models.UpdateJourneyInputExitConditionsItemEventExitWhereItemValue op_Implicit(Boolean)`
+- `M:Kirora.Models.UpdateJourneyInputExitConditionsItemEventExitWhereItemValue:Kirora.Models.UpdateJourneyInputExitConditionsItemEventExitWhereItemValue op_Implicit(System.Decimal)`
+- `M:Kirora.Models.UpdateJourneyInputExitConditionsItemEventExitWhereItemValue:Kirora.Models.UpdateJourneyInputExitConditionsItemEventExitWhereItemValue op_Implicit(System.String)`
+- `M:Kirora.Models.UpdateJourneyInputExitConditionsItemEventExitWhereItemValue:T As[T]()`
+- `M:Kirora.Models.UpdateJourneyInputStepsItemBranchStepWhereItemValue:Kirora.Models.UpdateJourneyInputStepsItemBranchStepWhereItemValue op_Implicit(Boolean)`
+- `M:Kirora.Models.UpdateJourneyInputStepsItemBranchStepWhereItemValue:Kirora.Models.UpdateJourneyInputStepsItemBranchStepWhereItemValue op_Implicit(System.Decimal)`
+- `M:Kirora.Models.UpdateJourneyInputStepsItemBranchStepWhereItemValue:Kirora.Models.UpdateJourneyInputStepsItemBranchStepWhereItemValue op_Implicit(System.String)`
+- `M:Kirora.Models.UpdateJourneyInputStepsItemBranchStepWhereItemValue:T As[T]()`
+- `M:Kirora.Models.UpdateJourneyInputStepsItemWaitUntilStepEventWhereItemValue:Kirora.Models.UpdateJourneyInputStepsItemWaitUntilStepEventWhereItemValue op_Implicit(Boolean)`
+- `M:Kirora.Models.UpdateJourneyInputStepsItemWaitUntilStepEventWhereItemValue:Kirora.Models.UpdateJourneyInputStepsItemWaitUntilStepEventWhereItemValue op_Implicit(System.Decimal)`
+- `M:Kirora.Models.UpdateJourneyInputStepsItemWaitUntilStepEventWhereItemValue:Kirora.Models.UpdateJourneyInputStepsItemWaitUntilStepEventWhereItemValue op_Implicit(System.String)`
+- `M:Kirora.Models.UpdateJourneyInputStepsItemWaitUntilStepEventWhereItemValue:T As[T]()`
+- `P:Kirora.Models.AttributeCondition:Kirora.Serialization.Optional`1[Kirora.Models.AttributeConditionValue]:Value:get=True:set=True`
+- `P:Kirora.Models.AttributeConditionInput:Kirora.Serialization.Optional`1[Kirora.Models.AttributeConditionInputValue]:Value:get=True:set=True`
+- `P:Kirora.Models.AttributeConditionInputValue:System.Object:Value:get=True:set=False`
+- `P:Kirora.Models.AttributeConditionInputValueVariant1:System.Object:Value:get=True:set=False`
+- `P:Kirora.Models.AttributeConditionInputValueVariant2Item:System.Object:Value:get=True:set=False`
+- `P:Kirora.Models.AttributeConditionValue:System.Object:Value:get=True:set=False`
+- `P:Kirora.Models.AttributeConditionValueVariant1:System.Object:Value:get=True:set=False`
+- `P:Kirora.Models.AttributeConditionValueVariant2Item:System.Object:Value:get=True:set=False`
+- `P:Kirora.Models.CampaignAbTestVersionsItemEmailTemplateSnapshot:Kirora.Models.EmailTheme:Theme:get=True:set=True`
+- `P:Kirora.Models.CampaignAbTestVersionsItemEmailTemplateSnapshot:Kirora.Serialization.Optional`1[System.String]:Language:get=True:set=True`
+- `P:Kirora.Models.CampaignAbTestVersionsItemEmailTemplateSnapshot:Kirora.Serialization.Optional`1[System.String]:PlainTextOverride:get=True:set=True`
+- `P:Kirora.Models.CampaignAbTestVersionsItemEmailTemplateSnapshot:System.Collections.Generic.IReadOnlyList`1[Kirora.Models.EmailBlock]:Blocks:get=True:set=True`
+- `P:Kirora.Models.CampaignAbTestVersionsItemEmailTemplateSnapshot:System.Int64:SchemaVersion:get=True:set=True`
+- `P:Kirora.Models.CampaignContentEmailTemplateSnapshot:Kirora.Models.EmailTheme:Theme:get=True:set=True`
+- `P:Kirora.Models.CampaignContentEmailTemplateSnapshot:Kirora.Serialization.Optional`1[System.String]:Language:get=True:set=True`
+- `P:Kirora.Models.CampaignContentEmailTemplateSnapshot:Kirora.Serialization.Optional`1[System.String]:PlainTextOverride:get=True:set=True`
+- `P:Kirora.Models.CampaignContentEmailTemplateSnapshot:System.Collections.Generic.IReadOnlyList`1[Kirora.Models.EmailBlock]:Blocks:get=True:set=True`
+- `P:Kirora.Models.CampaignContentEmailTemplateSnapshot:System.Int64:SchemaVersion:get=True:set=True`
+- `P:Kirora.Models.ContactFieldCondition:Kirora.Serialization.Optional`1[Kirora.Models.ContactFieldConditionValue]:Value:get=True:set=True`
+- `P:Kirora.Models.ContactFieldConditionInput:Kirora.Serialization.Optional`1[Kirora.Models.ContactFieldConditionInputValue]:Value:get=True:set=True`
+- `P:Kirora.Models.ContactFieldConditionInputValue:System.Object:Value:get=True:set=False`
+- `P:Kirora.Models.ContactFieldConditionInputValueVariant1:System.Object:Value:get=True:set=False`
+- `P:Kirora.Models.ContactFieldConditionInputValueVariant2Item:System.Object:Value:get=True:set=False`
+- `P:Kirora.Models.ContactFieldConditionValue:System.Object:Value:get=True:set=False`
+- `P:Kirora.Models.ContactFieldConditionValueVariant1:System.Object:Value:get=True:set=False`
+- `P:Kirora.Models.ContactFieldConditionValueVariant2Item:System.Object:Value:get=True:set=False`
+- `P:Kirora.Models.ConversionGoalWhereItem:Kirora.Models.ConversionGoalWhereItemValue:Value:get=True:set=True`
+- `P:Kirora.Models.ConversionGoalWhereItemValue:System.Object:Value:get=True:set=False`
+- `P:Kirora.Models.CreateConversionGoalInputWhereItem:Kirora.Models.CreateConversionGoalInputWhereItemValue:Value:get=True:set=True`
+- `P:Kirora.Models.CreateConversionGoalInputWhereItemValue:System.Object:Value:get=True:set=False`
+- `P:Kirora.Models.CreateFormInput:Kirora.Serialization.Optional`1[System.Collections.Generic.Dictionary`2[System.String,Kirora.Models.CreateFormInputHiddenFieldsValue]]:HiddenFields:get=True:set=True`
+- `P:Kirora.Models.CreateFormInputHiddenFieldsValue:System.Object:Value:get=True:set=False`
+- `P:Kirora.Models.CreateFormInputHiddenFieldsValueVariant2:System.String:FromParam:get=True:set=True`
+- `P:Kirora.Models.CreateJourneyInputExitConditionsItemEventExitWhereItem:Kirora.Models.CreateJourneyInputExitConditionsItemEventExitWhereItemValue:Value:get=True:set=True`
+- `P:Kirora.Models.CreateJourneyInputExitConditionsItemEventExitWhereItemValue:System.Object:Value:get=True:set=False`
+- `P:Kirora.Models.CreateJourneyInputStepsItemBranchStepWhereItem:Kirora.Models.CreateJourneyInputStepsItemBranchStepWhereItemValue:Value:get=True:set=True`
+- `P:Kirora.Models.CreateJourneyInputStepsItemBranchStepWhereItemValue:System.Object:Value:get=True:set=False`
+- `P:Kirora.Models.CreateJourneyInputStepsItemWaitUntilStepEventWhereItem:Kirora.Models.CreateJourneyInputStepsItemWaitUntilStepEventWhereItemValue:Value:get=True:set=True`
+- `P:Kirora.Models.CreateJourneyInputStepsItemWaitUntilStepEventWhereItemValue:System.Object:Value:get=True:set=False`
+- `P:Kirora.Models.CreateTemplateInput:Kirora.Serialization.Optional`1[Kirora.Models.CreateTemplateInputTransactionalDefaults]:TransactionalDefaults:get=True:set=True`
+- `P:Kirora.Models.CreateTemplateInput:Kirora.Serialization.Optional`1[Kirora.Models.EmailThemeInput]:Theme:get=True:set=True`
+- `P:Kirora.Models.CreateTemplateInput:Kirora.Serialization.Optional`1[System.Collections.Generic.IReadOnlyList`1[System.String]]:Tags:get=True:set=True`
+- `P:Kirora.Models.CreateTemplateInput:Kirora.Serialization.Optional`1[System.Int64]:SchemaVersion:get=True:set=True`
+- `P:Kirora.Models.CreateTemplateInput:Kirora.Serialization.Optional`1[System.String]:Alias:get=True:set=True`
+- `P:Kirora.Models.CreateTemplateInput:Kirora.Serialization.Optional`1[System.String]:Language:get=True:set=True`
+- `P:Kirora.Models.CreateTemplateInput:Kirora.Serialization.Optional`1[System.String]:PlainTextOverride:get=True:set=True`
+- `P:Kirora.Models.CreateTemplateInput:System.Collections.Generic.IReadOnlyList`1[Kirora.Models.EmailBlockInput]:Blocks:get=True:set=True`
+- `P:Kirora.Models.CreateTemplateInput:System.String:Name:get=True:set=True`
+- `P:Kirora.Models.CreateTemplateInputTransactionalDefaults:Kirora.Serialization.Optional`1[System.String]:From:get=True:set=True`
+- `P:Kirora.Models.CreateTemplateInputTransactionalDefaults:Kirora.Serialization.Optional`1[System.String]:PreviewText:get=True:set=True`
+- `P:Kirora.Models.CreateTemplateInputTransactionalDefaults:Kirora.Serialization.Optional`1[System.String]:ReplyTo:get=True:set=True`
+- `P:Kirora.Models.CreateTemplateInputTransactionalDefaults:Kirora.Serialization.Optional`1[System.String]:Subject:get=True:set=True`
+- `P:Kirora.Models.EndedJourneyExitConditionsItemEventExitWhereItem:Kirora.Models.EndedJourneyExitConditionsItemEventExitWhereItemValue:Value:get=True:set=True`
+- `P:Kirora.Models.EndedJourneyExitConditionsItemEventExitWhereItemValue:System.Object:Value:get=True:set=False`
+- `P:Kirora.Models.EventConditionInputWhereItem:Kirora.Models.EventConditionInputWhereItemValue:Value:get=True:set=True`
+- `P:Kirora.Models.EventConditionInputWhereItemValue:System.Object:Value:get=True:set=False`
+- `P:Kirora.Models.EventConditionWhereItem:Kirora.Models.EventConditionWhereItemValue:Value:get=True:set=True`
+- `P:Kirora.Models.EventConditionWhereItemValue:System.Object:Value:get=True:set=False`
+- `P:Kirora.Models.Form:System.Collections.Generic.Dictionary`2[System.String,Kirora.Models.FormHiddenFieldsValue]:HiddenFields:get=True:set=True`
+- `P:Kirora.Models.FormHiddenFieldsValue:System.Object:Value:get=True:set=False`
+- `P:Kirora.Models.FormHiddenFieldsValueVariant2:System.String:FromParam:get=True:set=True`
+- `P:Kirora.Models.FormThemeInputInputs:Kirora.Serialization.Optional`1[Kirora.Models.FormThemeInputInputsWidth]:Width:get=True:set=True`
+- `P:Kirora.Models.FormThemeInputInputsWidth:System.Object:Value:get=True:set=False`
+- `P:Kirora.Models.FormThemeInputs:Kirora.Serialization.Optional`1[Kirora.Models.FormThemeInputsWidth]:Width:get=True:set=True`
+- `P:Kirora.Models.FormThemeInputsWidth:System.Object:Value:get=True:set=False`
+- `P:Kirora.Models.FunnelDefinitionInputStepsItemWhereItem:Kirora.Models.FunnelDefinitionInputStepsItemWhereItemValue:Value:get=True:set=True`
+- `P:Kirora.Models.FunnelDefinitionInputStepsItemWhereItemValue:System.Object:Value:get=True:set=False`
+- `P:Kirora.Models.IdentifyContactInput:Kirora.Serialization.Optional`1[System.Collections.Generic.Dictionary`2[System.String,Kirora.Models.IdentifyContactInputTopicsValue]]:Topics:get=True:set=True`
+- `P:Kirora.Models.IdentifyContactInputTopicsValue:System.Object:Value:get=True:set=False`
+- `P:Kirora.Models.JourneyExitConditionsItemEventExitWhereItem:Kirora.Models.JourneyExitConditionsItemEventExitWhereItemValue:Value:get=True:set=True`
+- `P:Kirora.Models.JourneyExitConditionsItemEventExitWhereItemValue:System.Object:Value:get=True:set=False`
+- `P:Kirora.Models.JourneyStepBranchStepWhereItem:Kirora.Models.JourneyStepBranchStepWhereItemValue:Value:get=True:set=True`
+- `P:Kirora.Models.JourneyStepBranchStepWhereItemValue:System.Object:Value:get=True:set=False`
+- `P:Kirora.Models.JourneyStepWaitUntilStepEventWhereItem:Kirora.Models.JourneyStepWaitUntilStepEventWhereItemValue:Value:get=True:set=True`
+- `P:Kirora.Models.JourneyStepWaitUntilStepEventWhereItemValue:System.Object:Value:get=True:set=False`
+- `P:Kirora.Models.JourneyTriggerAttributeTriggerWhereItem:Kirora.Models.JourneyTriggerAttributeTriggerWhereItemValue:Value:get=True:set=True`
+- `P:Kirora.Models.JourneyTriggerAttributeTriggerWhereItemValue:System.Object:Value:get=True:set=False`
+- `P:Kirora.Models.JourneyTriggerEventTriggerWhereItem:Kirora.Models.JourneyTriggerEventTriggerWhereItemValue:Value:get=True:set=True`
+- `P:Kirora.Models.JourneyTriggerEventTriggerWhereItemValue:System.Object:Value:get=True:set=False`
+- `P:Kirora.Models.JourneyTriggerFormTriggerWhereItem:Kirora.Models.JourneyTriggerFormTriggerWhereItemValue:Value:get=True:set=True`
+- `P:Kirora.Models.JourneyTriggerFormTriggerWhereItemValue:System.Object:Value:get=True:set=False`
+- `P:Kirora.Models.JourneyTriggerInputAttributeTriggerWhereItem:Kirora.Models.JourneyTriggerInputAttributeTriggerWhereItemValue:Value:get=True:set=True`
+- `P:Kirora.Models.JourneyTriggerInputAttributeTriggerWhereItemValue:System.Object:Value:get=True:set=False`
+- `P:Kirora.Models.JourneyTriggerInputEventTriggerWhereItem:Kirora.Models.JourneyTriggerInputEventTriggerWhereItemValue:Value:get=True:set=True`
+- `P:Kirora.Models.JourneyTriggerInputEventTriggerWhereItemValue:System.Object:Value:get=True:set=False`
+- `P:Kirora.Models.JourneyTriggerInputFormTriggerWhereItem:Kirora.Models.JourneyTriggerInputFormTriggerWhereItemValue:Value:get=True:set=True`
+- `P:Kirora.Models.JourneyTriggerInputFormTriggerWhereItemValue:System.Object:Value:get=True:set=False`
+- `P:Kirora.Models.RenderTemplateContentInput:Kirora.Serialization.Optional`1[Kirora.Models.ContactIdentifierInput]:Contact:get=True:set=True`
+- `P:Kirora.Models.RenderTemplateContentInput:Kirora.Serialization.Optional`1[Kirora.Models.EmailThemeInput]:Theme:get=True:set=True`
+- `P:Kirora.Models.RenderTemplateContentInput:Kirora.Serialization.Optional`1[System.Collections.Generic.Dictionary`2[System.String,System.Text.Json.JsonElement]]:Data:get=True:set=True`
+- `P:Kirora.Models.RenderTemplateContentInput:Kirora.Serialization.Optional`1[System.Int64]:SchemaVersion:get=True:set=True`
+- `P:Kirora.Models.RenderTemplateContentInput:Kirora.Serialization.Optional`1[System.String]:Language:get=True:set=True`
+- `P:Kirora.Models.RenderTemplateContentInput:Kirora.Serialization.Optional`1[System.String]:PlainTextOverride:get=True:set=True`
+- `P:Kirora.Models.RenderTemplateContentInput:Kirora.Serialization.Optional`1[System.String]:Subject:get=True:set=True`
+- `P:Kirora.Models.RenderTemplateContentInput:System.Collections.Generic.IReadOnlyList`1[Kirora.Models.EmailBlockInput]:Blocks:get=True:set=True`
+- `P:Kirora.Models.RenderTemplateInput:Kirora.Serialization.Optional`1[Kirora.Models.RenderTemplateInputVersion]:Version:get=True:set=True`
+- `P:Kirora.Models.RenderTemplateInputVersion:System.Object:Value:get=True:set=False`
+- `P:Kirora.Models.SendTemplateTestInput:Kirora.Serialization.Optional`1[Kirora.Models.ContactIdentifierInput]:Contact:get=True:set=True`
+- `P:Kirora.Models.SendTemplateTestInput:Kirora.Serialization.Optional`1[Kirora.Models.EmailThemeInput]:Theme:get=True:set=True`
+- `P:Kirora.Models.SendTemplateTestInput:Kirora.Serialization.Optional`1[System.Collections.Generic.Dictionary`2[System.String,System.Text.Json.JsonElement]]:Data:get=True:set=True`
+- `P:Kirora.Models.SendTemplateTestInput:Kirora.Serialization.Optional`1[System.Int64]:SchemaVersion:get=True:set=True`
+- `P:Kirora.Models.SendTemplateTestInput:Kirora.Serialization.Optional`1[System.String]:From:get=True:set=True`
+- `P:Kirora.Models.SendTemplateTestInput:Kirora.Serialization.Optional`1[System.String]:Language:get=True:set=True`
+- `P:Kirora.Models.SendTemplateTestInput:Kirora.Serialization.Optional`1[System.String]:PlainTextOverride:get=True:set=True`
+- `P:Kirora.Models.SendTemplateTestInput:System.Collections.Generic.IReadOnlyList`1[Kirora.Models.EmailBlockInput]:Blocks:get=True:set=True`
+- `P:Kirora.Models.SendTemplateTestInput:System.String:Subject:get=True:set=True`
+- `P:Kirora.Models.SendTemplateTestInput:System.String:To:get=True:set=True`
+- `P:Kirora.Models.SendTransactionalInput:Kirora.Serialization.Optional`1[Kirora.Models.TransactionalDeliverInput]:Deliver:get=True:set=True`
+- `P:Kirora.Models.SetContactTopicInput:Kirora.Models.SetContactTopicInputSubscribed:Subscribed:get=True:set=True`
+- `P:Kirora.Models.SetContactTopicInputSubscribed:System.Object:Value:get=True:set=False`
+- `P:Kirora.Models.SubmitFormInput:System.Collections.Generic.Dictionary`2[System.String,Kirora.Models.SubmitFormInputFieldsValue]:Fields:get=True:set=True`
+- `P:Kirora.Models.SubmitFormInputFieldsValue:System.Object:Value:get=True:set=False`
+- `P:Kirora.Models.Template:Kirora.Models.EmailTheme:Theme:get=True:set=True`
+- `P:Kirora.Models.Template:Kirora.Models.TransactionalDefaults:TransactionalDefaults:get=True:set=True`
+- `P:Kirora.Models.Template:System.Boolean:HasUnpublishedChanges:get=True:set=True`
+- `P:Kirora.Models.Template:System.Collections.Generic.IReadOnlyList`1[Kirora.Models.EmailBlock]:Blocks:get=True:set=True`
+- `P:Kirora.Models.Template:System.Collections.Generic.IReadOnlyList`1[System.String]:Tags:get=True:set=True`
+- `P:Kirora.Models.Template:System.DateTimeOffset:CreatedAt:get=True:set=True`
+- `P:Kirora.Models.Template:System.DateTimeOffset:UpdatedAt:get=True:set=True`
+- `P:Kirora.Models.Template:System.Guid:Id:get=True:set=True`
+- `P:Kirora.Models.Template:System.Int64:Revision:get=True:set=True`
+- `P:Kirora.Models.Template:System.Int64:SchemaVersion:get=True:set=True`
+- `P:Kirora.Models.Template:System.Nullable`1[System.Int64]:PublishedVersion:get=True:set=True`
+- `P:Kirora.Models.Template:System.String:Alias:get=True:set=True`
+- `P:Kirora.Models.Template:System.String:Language:get=True:set=True`
+- `P:Kirora.Models.Template:System.String:Name:get=True:set=True`
+- `P:Kirora.Models.Template:System.String:PlainTextOverride:get=True:set=True`
+- `P:Kirora.Models.Template:System.String:ThumbnailUrl:get=True:set=True`
+- `P:Kirora.Models.TemplateSnapshot:Kirora.Models.EmailTheme:Theme:get=True:set=True`
+- `P:Kirora.Models.TemplateSnapshot:Kirora.Serialization.Optional`1[System.String]:Language:get=True:set=True`
+- `P:Kirora.Models.TemplateSnapshot:Kirora.Serialization.Optional`1[System.String]:PlainTextOverride:get=True:set=True`
+- `P:Kirora.Models.TemplateSnapshot:System.Collections.Generic.IReadOnlyList`1[Kirora.Models.EmailBlock]:Blocks:get=True:set=True`
+- `P:Kirora.Models.TemplateSnapshot:System.Int64:SchemaVersion:get=True:set=True`
+- `P:Kirora.Models.TemplateSnapshotInput:Kirora.Models.EmailThemeInput:Theme:get=True:set=True`
+- `P:Kirora.Models.TemplateSnapshotInput:Kirora.Serialization.Optional`1[System.String]:Language:get=True:set=True`
+- `P:Kirora.Models.TemplateSnapshotInput:Kirora.Serialization.Optional`1[System.String]:PlainTextOverride:get=True:set=True`
+- `P:Kirora.Models.TemplateSnapshotInput:System.Collections.Generic.IReadOnlyList`1[Kirora.Models.EmailBlockInput]:Blocks:get=True:set=True`
+- `P:Kirora.Models.TemplateSnapshotInput:System.Int64:SchemaVersion:get=True:set=True`
+- `P:Kirora.Models.TemplateVersion:Kirora.Models.EmailTheme:Theme:get=True:set=True`
+- `P:Kirora.Models.TemplateVersion:Kirora.Models.TemplateVersionBrandKit:BrandKit:get=True:set=True`
+- `P:Kirora.Models.TemplateVersion:Kirora.Models.TransactionalDefaults:TransactionalDefaults:get=True:set=True`
+- `P:Kirora.Models.TemplateVersion:System.Collections.Generic.Dictionary`2[System.String,System.Collections.Generic.IReadOnlyList`1[Kirora.Models.EmailBlock]]:SharedBlocks:get=True:set=True`
+- `P:Kirora.Models.TemplateVersion:System.Collections.Generic.IReadOnlyList`1[Kirora.Models.EmailBlock]:Blocks:get=True:set=True`
+- `P:Kirora.Models.TemplateVersion:System.DateTimeOffset:PublishedAt:get=True:set=True`
+- `P:Kirora.Models.TemplateVersion:System.Int64:SchemaVersion:get=True:set=True`
+- `P:Kirora.Models.TemplateVersion:System.Int64:Version:get=True:set=True`
+- `P:Kirora.Models.TemplateVersion:System.Nullable`1[System.Guid]:PublishedByUserId:get=True:set=True`
+- `P:Kirora.Models.TemplateVersion:System.String:Language:get=True:set=True`
+- `P:Kirora.Models.TemplateVersion:System.String:PlainTextOverride:get=True:set=True`
+- `P:Kirora.Models.TemplateVersionBrandKit:Kirora.Models.EmailTheme:Theme:get=True:set=True`
+- `P:Kirora.Models.TemplateVersionBrandKit:Kirora.Models.TemplateVersionBrandKitLogo:Logo:get=True:set=True`
+- `P:Kirora.Models.TemplateVersionBrandKit:System.Collections.Generic.IReadOnlyList`1[Kirora.Models.TemplateVersionBrandKitSocialLinksItem]:SocialLinks:get=True:set=True`
+- `P:Kirora.Models.TemplateVersionBrandKit:System.String:Name:get=True:set=True`
+- `P:Kirora.Models.TemplateVersionBrandKitLogo:System.Guid:AssetId:get=True:set=True`
+- `P:Kirora.Models.TemplateVersionBrandKitLogo:System.String:Alt:get=True:set=True`
+- `P:Kirora.Models.TemplateVersionBrandKitLogo:System.String:Url:get=True:set=True`
+- `P:Kirora.Models.TemplateVersionBrandKitLogo:System.String:Width:get=True:set=True`
+- `P:Kirora.Models.TemplateVersionBrandKitSocialLinksItem:System.String:Href:get=True:set=True`
+- `P:Kirora.Models.TemplateVersionBrandKitSocialLinksItem:System.String:Label:get=True:set=True`
+- `P:Kirora.Models.TransactionalDeliverFirstInput:System.Collections.Generic.IReadOnlyList`1[System.String]:First:get=True:set=True`
+- `P:Kirora.Models.TransactionalDeliverInput:System.Object:Value:get=True:set=False`
+- `P:Kirora.Models.UpdateFormInput:Kirora.Serialization.Optional`1[System.Collections.Generic.Dictionary`2[System.String,Kirora.Models.UpdateFormInputHiddenFieldsValue]]:HiddenFields:get=True:set=True`
+- `P:Kirora.Models.UpdateFormInputHiddenFieldsValue:System.Object:Value:get=True:set=False`
+- `P:Kirora.Models.UpdateFormInputHiddenFieldsValueVariant2:System.String:FromParam:get=True:set=True`
+- `P:Kirora.Models.UpdateJourneyInputExitConditionsItemEventExitWhereItem:Kirora.Models.UpdateJourneyInputExitConditionsItemEventExitWhereItemValue:Value:get=True:set=True`
+- `P:Kirora.Models.UpdateJourneyInputExitConditionsItemEventExitWhereItemValue:System.Object:Value:get=True:set=False`
+- `P:Kirora.Models.UpdateJourneyInputStepsItemBranchStepWhereItem:Kirora.Models.UpdateJourneyInputStepsItemBranchStepWhereItemValue:Value:get=True:set=True`
+- `P:Kirora.Models.UpdateJourneyInputStepsItemBranchStepWhereItemValue:System.Object:Value:get=True:set=False`
+- `P:Kirora.Models.UpdateJourneyInputStepsItemWaitUntilStepEventWhereItem:Kirora.Models.UpdateJourneyInputStepsItemWaitUntilStepEventWhereItemValue:Value:get=True:set=True`
+- `P:Kirora.Models.UpdateJourneyInputStepsItemWaitUntilStepEventWhereItemValue:System.Object:Value:get=True:set=False`
+- `T:Kirora.Models.AttributeConditionInputValue:System.Object:True:False`
+- `T:Kirora.Models.AttributeConditionInputValueVariant1:System.Object:True:False`
+- `T:Kirora.Models.AttributeConditionInputValueVariant2Item:System.Object:True:False`
+- `T:Kirora.Models.AttributeConditionValue:System.Object:True:False`
+- `T:Kirora.Models.AttributeConditionValueVariant1:System.Object:True:False`
+- `T:Kirora.Models.AttributeConditionValueVariant2Item:System.Object:True:False`
+- `T:Kirora.Models.ContactFieldConditionInputValue:System.Object:True:False`
+- `T:Kirora.Models.ContactFieldConditionInputValueVariant1:System.Object:True:False`
+- `T:Kirora.Models.ContactFieldConditionInputValueVariant2Item:System.Object:True:False`
+- `T:Kirora.Models.ContactFieldConditionValue:System.Object:True:False`
+- `T:Kirora.Models.ContactFieldConditionValueVariant1:System.Object:True:False`
+- `T:Kirora.Models.ContactFieldConditionValueVariant2Item:System.Object:True:False`
+- `T:Kirora.Models.ConversionGoalWhereItemValue:System.Object:True:False`
+- `T:Kirora.Models.CreateConversionGoalInputWhereItemValue:System.Object:True:False`
+- `T:Kirora.Models.CreateFormInputHiddenFieldsValue:System.Object:True:False`
+- `T:Kirora.Models.CreateFormInputHiddenFieldsValueVariant2:System.Object:True:False`
+- `T:Kirora.Models.CreateJourneyInputExitConditionsItemEventExitWhereItemValue:System.Object:True:False`
+- `T:Kirora.Models.CreateJourneyInputStepsItemBranchStepWhereItemValue:System.Object:True:False`
+- `T:Kirora.Models.CreateJourneyInputStepsItemWaitUntilStepEventWhereItemValue:System.Object:True:False`
+- `T:Kirora.Models.CreateTemplateInputTransactionalDefaults:System.Object:True:False`
+- `T:Kirora.Models.EndedJourneyExitConditionsItemEventExitWhereItemValue:System.Object:True:False`
+- `T:Kirora.Models.EventConditionInputWhereItemValue:System.Object:True:False`
+- `T:Kirora.Models.EventConditionWhereItemValue:System.Object:True:False`
+- `T:Kirora.Models.FormHiddenFieldsValue:System.Object:True:False`
+- `T:Kirora.Models.FormHiddenFieldsValueVariant2:System.Object:True:False`
+- `T:Kirora.Models.FormThemeInputInputsWidth:System.Object:True:False`
+- `T:Kirora.Models.FormThemeInputsWidth:System.Object:True:False`
+- `T:Kirora.Models.FunnelDefinitionInputStepsItemWhereItemValue:System.Object:True:False`
+- `T:Kirora.Models.IdentifyContactInputTopicsValue:System.Object:True:False`
+- `T:Kirora.Models.JourneyExitConditionsItemEventExitWhereItemValue:System.Object:True:False`
+- `T:Kirora.Models.JourneyStepBranchStepWhereItemValue:System.Object:True:False`
+- `T:Kirora.Models.JourneyStepWaitUntilStepEventWhereItemValue:System.Object:True:False`
+- `T:Kirora.Models.JourneyTriggerAttributeTriggerWhereItemValue:System.Object:True:False`
+- `T:Kirora.Models.JourneyTriggerEventTriggerWhereItemValue:System.Object:True:False`
+- `T:Kirora.Models.JourneyTriggerFormTriggerWhereItemValue:System.Object:True:False`
+- `T:Kirora.Models.JourneyTriggerInputAttributeTriggerWhereItemValue:System.Object:True:False`
+- `T:Kirora.Models.JourneyTriggerInputEventTriggerWhereItemValue:System.Object:True:False`
+- `T:Kirora.Models.JourneyTriggerInputFormTriggerWhereItemValue:System.Object:True:False`
+- `T:Kirora.Models.RenderTemplateInputVersion:System.Object:True:False`
+- `T:Kirora.Models.SetContactTopicInputSubscribed:System.Object:True:False`
+- `T:Kirora.Models.SubmitFormInputFieldsValue:System.Object:True:False`
+- `T:Kirora.Models.TemplateVersionBrandKit:System.Object:True:False`
+- `T:Kirora.Models.TemplateVersionBrandKitLogo:System.Object:True:False`
+- `T:Kirora.Models.TemplateVersionBrandKitSocialLinksItem:System.Object:True:False`
+- `T:Kirora.Models.TransactionalDeliverFirstInput:System.Object:True:False`
+- `T:Kirora.Models.TransactionalDeliverInput:System.Object:True:False`
+- `T:Kirora.Models.UpdateFormInputHiddenFieldsValue:System.Object:True:False`
+- `T:Kirora.Models.UpdateFormInputHiddenFieldsValueVariant2:System.Object:True:False`
+- `T:Kirora.Models.UpdateJourneyInputExitConditionsItemEventExitWhereItemValue:System.Object:True:False`
+- `T:Kirora.Models.UpdateJourneyInputStepsItemBranchStepWhereItemValue:System.Object:True:False`
+- `T:Kirora.Models.UpdateJourneyInputStepsItemWaitUntilStepEventWhereItemValue:System.Object:True:False`
+
+## Existing model member changes
+
+- `AttributeCondition.Value`: `{"required": false, "type": "Optional<AttributeConditionValue>"}` → `{"required": false, "type": "Optional<string>"}`.
+- `AttributeCondition.Values`: `null` → `{"required": false, "type": "Optional<IReadOnlyList<string>>"}`.
+- `AttributeConditionInput.Value`: `{"required": false, "type": "Optional<AttributeConditionInputValue>"}` → `{"required": false, "type": "Optional<string>"}`.
+- `AttributeConditionInput.Values`: `null` → `{"required": false, "type": "Optional<IReadOnlyList<string>>"}`.
+- `ContactFieldCondition.Value`: `{"required": false, "type": "Optional<ContactFieldConditionValue>"}` → `{"required": false, "type": "Optional<string>"}`.
+- `ContactFieldCondition.Values`: `null` → `{"required": false, "type": "Optional<IReadOnlyList<string>>"}`.
+- `ContactFieldConditionInput.Value`: `{"required": false, "type": "Optional<ContactFieldConditionInputValue>"}` → `{"required": false, "type": "Optional<string>"}`.
+- `ContactFieldConditionInput.Values`: `null` → `{"required": false, "type": "Optional<IReadOnlyList<string>>"}`.
+- `ConversionGoalWhereItem.Value`: `{"required": true, "type": "ConversionGoalWhereItemValue"}` → `{"required": true, "type": "string"}`.
+- `CreateConversionGoalInputWhereItem.Value`: `{"required": true, "type": "CreateConversionGoalInputWhereItemValue"}` → `{"required": true, "type": "string"}`.
+- `CreateFormInput.HiddenFields`: `{"required": false, "type": "Optional<Dictionary<string, CreateFormInputHiddenFieldsValue>>"}` → `{"required": false, "type": "Optional<Dictionary<string, FormHiddenValueInput>>"}`.
+- `CreateJourneyInputExitConditionsItemEventExitWhereItem.Value`: `{"required": true, "type": "CreateJourneyInputExitConditionsItemEventExitWhereItemValue"}` → `{"required": true, "type": "string"}`.
+- `CreateJourneyInputStepsItemBranchStepWhereItem.Value`: `{"required": true, "type": "CreateJourneyInputStepsItemBranchStepWhereItemValue"}` → `{"required": true, "type": "string"}`.
+- `CreateJourneyInputStepsItemWaitUntilStepEventWhereItem.Value`: `{"required": true, "type": "CreateJourneyInputStepsItemWaitUntilStepEventWhereItemValue"}` → `{"required": true, "type": "string"}`.
+- `EndedJourneyExitConditionsItemEventExitWhereItem.Value`: `{"required": true, "type": "EndedJourneyExitConditionsItemEventExitWhereItemValue"}` → `{"required": true, "type": "string"}`.
+- `EventConditionInputWhereItem.Value`: `{"required": true, "type": "EventConditionInputWhereItemValue"}` → `{"required": true, "type": "string"}`.
+- `EventConditionWhereItem.Value`: `{"required": true, "type": "EventConditionWhereItemValue"}` → `{"required": true, "type": "string"}`.
+- `Form.HiddenFields`: `{"required": true, "type": "Dictionary<string, FormHiddenFieldsValue>"}` → `{"required": true, "type": "Dictionary<string, FormHiddenValue>"}`.
+- `FormThemeInputInputs.Width`: `{"required": false, "type": "Optional<FormThemeInputInputsWidth>"}` → `{"required": false, "type": "Optional<string>"}`.
+- `FormThemeInputInputs.WidthPx`: `null` → `{"required": false, "type": "Optional<long>"}`.
+- `FormThemeInputs.Width`: `{"required": false, "type": "Optional<FormThemeInputsWidth>"}` → `{"required": false, "type": "Optional<string>"}`.
+- `FormThemeInputs.WidthPx`: `null` → `{"required": false, "type": "Optional<long>"}`.
+- `FunnelDefinitionInputStepsItemWhereItem.Value`: `{"required": true, "type": "FunnelDefinitionInputStepsItemWhereItemValue"}` → `{"required": true, "type": "string"}`.
+- `IdentifyContactInput.Topics`: `{"required": false, "type": "Optional<Dictionary<string, IdentifyContactInputTopicsValue>>"}` → `{"required": false, "type": "Optional<Dictionary<string, TopicChoiceInput>>"}`.
+- `JourneyExitConditionsItemEventExitWhereItem.Value`: `{"required": true, "type": "JourneyExitConditionsItemEventExitWhereItemValue"}` → `{"required": true, "type": "string"}`.
+- `JourneyStepBranchStepWhereItem.Value`: `{"required": true, "type": "JourneyStepBranchStepWhereItemValue"}` → `{"required": true, "type": "string"}`.
+- `JourneyStepWaitUntilStepEventWhereItem.Value`: `{"required": true, "type": "JourneyStepWaitUntilStepEventWhereItemValue"}` → `{"required": true, "type": "string"}`.
+- `JourneyTriggerAttributeTriggerWhereItem.Value`: `{"required": true, "type": "JourneyTriggerAttributeTriggerWhereItemValue"}` → `{"required": true, "type": "string"}`.
+- `JourneyTriggerEventTriggerWhereItem.Value`: `{"required": true, "type": "JourneyTriggerEventTriggerWhereItemValue"}` → `{"required": true, "type": "string"}`.
+- `JourneyTriggerFormTriggerWhereItem.Value`: `{"required": true, "type": "JourneyTriggerFormTriggerWhereItemValue"}` → `{"required": true, "type": "string"}`.
+- `JourneyTriggerInputAttributeTriggerWhereItem.Value`: `{"required": true, "type": "JourneyTriggerInputAttributeTriggerWhereItemValue"}` → `{"required": true, "type": "string"}`.
+- `JourneyTriggerInputEventTriggerWhereItem.Value`: `{"required": true, "type": "JourneyTriggerInputEventTriggerWhereItemValue"}` → `{"required": true, "type": "string"}`.
+- `JourneyTriggerInputFormTriggerWhereItem.Value`: `{"required": true, "type": "JourneyTriggerInputFormTriggerWhereItemValue"}` → `{"required": true, "type": "string"}`.
+- `RenderTemplateInput.Context`: `null` → `{"required": false, "type": "Optional<string>"}`.
+- `RenderTemplateInput.Draft`: `null` → `{"required": false, "type": "Optional<bool>"}`.
+- `RenderTemplateInput.Version`: `{"required": false, "type": "Optional<RenderTemplateInputVersion>"}` → `{"required": false, "type": "Optional<long>"}`.
+- `SendTransactionalInput.Deliver`: `{"required": false, "type": "Optional<TransactionalDeliverInput>"}` → `null`.
+- `SendTransactionalInput.FallbackOrder`: `null` → `{"required": false, "type": "Optional<IReadOnlyList<string>>"}`.
+- `SetContactTopicInput.Channels`: `null` → `{"required": false, "type": "Optional<Dictionary<string, bool>>"}`.
+- `SetContactTopicInput.Subscribed`: `{"required": true, "type": "SetContactTopicInputSubscribed"}` → `{"required": false, "type": "Optional<bool>"}`.
+- `SubmitFormInput.Choices`: `null` → `{"required": false, "type": "Optional<Dictionary<string, IReadOnlyList<string>>>"}`.
+- `SubmitFormInput.Fields`: `{"required": true, "type": "Dictionary<string, SubmitFormInputFieldsValue>"}` → `{"required": true, "type": "Dictionary<string, string>"}`.
+- `TemplateListItem.Kind`: `null` → `{"required": true, "type": "string"}`.
+- `UpdateFormInput.HiddenFields`: `{"required": false, "type": "Optional<Dictionary<string, UpdateFormInputHiddenFieldsValue>>"}` → `{"required": false, "type": "Optional<Dictionary<string, FormHiddenValueInput>>"}`.
+- `UpdateJourneyInputExitConditionsItemEventExitWhereItem.Value`: `{"required": true, "type": "UpdateJourneyInputExitConditionsItemEventExitWhereItemValue"}` → `{"required": true, "type": "string"}`.
+- `UpdateJourneyInputStepsItemBranchStepWhereItem.Value`: `{"required": true, "type": "UpdateJourneyInputStepsItemBranchStepWhereItemValue"}` → `{"required": true, "type": "string"}`.
+- `UpdateJourneyInputStepsItemWaitUntilStepEventWhereItem.Value`: `{"required": true, "type": "UpdateJourneyInputStepsItemWaitUntilStepEventWhereItemValue"}` → `{"required": true, "type": "string"}`.
+- `UpdateTemplateInput.Html`: `null` → `{"required": false, "type": "Optional<string>"}`.
+
+## Generation and staging readiness
+
+All 37 structurally changed schema roots are checked for required/optional model members. Contract fixtures now include every documented response variant where a read has multiple examples; new tests cover HTML/design unions, optional design discriminators, hidden values, topic choices, scalar/list filters, form choices, fallback ordering and rejection of removed shapes. The complete endpoint/schema diff includes exact enum/validation/nullability changes.
+
+All README C# blocks are extracted into existing buildable examples by tools/check-readme.py. The helper does not run code. Resend README/repository was reviewed at 9eacf6bade3c698df5e42d3a6ed6056b93a5e66d for organization only; no code or prose was copied. SDK target remains net8.0.
+
+Staging verification must use the new local package rather than a stale same-version cache. This task authorizes no live reads/mutations, pushes or package publication. SDK license/ownership approval and protected publication configuration remain separate open decisions.
+
+## Staging-source validation
+
+The isolated migration build passes with zero warnings/errors. All 1,656 SDK tests and 27 offline integration-gate/safety tests pass (1,683 total); five live tests are skipped with both opt-ins disabled. The two initial new-test failures were corrected: the first official create example is HTML, so the legacy-design case must select the design example; timestamp round trips use semantic comparison rather than literal formatting. All README snippets match buildable sources. No API request was sent. Final package, SourceLink and consumer checks are recorded separately after application to the branch.

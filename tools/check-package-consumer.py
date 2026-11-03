@@ -31,13 +31,13 @@ var client = new KiroraClient(http, new KiroraOptions { ApiKey = "fake-package-c
 var brand = await client.Templates.GetBrandKitAsync();
 if (brand.Data.Theme is null) throw new InvalidOperationException("Missing new brand-kit contract");
 await client.Journeys.GetActivationCheckAsync("0192f3a1-7c2e-7d4b-9a10-3e5f6a7b8c9d");
-TransactionalDeliverInput delivery = new TransactionalDeliverFirstInput { First = ["push", "email"] };
+var fallbackOrder = new[] { "push", "email" };
 SendTransactionalInputEmail email = new SendTransactionalInputEmailStoredTemplate { Template = "order-receipt" };
 await client.Transactional.SendAsync(new SendTransactionalInput {
-    To = new TransactionalRecipientInputByExternalId { ExternalId = "sdk-offline-consumer" }, Email = email, Push = new TransactionalPushInput { Title = "Offline", Body = "Offline fixture" }, Deliver = delivery });
+    To = new TransactionalRecipientInputByExternalId { ExternalId = "sdk-offline-consumer" }, Email = email, Push = new TransactionalPushInput { Title = "Offline", Body = "Offline fixture" }, FallbackOrder = fallbackOrder });
 var social = JsonSerializer.Deserialize<SocialBlockInput>("{\\"id\\":\\"social\\",\\"type\\":\\"social\\"}")!;
 if (social.Links.IsSet) throw new InvalidOperationException("Optional links became required");
-Console.WriteLine("Independent .NET 8 NuGet consumer passed: new endpoints, delivery union and optional links. No live HTTP.");
+Console.WriteLine("Independent .NET 8 NuGet consumer passed: new endpoints, fallback order and optional links. No live HTTP.");
 
 sealed class OfflineHandler(JsonArray fixtures) : HttpMessageHandler
 {
@@ -50,7 +50,7 @@ sealed class OfflineHandler(JsonArray fixtures) : HttpMessageHandler
             _ => throw new InvalidOperationException("Unexpected offline request") };
         if (operation == "sendTransactionalMessage") {
             var node = JsonNode.Parse(await request.Content!.ReadAsStringAsync(cancellationToken))!;
-            if (!JsonNode.DeepEquals(node["deliver"], JsonNode.Parse("{\\"first\\":[\\"push\\",\\"email\\"]}"))) throw new InvalidOperationException("Wrong delivery union JSON");
+            if (!JsonNode.DeepEquals(node["fallbackOrder"], JsonNode.Parse("""["push","email"]"""))) throw new InvalidOperationException("Wrong fallback order JSON");
         }
         var fixture = fixtures.First(f => f!["operationId"]!.GetValue<string>() == operation)!;
         return new HttpResponseMessage((HttpStatusCode)fixture["status"]!.GetValue<int>()) { Content = new StringContent(fixture["response"]!.ToJsonString()) };

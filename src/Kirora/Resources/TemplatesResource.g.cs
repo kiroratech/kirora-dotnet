@@ -51,7 +51,7 @@ public sealed class TemplatesResource
     public Task<RenderTemplateResponse> RenderAsync(string id, RenderTemplateInput body, KiroraRequestOptions? options = null, CancellationToken cancellationToken = default) =>
         transport.SendAsync<RenderTemplateResponse>(Operations.RenderTemplate, $"/v1/templates/{ResourceHelpers.Segment(id)}/render", body, null, options, cancellationToken);
 
-    /// <summary>Render blocks to email HTML. Operation: renderTemplateContent.</summary>
+    /// <summary>Render a design or HTML. Operation: renderTemplateContent.</summary>
     /// <remarks>Scope: templates:read. Retry policy: read. See the operation contract for key-kind restrictions.</remarks>
     public Task<RenderTemplateContentResponse> RenderContentAsync(RenderTemplateContentInput body, KiroraRequestOptions? options = null, CancellationToken cancellationToken = default) =>
         transport.SendAsync<RenderTemplateContentResponse>(Operations.RenderTemplateContent, "/v1/templates/render", body, null, options, cancellationToken);

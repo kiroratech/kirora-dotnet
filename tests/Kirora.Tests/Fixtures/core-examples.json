@@ -1,7 +1,7 @@
 [
   {
     "operationId": "listContacts",
-    "example": "noBody",
+    "example": "firstPage",
     "method": "GET",
     "path": "/v1/contacts",
     "pathValues": {},
@@ -166,8 +166,10 @@
       "externalId": "customer-4821",
       "topics": {
         "0192f3b0-6a1b-7c2d-8e3f-4a5b6c7d8e9f": {
-          "email": true,
-          "push": false
+          "channels": {
+            "email": true,
+            "push": false
+          }
         }
       }
     },
@@ -306,7 +308,9 @@
           "email": "amaka@example.com",
           "firstName": "Amaka",
           "topics": {
-            "0192f3b0-6a1b-7c2d-8e3f-4a5b6c7d8e9f": true
+            "0192f3b0-6a1b-7c2d-8e3f-4a5b6c7d8e9f": {
+              "subscribed": true
+            }
           }
         },
         {
@@ -401,7 +405,7 @@
   },
   {
     "operationId": "getContact",
-    "example": "noBody",
+    "example": "byId",
     "method": "GET",
     "path": "/v1/contacts/{id}",
     "pathValues": {
@@ -649,7 +653,7 @@
   },
   {
     "operationId": "listContactConsentChanges",
-    "example": "noBody",
+    "example": "grantAndWithdraw",
     "method": "GET",
     "path": "/v1/contacts/{id}/consent-changes",
     "pathValues": {
@@ -710,7 +714,7 @@
   },
   {
     "operationId": "getContactExport",
-    "example": "noBody",
+    "example": "everythingHeld",
     "method": "GET",
     "path": "/v1/contacts/{id}/export",
     "pathValues": {
@@ -856,7 +860,7 @@
   },
   {
     "operationId": "listContactLists",
-    "example": "noBody",
+    "example": "memberships",
     "method": "GET",
     "path": "/v1/contacts/{id}/lists",
     "pathValues": {
@@ -887,7 +891,7 @@
   },
   {
     "operationId": "listContactSegments",
-    "example": "noBody",
+    "example": "matching",
     "method": "GET",
     "path": "/v1/contacts/{id}/segments",
     "pathValues": {
@@ -917,7 +921,7 @@
   },
   {
     "operationId": "listContactTopics",
-    "example": "noBody",
+    "example": "forContact",
     "method": "GET",
     "path": "/v1/contacts/{id}/topics",
     "pathValues": {
@@ -961,7 +965,7 @@
     "multipart": false,
     "csv": false,
     "request": {
-      "subscribed": {
+      "channels": {
         "email": true,
         "push": false
       },
@@ -1022,7 +1026,7 @@
   },
   {
     "operationId": "listContactEvents",
-    "example": "noBody",
+    "example": "newestFirst",
     "method": "GET",
     "path": "/v1/contacts/{id}/events",
     "pathValues": {
@@ -1091,7 +1095,7 @@
   },
   {
     "operationId": "listContactJourneys",
-    "example": "noBody",
+    "example": "enrollments",
     "method": "GET",
     "path": "/v1/contacts/{id}/journeys",
     "pathValues": {
@@ -1129,7 +1133,7 @@
   },
   {
     "operationId": "listContactMessages",
-    "example": "noBody",
+    "example": "forContact",
     "method": "GET",
     "path": "/v1/contacts/{id}/messages",
     "pathValues": {
@@ -1186,7 +1190,7 @@
   },
   {
     "operationId": "listPushInstallations",
-    "example": "noBody",
+    "example": "devices",
     "method": "GET",
     "path": "/v1/contacts/{id}/installations",
     "pathValues": {
@@ -1529,7 +1533,7 @@
   },
   {
     "operationId": "listEvents",
-    "example": "noBody",
+    "example": "acceptedAndRejected",
     "method": "GET",
     "path": "/v1/events",
     "pathValues": {},
@@ -1607,7 +1611,7 @@
   },
   {
     "operationId": "listEventCatalog",
-    "example": "noBody",
+    "example": "firstPage",
     "method": "GET",
     "path": "/v1/events/catalog",
     "pathValues": {},
@@ -1662,7 +1666,7 @@
   },
   {
     "operationId": "getEventSummary",
-    "example": "noBody",
+    "example": "orderCompleted",
     "method": "GET",
     "path": "/v1/events/summary",
     "pathValues": {},
@@ -1746,7 +1750,7 @@
   },
   {
     "operationId": "getEventSeries",
-    "example": "noBody",
+    "example": "daily",
     "method": "GET",
     "path": "/v1/events/series",
     "pathValues": {},
@@ -1827,7 +1831,7 @@
   },
   {
     "operationId": "listStandardEventNames",
-    "example": "noBody",
+    "example": "notYetSent",
     "method": "GET",
     "path": "/v1/events/standard-names",
     "pathValues": {},
@@ -1854,7 +1858,7 @@
   },
   {
     "operationId": "listLists",
-    "example": "noBody",
+    "example": "all",
     "method": "GET",
     "path": "/v1/lists",
     "pathValues": {},
@@ -1909,7 +1913,7 @@
   },
   {
     "operationId": "getList",
-    "example": "noBody",
+    "example": "byId",
     "method": "GET",
     "path": "/v1/lists/{id}",
     "pathValues": {
@@ -2053,7 +2057,7 @@
   },
   {
     "operationId": "getListUsage",
-    "example": "noBody",
+    "example": "inUse",
     "method": "GET",
     "path": "/v1/lists/{id}/usage",
     "pathValues": {
@@ -2091,7 +2095,7 @@
   },
   {
     "operationId": "listSegments",
-    "example": "noBody",
+    "example": "all",
     "method": "GET",
     "path": "/v1/segments",
     "pathValues": {},
@@ -2296,7 +2300,7 @@
   },
   {
     "operationId": "getSegment",
-    "example": "noBody",
+    "example": "byId",
     "method": "GET",
     "path": "/v1/segments/{id}",
     "pathValues": {
@@ -2475,7 +2479,7 @@
   },
   {
     "operationId": "listSegmentContacts",
-    "example": "noBody",
+    "example": "members",
     "method": "GET",
     "path": "/v1/segments/{id}/contacts",
     "pathValues": {
@@ -2546,7 +2550,7 @@
   },
   {
     "operationId": "listSegmentMembershipChanges",
-    "example": "noBody",
+    "example": "joined",
     "method": "GET",
     "path": "/v1/segments/{id}/membership-changes",
     "pathValues": {
@@ -2619,7 +2623,7 @@
   },
   {
     "operationId": "getSegmentSizeHistory",
-    "example": "noBody",
+    "example": "growing",
     "method": "GET",
     "path": "/v1/segments/{id}/size-history",
     "pathValues": {
@@ -2665,7 +2669,7 @@
   },
   {
     "operationId": "getSegmentUsage",
-    "example": "noBody",
+    "example": "inUse",
     "method": "GET",
     "path": "/v1/segments/{id}/usage",
     "pathValues": {
@@ -2694,7 +2698,7 @@
   },
   {
     "operationId": "listTopics",
-    "example": "noBody",
+    "example": "all",
     "method": "GET",
     "path": "/v1/topics",
     "pathValues": {},
@@ -2760,7 +2764,7 @@
   },
   {
     "operationId": "getTopic",
-    "example": "noBody",
+    "example": "byId",
     "method": "GET",
     "path": "/v1/topics/{id}",
     "pathValues": {
@@ -2836,7 +2840,7 @@
   },
   {
     "operationId": "listAttributes",
-    "example": "noBody",
+    "example": "keys",
     "method": "GET",
     "path": "/v1/attributes",
     "pathValues": {},
@@ -2873,7 +2877,7 @@
   },
   {
     "operationId": "listAttributeValues",
-    "example": "noBody",
+    "example": "planValues",
     "method": "GET",
     "path": "/v1/attributes/{key}/values",
     "pathValues": {
@@ -2929,7 +2933,7 @@
   },
   {
     "operationId": "listTags",
-    "example": "noBody",
+    "example": "byName",
     "method": "GET",
     "path": "/v1/tags",
     "pathValues": {},
@@ -3192,8 +3196,7 @@
       },
       "email": {
         "template": "order-shipped"
-      },
-      "deliver": "all"
+      }
     },
     "status": 202,
     "response": {
@@ -3250,12 +3253,10 @@
         "from": "Juniper Kitchen <security@juniperkitchen.com>",
         "html": "<p>Your code is <strong>{{ data.code }}</strong>.</p>"
       },
-      "deliver": {
-        "first": [
-          "push",
-          "email"
-        ]
-      }
+      "fallbackOrder": [
+        "push",
+        "email"
+      ]
     },
     "status": 202,
     "response": {
@@ -3495,7 +3496,7 @@
   },
   {
     "operationId": "cancelScheduledTransactionalMessage",
-    "example": "noBody",
+    "example": "cancelled",
     "method": "POST",
     "path": "/v1/transactional/messages/{id}/cancel",
     "pathValues": {
@@ -3545,7 +3546,7 @@
   },
   {
     "operationId": "listCampaigns",
-    "example": "noBody",
+    "example": "campaigns",
     "method": "GET",
     "path": "/v1/campaigns",
     "pathValues": {},
@@ -4035,7 +4036,7 @@
   },
   {
     "operationId": "getCampaign",
-    "example": "noBody",
+    "example": "draft",
     "method": "GET",
     "path": "/v1/campaigns/{id}",
     "pathValues": {
@@ -4262,7 +4263,7 @@
   },
   {
     "operationId": "getCampaignEligibility",
-    "example": "noBody",
+    "example": "ready",
     "method": "GET",
     "path": "/v1/campaigns/{id}/eligibility",
     "pathValues": {
@@ -4532,7 +4533,7 @@
   },
   {
     "operationId": "unscheduleCampaign",
-    "example": "noBody",
+    "example": "draft",
     "method": "POST",
     "path": "/v1/campaigns/{id}/unschedule",
     "pathValues": {
@@ -4621,7 +4622,7 @@
   },
   {
     "operationId": "sendCampaign",
-    "example": "noBody",
+    "example": "sending",
     "method": "POST",
     "path": "/v1/campaigns/{id}/send",
     "pathValues": {
@@ -4930,7 +4931,7 @@
   },
   {
     "operationId": "cancelCampaign",
-    "example": "noBody",
+    "example": "cancelled",
     "method": "POST",
     "path": "/v1/campaigns/{id}/cancel",
     "pathValues": {
@@ -5022,7 +5023,7 @@
   },
   {
     "operationId": "archiveCampaign",
-    "example": "noBody",
+    "example": "archived",
     "method": "POST",
     "path": "/v1/campaigns/{id}/archive",
     "pathValues": {
@@ -5111,7 +5112,7 @@
   },
   {
     "operationId": "unarchiveCampaign",
-    "example": "noBody",
+    "example": "restored",
     "method": "POST",
     "path": "/v1/campaigns/{id}/unarchive",
     "pathValues": {
@@ -5291,7 +5292,7 @@
   },
   {
     "operationId": "getCampaignMetrics",
-    "example": "noBody",
+    "example": "sent",
     "method": "GET",
     "path": "/v1/campaigns/{id}/metrics",
     "pathValues": {
@@ -5371,7 +5372,7 @@
   },
   {
     "operationId": "getCampaignBreakdown",
-    "example": "noBody",
+    "example": "byDomain",
     "method": "GET",
     "path": "/v1/campaigns/{id}/breakdown",
     "pathValues": {
@@ -5421,7 +5422,7 @@
   },
   {
     "operationId": "getCampaignSeries",
-    "example": "noBody",
+    "example": "daily",
     "method": "GET",
     "path": "/v1/campaigns/{id}/series",
     "pathValues": {
@@ -5471,7 +5472,7 @@
   },
   {
     "operationId": "listCampaignLinks",
-    "example": "noBody",
+    "example": "links",
     "method": "GET",
     "path": "/v1/campaigns/{id}/links",
     "pathValues": {
@@ -5502,7 +5503,7 @@
   },
   {
     "operationId": "listJourneys",
-    "example": "noBody",
+    "example": "journeys",
     "method": "GET",
     "path": "/v1/journeys",
     "pathValues": {},
@@ -5703,7 +5704,7 @@
   },
   {
     "operationId": "getJourney",
-    "example": "noBody",
+    "example": "active",
     "method": "GET",
     "path": "/v1/journeys/{id}",
     "pathValues": {
@@ -6044,7 +6045,7 @@
   },
   {
     "operationId": "pauseJourney",
-    "example": "noBody",
+    "example": "paused",
     "method": "POST",
     "path": "/v1/journeys/{id}/pause",
     "pathValues": {
@@ -6138,7 +6139,7 @@
   },
   {
     "operationId": "endJourney",
-    "example": "noBody",
+    "example": "ended",
     "method": "POST",
     "path": "/v1/journeys/{id}/end",
     "pathValues": {
@@ -6334,7 +6335,7 @@
   },
   {
     "operationId": "getJourneyMetrics",
-    "example": "noBody",
+    "example": "metrics",
     "method": "GET",
     "path": "/v1/journeys/{id}/metrics",
     "pathValues": {
@@ -6423,7 +6424,7 @@
   },
   {
     "operationId": "getJourneyStepMetrics",
-    "example": "noBody",
+    "example": "steps",
     "method": "GET",
     "path": "/v1/journeys/{id}/step-metrics",
     "pathValues": {
@@ -6509,7 +6510,7 @@
   },
   {
     "operationId": "getJourneyActivationCheck",
-    "example": "noBody",
+    "example": "issues",
     "method": "GET",
     "path": "/v1/journeys/{id}/activation-check",
     "pathValues": {
@@ -6541,8 +6542,28 @@
     }
   },
   {
+    "operationId": "getJourneyActivationCheck",
+    "example": "ready",
+    "method": "GET",
+    "path": "/v1/journeys/{id}/activation-check",
+    "pathValues": {
+      "id": "0192f3a1-7c2e-7d4b-9a10-3e5f6a7b8c9d"
+    },
+    "query": {},
+    "acceptsKey": false,
+    "multipart": false,
+    "csv": false,
+    "request": null,
+    "status": 200,
+    "response": {
+      "data": {
+        "issues": []
+      }
+    }
+  },
+  {
     "operationId": "listConversionGoals",
-    "example": "noBody",
+    "example": "journey",
     "method": "GET",
     "path": "/v1/conversion-goals",
     "pathValues": {},
@@ -6634,7 +6655,7 @@
         {
           "property": "total",
           "operator": "gte",
-          "value": 50
+          "value": "50"
         }
       ],
       "occurrence": "first",
@@ -6652,7 +6673,7 @@
           {
             "property": "total",
             "operator": "gte",
-            "value": 50
+            "value": "50"
           }
         ],
         "occurrence": "first",
@@ -6725,7 +6746,7 @@
   },
   {
     "operationId": "getConversionGoalMetrics",
-    "example": "noBody",
+    "example": "metrics",
     "method": "GET",
     "path": "/v1/conversion-goals/{id}/metrics",
     "pathValues": {
@@ -6777,7 +6798,7 @@
   },
   {
     "operationId": "listTemplates",
-    "example": "noBody",
+    "example": "templates",
     "method": "GET",
     "path": "/v1/templates",
     "pathValues": {},
@@ -6799,6 +6820,7 @@
             "from": "Acme Shop <hello@mail.acme-shop.com>",
             "replyTo": "support@acme-shop.com"
           },
+          "kind": "design",
           "blockCount": 5,
           "publishedVersion": 1,
           "hasUnpublishedChanges": false,
@@ -6815,6 +6837,46 @@
           "limit": 20,
           "nextCursor": null
         }
+      }
+    }
+  },
+  {
+    "operationId": "createTemplate",
+    "example": "html",
+    "method": "POST",
+    "path": "/v1/templates",
+    "pathValues": {},
+    "query": {},
+    "acceptsKey": true,
+    "multipart": false,
+    "csv": false,
+    "request": {
+      "kind": "html",
+      "name": "Monthly newsletter",
+      "html": "<!DOCTYPE html><html lang=\"en\"><head><meta charset=\"utf-8\"><style>p{font-family:Arial,sans-serif}</style></head><body><h1>The Acme Shop monthly</h1><p>Hi {{ contact.firstName | default: \"there\" }}, here is what is new.</p><p><a href=\"{{unsubscribe_url}}\">Unsubscribe</a></p></body></html>"
+    },
+    "status": 201,
+    "response": {
+      "data": {
+        "id": "01a19ecb-7c2d-7e31-9f40-5b6a7c8d9e0f",
+        "name": "Monthly newsletter",
+        "plainTextOverride": null,
+        "transactionalDefaults": {
+          "subject": null,
+          "previewText": null,
+          "from": null,
+          "replyTo": null
+        },
+        "alias": null,
+        "publishedVersion": 1,
+        "hasUnpublishedChanges": false,
+        "revision": 1,
+        "thumbnailUrl": null,
+        "tags": [],
+        "createdAt": "2026-10-01T09:30:00.000Z",
+        "updatedAt": "2026-10-01T09:30:00.000Z",
+        "kind": "html",
+        "html": "<!DOCTYPE html><html lang=\"en\"><head><meta charset=\"utf-8\"><style>p{font-family:Arial,sans-serif}</style></head><body><h1>The Acme Shop monthly</h1><p>Hi {{ contact.firstName | default: \"there\" }}, here is what is new.</p><p><a href=\"{{unsubscribe_url}}\">Unsubscribe</a></p></body></html>"
       }
     }
   },
@@ -6888,6 +6950,7 @@
       "data": {
         "id": "0192f3d0-1a2b-7c3d-8e4f-5a6b7c8d9e0f",
         "name": "Welcome email",
+        "kind": "design",
         "schemaVersion": 1,
         "blocks": [
           {
@@ -7022,6 +7085,7 @@
       "data": {
         "id": "0192f3d0-1a2b-7c3d-8e4f-5a6b7c8d9e0f",
         "name": "Welcome email",
+        "kind": "design",
         "schemaVersion": 1,
         "blocks": [
           {
@@ -7088,7 +7152,7 @@
   },
   {
     "operationId": "getTemplate",
-    "example": "noBody",
+    "example": "published",
     "method": "GET",
     "path": "/v1/templates/{id}",
     "pathValues": {
@@ -7104,6 +7168,7 @@
       "data": {
         "id": "0192f3d0-1a2b-7c3d-8e4f-5a6b7c8d9e0f",
         "name": "Welcome email",
+        "kind": "design",
         "schemaVersion": 1,
         "blocks": [
           {
@@ -7191,6 +7256,7 @@
       "data": {
         "id": "0192f3d0-1a2b-7c3d-8e4f-5a6b7c8d9e0f",
         "name": "Welcome email",
+        "kind": "design",
         "schemaVersion": 1,
         "blocks": [
           {
@@ -7273,7 +7339,7 @@
   },
   {
     "operationId": "getTemplateGallery",
-    "example": "noBody",
+    "example": "gallery",
     "method": "GET",
     "path": "/v1/templates/gallery",
     "pathValues": {},
@@ -7368,7 +7434,6 @@
     "multipart": false,
     "csv": false,
     "request": {
-      "version": "published",
       "contact": {
         "externalId": "customer-881"
       }
@@ -7398,7 +7463,7 @@
     "multipart": false,
     "csv": false,
     "request": {
-      "version": "draft"
+      "draft": true
     },
     "status": 200,
     "response": {
@@ -7482,6 +7547,36 @@
     }
   },
   {
+    "operationId": "renderTemplateContent",
+    "example": "html",
+    "method": "POST",
+    "path": "/v1/templates/render",
+    "pathValues": {},
+    "query": {},
+    "acceptsKey": false,
+    "multipart": false,
+    "csv": false,
+    "request": {
+      "kind": "html",
+      "html": "<!DOCTYPE html><html lang=\"en\"><head><meta charset=\"utf-8\"><style>p{font-family:Arial,sans-serif}</style></head><body><h1>The Acme Shop monthly</h1><p>Hi {{ contact.firstName | default: \"there\" }}, here is what is new.</p><p><a href=\"{{unsubscribe_url}}\">Unsubscribe</a></p><script>track()</script></body></html>"
+    },
+    "status": 200,
+    "response": {
+      "data": {
+        "html": "<!DOCTYPE html><html lang=\"en\"><head><meta charset=\"utf-8\"><style>p{font-family:Arial,sans-serif}</style></head><body><h1>The Acme Shop monthly</h1><p>Hi there, here is what is new.</p><p><a href=\"{{unsubscribe_url}}\">Unsubscribe</a></p></body></html>",
+        "text": "The Acme Shop monthly\n\nHi there, here is what is new.\n\nUnsubscribe ({{unsubscribe_url}})",
+        "sizeBytes": 255,
+        "warnings": [
+          {
+            "code": "HTML_REMOVED",
+            "title": "Some code is removed",
+            "detail": "Saving removes scripts. Email apps do not run them, so the email looks the same in an inbox."
+          }
+        ]
+      }
+    }
+  },
+  {
     "operationId": "sendTemplateTest",
     "example": "toMember",
     "method": "POST",
@@ -7550,7 +7645,7 @@
   },
   {
     "operationId": "publishTemplate",
-    "example": "noBody",
+    "example": "published",
     "method": "POST",
     "path": "/v1/templates/{id}/publish",
     "pathValues": {
@@ -7566,6 +7661,7 @@
       "data": {
         "id": "0192f3d0-1a2b-7c3d-8e4f-5a6b7c8d9e0f",
         "name": "Welcome email",
+        "kind": "design",
         "schemaVersion": 1,
         "blocks": [
           {
@@ -7632,7 +7728,7 @@
   },
   {
     "operationId": "listTemplateVersions",
-    "example": "noBody",
+    "example": "versions",
     "method": "GET",
     "path": "/v1/templates/{id}/versions",
     "pathValues": {
@@ -7662,7 +7758,7 @@
   },
   {
     "operationId": "getTemplateVersion",
-    "example": "noBody",
+    "example": "version",
     "method": "GET",
     "path": "/v1/templates/{id}/versions/{version}",
     "pathValues": {
@@ -7680,6 +7776,7 @@
         "version": 1,
         "publishedByUserId": "0192f3a0-7081-7293-8ea5-1a2b3c4d5e6f",
         "publishedAt": "2026-10-02T14:05:00.000Z",
+        "kind": "design",
         "schemaVersion": 1,
         "blocks": [
           {
@@ -7779,7 +7876,7 @@
   },
   {
     "operationId": "restoreTemplateVersion",
-    "example": "noBody",
+    "example": "restored",
     "method": "POST",
     "path": "/v1/templates/{id}/versions/{version}/restore",
     "pathValues": {
@@ -7796,6 +7893,7 @@
       "data": {
         "id": "0192f3d0-1a2b-7c3d-8e4f-5a6b7c8d9e0f",
         "name": "Welcome email",
+        "kind": "design",
         "schemaVersion": 1,
         "blocks": [
           {
@@ -7880,6 +7978,7 @@
       "data": {
         "id": "0192f3d0-2b3c-7d4e-9f50-6b7c8d9e0f1a",
         "name": "Welcome email, spring",
+        "kind": "design",
         "schemaVersion": 1,
         "blocks": [
           {
@@ -7946,7 +8045,7 @@
   },
   {
     "operationId": "getBrandKit",
-    "example": "noBody",
+    "example": "brand",
     "method": "GET",
     "path": "/v1/brand-kit",
     "pathValues": {},
@@ -7997,7 +8096,7 @@
   },
   {
     "operationId": "listSharedBlocks",
-    "example": "noBody",
+    "example": "blocks",
     "method": "GET",
     "path": "/v1/shared-blocks",
     "pathValues": {},
@@ -8066,7 +8165,7 @@
   },
   {
     "operationId": "getSharedBlock",
-    "example": "noBody",
+    "example": "footer",
     "method": "GET",
     "path": "/v1/shared-blocks/{id}",
     "pathValues": {
@@ -8146,7 +8245,7 @@
   },
   {
     "operationId": "getSharedBlockUsage",
-    "example": "noBody",
+    "example": "usage",
     "method": "GET",
     "path": "/v1/shared-blocks/{id}/usage",
     "pathValues": {
@@ -8186,7 +8285,7 @@
   },
   {
     "operationId": "listAssets",
-    "example": "noBody",
+    "example": "images",
     "method": "GET",
     "path": "/v1/assets",
     "pathValues": {},
@@ -8328,7 +8427,7 @@
   },
   {
     "operationId": "getAssetUsage",
-    "example": "noBody",
+    "example": "usage",
     "method": "GET",
     "path": "/v1/assets/{id}/usage",
     "pathValues": {
@@ -8367,7 +8466,7 @@
   },
   {
     "operationId": "listForms",
-    "example": "noBody",
+    "example": "forms",
     "method": "GET",
     "path": "/v1/forms",
     "pathValues": {},
@@ -8447,7 +8546,8 @@
       },
       "hiddenFields": {
         "signup_campaign": {
-          "fromParam": "utm_campaign"
+          "source": "link",
+          "param": "utm_campaign"
         }
       },
       "listId": "0192f3a2-1b3c-7e5d-8a21-4f6a7b8c9d0e",
@@ -8515,7 +8615,8 @@
         ],
         "hiddenFields": {
           "signup_campaign": {
-            "fromParam": "utm_campaign"
+            "source": "link",
+            "param": "utm_campaign"
           }
         },
         "share": {
@@ -8557,7 +8658,7 @@
   },
   {
     "operationId": "getForm",
-    "example": "noBody",
+    "example": "published",
     "method": "GET",
     "path": "/v1/forms/{id}",
     "pathValues": {
@@ -8598,7 +8699,8 @@
         ],
         "hiddenFields": {
           "signup_campaign": {
-            "fromParam": "utm_campaign"
+            "source": "link",
+            "param": "utm_campaign"
           }
         },
         "share": {
@@ -8683,7 +8785,8 @@
         ],
         "hiddenFields": {
           "signup_campaign": {
-            "fromParam": "utm_campaign"
+            "source": "link",
+            "param": "utm_campaign"
           }
         },
         "share": {
@@ -8762,7 +8865,7 @@
   },
   {
     "operationId": "listFormSubmissions",
-    "example": "noBody",
+    "example": "submissions",
     "method": "GET",
     "path": "/v1/forms/{id}/submissions",
     "pathValues": {
@@ -8799,7 +8902,7 @@
   },
   {
     "operationId": "publishForm",
-    "example": "noBody",
+    "example": "publish",
     "method": "POST",
     "path": "/v1/forms/{id}/publish",
     "pathValues": {
@@ -8840,7 +8943,8 @@
         ],
         "hiddenFields": {
           "signup_campaign": {
-            "fromParam": "utm_campaign"
+            "source": "link",
+            "param": "utm_campaign"
           }
         },
         "share": {
@@ -8882,7 +8986,7 @@
   },
   {
     "operationId": "unpublishForm",
-    "example": "noBody",
+    "example": "unpublish",
     "method": "POST",
     "path": "/v1/forms/{id}/unpublish",
     "pathValues": {
@@ -8923,7 +9027,8 @@
         ],
         "hiddenFields": {
           "signup_campaign": {
-            "fromParam": "utm_campaign"
+            "source": "link",
+            "param": "utm_campaign"
           }
         },
         "share": {
@@ -8965,7 +9070,7 @@
   },
   {
     "operationId": "archiveForm",
-    "example": "noBody",
+    "example": "archived",
     "method": "POST",
     "path": "/v1/forms/{id}/archive",
     "pathValues": {
@@ -9006,7 +9111,8 @@
         ],
         "hiddenFields": {
           "signup_campaign": {
-            "fromParam": "utm_campaign"
+            "source": "link",
+            "param": "utm_campaign"
           }
         },
         "share": {
@@ -9048,7 +9154,7 @@
   },
   {
     "operationId": "unarchiveForm",
-    "example": "noBody",
+    "example": "restored",
     "method": "POST",
     "path": "/v1/forms/{id}/unarchive",
     "pathValues": {
@@ -9089,7 +9195,8 @@
         ],
         "hiddenFields": {
           "signup_campaign": {
-            "fromParam": "utm_campaign"
+            "source": "link",
+            "param": "utm_campaign"
           }
         },
         "share": {
@@ -9131,7 +9238,7 @@
   },
   {
     "operationId": "getFormMetrics",
-    "example": "noBody",
+    "example": "metrics",
     "method": "GET",
     "path": "/v1/forms/{id}/metrics",
     "pathValues": {
@@ -9192,7 +9299,7 @@
   },
   {
     "operationId": "listMessages",
-    "example": "noBody",
+    "example": "newestFirst",
     "method": "GET",
     "path": "/v1/messages",
     "pathValues": {},
@@ -9283,7 +9390,7 @@
   },
   {
     "operationId": "getMessage",
-    "example": "noBody",
+    "example": "byId",
     "method": "GET",
     "path": "/v1/messages/{id}",
     "pathValues": {
@@ -9332,7 +9439,7 @@
   },
   {
     "operationId": "getMessageContent",
-    "example": "noBody",
+    "example": "email",
     "method": "GET",
     "path": "/v1/messages/{id}/content",
     "pathValues": {
@@ -9361,7 +9468,7 @@
   },
   {
     "operationId": "listMessageDeliveries",
-    "example": "noBody",
+    "example": "devices",
     "method": "GET",
     "path": "/v1/messages/{id}/deliveries",
     "pathValues": {
@@ -9439,7 +9546,7 @@
   },
   {
     "operationId": "getMessageExport",
-    "example": "noBody",
+    "example": "ready",
     "method": "GET",
     "path": "/v1/messages/exports/{id}",
     "pathValues": {
@@ -9486,7 +9593,7 @@
   },
   {
     "operationId": "listSuppressions",
-    "example": "noBody",
+    "example": "blocked",
     "method": "GET",
     "path": "/v1/suppressions",
     "pathValues": {},
@@ -9583,7 +9690,7 @@
   },
   {
     "operationId": "listSendingDomains",
-    "example": "noBody",
+    "example": "domains",
     "method": "GET",
     "path": "/v1/sending-domains",
     "pathValues": {},
@@ -9718,7 +9825,7 @@
   },
   {
     "operationId": "getSendingDomain",
-    "example": "noBody",
+    "example": "pending",
     "method": "GET",
     "path": "/v1/sending-domains/{id}",
     "pathValues": {
@@ -9796,7 +9903,7 @@
   },
   {
     "operationId": "checkSendingDomain",
-    "example": "noBody",
+    "example": "verified",
     "method": "POST",
     "path": "/v1/sending-domains/{id}/check",
     "pathValues": {
@@ -9863,7 +9970,7 @@
   },
   {
     "operationId": "getSendingDomainUsage",
-    "example": "noBody",
+    "example": "usage",
     "method": "GET",
     "path": "/v1/sending-domains/{id}/usage",
     "pathValues": {
@@ -9904,7 +10011,7 @@
   },
   {
     "operationId": "listSenders",
-    "example": "noBody",
+    "example": "senders",
     "method": "GET",
     "path": "/v1/senders",
     "pathValues": {},
@@ -9932,7 +10039,7 @@
   },
   {
     "operationId": "listPushProjects",
-    "example": "noBody",
+    "example": "projects",
     "method": "GET",
     "path": "/v1/push-projects",
     "pathValues": {},
@@ -9998,7 +10105,7 @@
   },
   {
     "operationId": "listWebhooks",
-    "example": "noBody",
+    "example": "webhooks",
     "method": "GET",
     "path": "/v1/webhooks",
     "pathValues": {},
@@ -10067,7 +10174,7 @@
   },
   {
     "operationId": "getWebhook",
-    "example": "noBody",
+    "example": "webhook",
     "method": "GET",
     "path": "/v1/webhooks/{id}",
     "pathValues": {
@@ -10143,7 +10250,7 @@
   },
   {
     "operationId": "testWebhook",
-    "example": "noBody",
+    "example": "test",
     "method": "POST",
     "path": "/v1/webhooks/{id}/test",
     "pathValues": {
@@ -10175,7 +10282,7 @@
   },
   {
     "operationId": "rotateWebhookSecret",
-    "example": "noBody",
+    "example": "rotated",
     "method": "POST",
     "path": "/v1/webhooks/{id}/rotate-secret",
     "pathValues": {
@@ -10205,7 +10312,7 @@
   },
   {
     "operationId": "listWebhookDeliveries",
-    "example": "noBody",
+    "example": "deliveries",
     "method": "GET",
     "path": "/v1/webhooks/deliveries",
     "pathValues": {},
@@ -10242,8 +10349,46 @@
     }
   },
   {
+    "operationId": "listWebhookDeliveries",
+    "example": "failed",
+    "method": "GET",
+    "path": "/v1/webhooks/deliveries",
+    "pathValues": {},
+    "query": {},
+    "acceptsKey": false,
+    "multipart": false,
+    "csv": false,
+    "request": null,
+    "status": 200,
+    "response": {
+      "data": [
+        {
+          "id": "0192f3f2-4d5e-7f60-8b72-8d9e0f1a2b3c",
+          "webhookId": "0192f3f1-2b3c-7d4e-9f50-6b7c8d9e0f1a",
+          "eventId": "0192f3f3-4d5e-7f60-9b72-8d9e0f1a2b3c",
+          "eventType": "contact.unsubscribed",
+          "attempt": 8,
+          "status": "failed",
+          "nextAttemptAt": null,
+          "responseStatus": 503,
+          "failureReason": "HTTP 503",
+          "requestBody": "{\"eventId\":\"01a0f2cf-4444-7555-8666-777788889999\",\"eventType\":\"contact.unsubscribed\",\"occurredAt\":\"2026-10-01T09:30:00.000Z\",\"data\":{\"contact\":{\"id\":\"0192f3a1-7c2e-7d4b-9a10-3e5f6a7b8c9d\",\"externalId\":\"customer-4821\",\"email\":\"amaka@example.com\",\"firstName\":\"Amaka\",\"lastName\":\"Obi\",\"phone\":\"+447700900123\",\"timezone\":\"Europe/London\",\"country\":\"GB\",\"locale\":\"en-NG\",\"rfm\":{\"group\":\"loyal\",\"recency\":3,\"frequency\":4,\"monetary\":5,\"purchaseCount\":6,\"totalSpent\":{\"currency\":\"USD\",\"value\":412.5},\"lastPurchasedAt\":\"2026-03-02T18:20:00.000Z\"},\"dates\":{\"birthday\":\"1992-03-14\"},\"attributes\":{\"plan\":\"pro\",\"favourite_spice\":\"smoked paprika\",\"orders\":3},\"consent\":{\"email\":false,\"push\":false},\"createdAt\":\"2026-09-12T08:15:00.000Z\",\"updatedAt\":\"2026-10-01T09:30:00.000Z\"},\"channel\":\"email\",\"messageId\":\"0192f3b0-1a2b-7c3d-8e4f-5a6b7c8d9e0f\",\"campaignId\":\"0192f3d3-5e6f-7071-8c83-9e0f1a2b3c4d\",\"topicId\":null}}",
+          "responseBody": "Service Unavailable",
+          "createdAt": "2026-10-02T14:05:00.000Z",
+          "deliveredAt": null
+        }
+      ],
+      "meta": {
+        "pagination": {
+          "limit": 20,
+          "nextCursor": null
+        }
+      }
+    }
+  },
+  {
     "operationId": "getWebhookDelivery",
-    "example": "noBody",
+    "example": "delivered",
     "method": "GET",
     "path": "/v1/webhooks/deliveries/{id}",
     "pathValues": {
@@ -10275,7 +10420,7 @@
   },
   {
     "operationId": "redeliverWebhookDelivery",
-    "example": "noBody",
+    "example": "redelivered",
     "method": "POST",
     "path": "/v1/webhooks/deliveries/{deliveryId}/redeliver",
     "pathValues": {
@@ -10307,7 +10452,7 @@
   },
   {
     "operationId": "listWebhookEvents",
-    "example": "noBody",
+    "example": "events",
     "method": "GET",
     "path": "/v1/webhooks/events",
     "pathValues": {},
@@ -10374,7 +10519,7 @@
   },
   {
     "operationId": "listCampaignReports",
-    "example": "noBody",
+    "example": "byCampaign",
     "method": "GET",
     "path": "/v1/reports/campaigns",
     "pathValues": {},
@@ -10445,7 +10590,7 @@
   },
   {
     "operationId": "getOverviewReport",
-    "example": "noBody",
+    "example": "lastSevenDays",
     "method": "GET",
     "path": "/v1/reports/overview",
     "pathValues": {},
@@ -10642,7 +10787,7 @@
   },
   {
     "operationId": "getTransactionalReport",
-    "example": "noBody",
+    "example": "lastSevenDays",
     "method": "GET",
     "path": "/v1/reports/transactional",
     "pathValues": {},
@@ -10775,7 +10920,7 @@
             {
               "property": "total",
               "operator": "gte",
-              "value": 20
+              "value": "20"
             }
           ]
         }
@@ -10810,7 +10955,7 @@
   },
   {
     "operationId": "getRfmSummary",
-    "example": "noBody",
+    "example": "scored",
     "method": "GET",
     "path": "/v1/reports/rfm",
     "pathValues": {},
@@ -10843,7 +10988,7 @@
   },
   {
     "operationId": "getMe",
-    "example": "noBody",
+    "example": "connectionTest",
     "method": "GET",
     "path": "/v1/me",
     "pathValues": {},
@@ -10875,7 +11020,7 @@
   },
   {
     "operationId": "listWorkspaces",
-    "example": "noBody",
+    "example": "workspaces",
     "method": "GET",
     "path": "/v1/workspaces",
     "pathValues": {},
@@ -10942,7 +11087,7 @@
   },
   {
     "operationId": "getWorkspace",
-    "example": "noBody",
+    "example": "workspace",
     "method": "GET",
     "path": "/v1/workspaces/{externalId}",
     "pathValues": {
@@ -11002,7 +11147,7 @@
   },
   {
     "operationId": "deleteWorkspace",
-    "example": "noBody",
+    "example": "deleting",
     "method": "DELETE",
     "path": "/v1/workspaces/{externalId}",
     "pathValues": {
@@ -11031,7 +11176,7 @@
   },
   {
     "operationId": "suspendWorkspace",
-    "example": "noBody",
+    "example": "suspended",
     "method": "POST",
     "path": "/v1/workspaces/{externalId}/suspend",
     "pathValues": {
@@ -11060,7 +11205,7 @@
   },
   {
     "operationId": "resumeWorkspace",
-    "example": "noBody",
+    "example": "resumed",
     "method": "POST",
     "path": "/v1/workspaces/{externalId}/resume",
     "pathValues": {
@@ -11089,7 +11234,7 @@
   },
   {
     "operationId": "cancelWorkspaceDeletion",
-    "example": "noBody",
+    "example": "kept",
     "method": "POST",
     "path": "/v1/workspaces/{externalId}/cancel-deletion",
     "pathValues": {

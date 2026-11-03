@@ -16,8 +16,6 @@ internal static class GeneratedOptionalConverters
         if (type == typeof(Optional<AbTestSettingsInputVersionsItemPush>)) return new OptionalJsonConverter<AbTestSettingsInputVersionsItemPush>();
         if (type == typeof(Optional<ActivityConditionCount>)) return new OptionalJsonConverter<ActivityConditionCount>();
         if (type == typeof(Optional<ActivityConditionInputCount>)) return new OptionalJsonConverter<ActivityConditionInputCount>();
-        if (type == typeof(Optional<AttributeConditionInputValue>)) return new OptionalJsonConverter<AttributeConditionInputValue>();
-        if (type == typeof(Optional<AttributeConditionValue>)) return new OptionalJsonConverter<AttributeConditionValue>();
         if (type == typeof(Optional<CampaignAbTestVersionsItemEmail>)) return new OptionalJsonConverter<CampaignAbTestVersionsItemEmail>();
         if (type == typeof(Optional<CampaignAbTestVersionsItemEmailTemplateSnapshot>)) return new OptionalJsonConverter<CampaignAbTestVersionsItemEmailTemplateSnapshot>();
         if (type == typeof(Optional<CampaignAbTestVersionsItemPush>)) return new OptionalJsonConverter<CampaignAbTestVersionsItemPush>();
@@ -37,8 +35,6 @@ internal static class GeneratedOptionalConverters
         if (type == typeof(Optional<CampaignSeriesPointsItemPush>)) return new OptionalJsonConverter<CampaignSeriesPointsItemPush>();
         if (type == typeof(Optional<CampaignUtmInput?>)) return new OptionalJsonConverter<CampaignUtmInput?>();
         if (type == typeof(Optional<ConsentStatementInput>)) return new OptionalJsonConverter<ConsentStatementInput>();
-        if (type == typeof(Optional<ContactFieldConditionInputValue>)) return new OptionalJsonConverter<ContactFieldConditionInputValue>();
-        if (type == typeof(Optional<ContactFieldConditionValue>)) return new OptionalJsonConverter<ContactFieldConditionValue>();
         if (type == typeof(Optional<ContactIdentifierInput>)) return new OptionalJsonConverter<ContactIdentifierInput>();
         if (type == typeof(Optional<CreateCampaignInputContent>)) return new OptionalJsonConverter<CreateCampaignInputContent>();
         if (type == typeof(Optional<CreateCampaignInputContentEmail>)) return new OptionalJsonConverter<CreateCampaignInputContentEmail>();
@@ -47,9 +43,11 @@ internal static class GeneratedOptionalConverters
         if (type == typeof(Optional<CreateCampaignInputContentPushOverridesAndroid>)) return new OptionalJsonConverter<CreateCampaignInputContentPushOverridesAndroid>();
         if (type == typeof(Optional<CreateCampaignInputContentPushOverridesIos>)) return new OptionalJsonConverter<CreateCampaignInputContentPushOverridesIos>();
         if (type == typeof(Optional<CreateCampaignInputContentPushOverridesWeb>)) return new OptionalJsonConverter<CreateCampaignInputContentPushOverridesWeb>();
+        if (type == typeof(Optional<CreateDesignTemplateInputTransactionalDefaults>)) return new OptionalJsonConverter<CreateDesignTemplateInputTransactionalDefaults>();
         if (type == typeof(Optional<CreateFormInputCaptcha?>)) return new OptionalJsonConverter<CreateFormInputCaptcha?>();
         if (type == typeof(Optional<CreateFormInputShare?>)) return new OptionalJsonConverter<CreateFormInputShare?>();
         if (type == typeof(Optional<CreateFormInputSuccess>)) return new OptionalJsonConverter<CreateFormInputSuccess>();
+        if (type == typeof(Optional<CreateHtmlTemplateInputTransactionalDefaults>)) return new OptionalJsonConverter<CreateHtmlTemplateInputTransactionalDefaults>();
         if (type == typeof(Optional<CreateJourneyInputStepsItemVariant4PushSendStepContentPush>)) return new OptionalJsonConverter<CreateJourneyInputStepsItemVariant4PushSendStepContentPush>();
         if (type == typeof(Optional<CreateJourneyInputStepsItemVariant4PushSendStepContentPushOverrides>)) return new OptionalJsonConverter<CreateJourneyInputStepsItemVariant4PushSendStepContentPushOverrides>();
         if (type == typeof(Optional<CreateJourneyInputStepsItemVariant4PushSendStepContentPushOverridesAndroid>)) return new OptionalJsonConverter<CreateJourneyInputStepsItemVariant4PushSendStepContentPushOverridesAndroid>();
@@ -57,13 +55,13 @@ internal static class GeneratedOptionalConverters
         if (type == typeof(Optional<CreateJourneyInputStepsItemVariant4PushSendStepContentPushOverridesWeb>)) return new OptionalJsonConverter<CreateJourneyInputStepsItemVariant4PushSendStepContentPushOverridesWeb>();
         if (type == typeof(Optional<CreateJourneyInputStepsItemWaitStepUntil>)) return new OptionalJsonConverter<CreateJourneyInputStepsItemWaitStepUntil>();
         if (type == typeof(Optional<CreateJourneyInputStepsItemWaitStepWindow>)) return new OptionalJsonConverter<CreateJourneyInputStepsItemWaitStepWindow>();
-        if (type == typeof(Optional<CreateTemplateInputTransactionalDefaults>)) return new OptionalJsonConverter<CreateTemplateInputTransactionalDefaults>();
         if (type == typeof(Optional<DateTimeOffset>)) return new OptionalJsonConverter<DateTimeOffset>();
         if (type == typeof(Optional<DateTimeOffset?>)) return new OptionalJsonConverter<DateTimeOffset?>();
-        if (type == typeof(Optional<Dictionary<string, CreateFormInputHiddenFieldsValue>>)) return new OptionalJsonConverter<Dictionary<string, CreateFormInputHiddenFieldsValue>>();
-        if (type == typeof(Optional<Dictionary<string, IdentifyContactInputTopicsValue>>)) return new OptionalJsonConverter<Dictionary<string, IdentifyContactInputTopicsValue>>();
+        if (type == typeof(Optional<Dictionary<string, FormHiddenValueInput>>)) return new OptionalJsonConverter<Dictionary<string, FormHiddenValueInput>>();
+        if (type == typeof(Optional<Dictionary<string, IReadOnlyList<string>>>)) return new OptionalJsonConverter<Dictionary<string, IReadOnlyList<string>>>();
         if (type == typeof(Optional<Dictionary<string, JsonElement>>)) return new OptionalJsonConverter<Dictionary<string, JsonElement>>();
-        if (type == typeof(Optional<Dictionary<string, UpdateFormInputHiddenFieldsValue>>)) return new OptionalJsonConverter<Dictionary<string, UpdateFormInputHiddenFieldsValue>>();
+        if (type == typeof(Optional<Dictionary<string, TopicChoiceInput>>)) return new OptionalJsonConverter<Dictionary<string, TopicChoiceInput>>();
+        if (type == typeof(Optional<Dictionary<string, bool>>)) return new OptionalJsonConverter<Dictionary<string, bool>>();
         if (type == typeof(Optional<Dictionary<string, string>>)) return new OptionalJsonConverter<Dictionary<string, string>>();
         if (type == typeof(Optional<Dictionary<string, string?>>)) return new OptionalJsonConverter<Dictionary<string, string?>>();
         if (type == typeof(Optional<Duration>)) return new OptionalJsonConverter<Duration>();
@@ -96,10 +94,8 @@ internal static class GeneratedOptionalConverters
         if (type == typeof(Optional<FormThemeInput>)) return new OptionalJsonConverter<FormThemeInput>();
         if (type == typeof(Optional<FormThemeInputButton>)) return new OptionalJsonConverter<FormThemeInputButton>();
         if (type == typeof(Optional<FormThemeInputInputs>)) return new OptionalJsonConverter<FormThemeInputInputs>();
-        if (type == typeof(Optional<FormThemeInputInputsWidth>)) return new OptionalJsonConverter<FormThemeInputInputsWidth>();
         if (type == typeof(Optional<FormThemeInputLayout>)) return new OptionalJsonConverter<FormThemeInputLayout>();
         if (type == typeof(Optional<FormThemeInputs>)) return new OptionalJsonConverter<FormThemeInputs>();
-        if (type == typeof(Optional<FormThemeInputsWidth>)) return new OptionalJsonConverter<FormThemeInputsWidth>();
         if (type == typeof(Optional<FormThemeLayout>)) return new OptionalJsonConverter<FormThemeLayout>();
         if (type == typeof(Optional<Guid>)) return new OptionalJsonConverter<Guid>();
         if (type == typeof(Optional<Guid?>)) return new OptionalJsonConverter<Guid?>();
@@ -200,7 +196,6 @@ internal static class GeneratedOptionalConverters
         if (type == typeof(Optional<MessageContentPushOverridesIos>)) return new OptionalJsonConverter<MessageContentPushOverridesIos>();
         if (type == typeof(Optional<MessageContentPushOverridesWeb>)) return new OptionalJsonConverter<MessageContentPushOverridesWeb>();
         if (type == typeof(Optional<MessageLimitUseInput>)) return new OptionalJsonConverter<MessageLimitUseInput>();
-        if (type == typeof(Optional<RenderTemplateInputVersion>)) return new OptionalJsonConverter<RenderTemplateInputVersion>();
         if (type == typeof(Optional<SegmentRules>)) return new OptionalJsonConverter<SegmentRules>();
         if (type == typeof(Optional<SegmentRulesInput>)) return new OptionalJsonConverter<SegmentRulesInput>();
         if (type == typeof(Optional<SegmentRulesInput?>)) return new OptionalJsonConverter<SegmentRulesInput?>();
@@ -210,7 +205,6 @@ internal static class GeneratedOptionalConverters
         if (type == typeof(Optional<SignedDurationInput>)) return new OptionalJsonConverter<SignedDurationInput>();
         if (type == typeof(Optional<TemplateSnapshot>)) return new OptionalJsonConverter<TemplateSnapshot>();
         if (type == typeof(Optional<TemplateSnapshotInput>)) return new OptionalJsonConverter<TemplateSnapshotInput>();
-        if (type == typeof(Optional<TransactionalDeliverInput>)) return new OptionalJsonConverter<TransactionalDeliverInput>();
         if (type == typeof(Optional<TransactionalEmailTrackingInput>)) return new OptionalJsonConverter<TransactionalEmailTrackingInput>();
         if (type == typeof(Optional<TransactionalPushInput>)) return new OptionalJsonConverter<TransactionalPushInput>();
         if (type == typeof(Optional<TransactionalPushInputOverrides>)) return new OptionalJsonConverter<TransactionalPushInputOverrides>();

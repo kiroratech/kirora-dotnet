@@ -2,7 +2,7 @@
 
 **184/184 unique operations (100%) have typed resource methods across 25 spec tags.** This is implementation coverage, not evidence of a live verified API contract.
 
-The original contract implemented 183 operations. The approved upstream migration removes getBrandTheme and adds getBrandKit and getJourneyActivationCheck, yielding 184 operations. GET /v1/me remains available as KiroraClient.GetMeAsync and also Me.GetAsync; it is counted once.
+The original contract implemented 183 operations. The 30043317 migration yielded 184; the 80060d50 migration changes contracts while retaining all 184 routes. GET /v1/me remains available as KiroraClient.GetMeAsync and also Me.GetAsync; it is counted once.
 
 The complete operation-level coverage matrix is [api-coverage.csv](api-coverage.csv). It records before/after status, method/path, C# method, scopes, allowed key kinds, retry policy and Node/Go dedicated-method parity.
 
@@ -36,7 +36,7 @@ The complete operation-level coverage matrix is [api-coverage.csv](api-coverage.
 
 ## Scope and comparisons
 
-- The [official API reference](https://kirora.io/docs/api/reference) advertises 169 endpoints in 22 areas. The migrated immutable specification contains 184 operations in 25 tags. This SDK follows the pinned specification; there are no invented Groups aliases or undocumented transactional detail paths.
+- The [official API reference](https://kirora.io/docs/api/reference) describes the API; this coverage audit uses the immutable specification, containing 184 operations in 25 tags. This SDK follows the pinned specification; there are no invented Groups aliases or undocumented transactional detail paths.
 - [Node SDK](https://github.com/kiroratech/kirora-node/tree/d67052f245ce9e75225dc9784fb3da6b06a51819) and [Go SDK](https://github.com/kiroratech/kirora-go/tree/1ddaa306374060360d146a60aedda175118e4141) select the same 49 dedicated typed operations. Their generic request helpers can access other endpoints, which is distinct from dedicated typed resource coverage. These inspected SDK revisions pin the previous specification, so their parity columns are historical.
 - Events exposes ingestion, event history, catalog, standard names, summary and time series. Reports exposes overview, transactional delivery, campaign comparison, funnel and RFM summary; ConversionGoals exposes conversion metrics. No extra Analytics URL prefix has been invented.
 - Message CSV exports stream to caller-owned destinations; partial stream failures are not automatically retried. Assets.UploadAsync uses the documented multipart file/name fields, MIME types, maximum byte size and stable per-call idempotency.

@@ -15,7 +15,7 @@ public sealed class OpenApiMigrationTests
 {
     public static IEnumerable<object[]> ChangedSchemas()
     {
-        var report = JsonNode.Parse(File.ReadAllText(Path.Combine(AppContext.BaseDirectory, "Fixtures/migration-api-changes.json")))!;
+        var report = JsonNode.Parse(File.ReadAllText(Path.Combine(AppContext.BaseDirectory, "Fixtures/migration-20261103-api-changes.json")))!;
         return report["structurallyChangedSchemas"]!.AsArray().Select(n => new object[] { n!.GetValue<string>() });
     }
 
@@ -42,50 +42,37 @@ public sealed class OpenApiMigrationTests
     }
 
     [Theory]
-    [InlineData("\"all\"")]
-    [InlineData("{\"first\":[\"email\",\"push\"]}")]
-    [InlineData("{\"first\":[\"push\",\"email\"]}")]
-    public void DeliveryUnionRoundTripsTheDocumentedShapes(string json)
-    {
-        var value = JsonSerializer.Deserialize<TransactionalDeliverInput>(json, Json)!;
-        Assert.True(JsonNode.DeepEquals(JsonNode.Parse(json), JsonNode.Parse(JsonSerializer.Serialize(value, Json))));
-    }
-
-    [Theory]
-    [InlineData("\"first\"")]
-    [InlineData("{\"first\":[]}")]
-    [InlineData("{\"first\":[\"sms\"]}")]
-    [InlineData("null")]
-    public async Task InvalidDeliveryIsRejectedBeforeSending(string json)
+    [InlineData("[\"email\"]")]
+    [InlineData("[\"email\",\"push\"]")]
+    [InlineData("[\"push\",\"email\"]")]
+    public async Task FallbackOrderPreservesPriorityAndOmitsRemovedDeliver(string json)
     {
         var node = Fixture("sendTransactionalMessage")["request"]!.DeepClone();
-        node["deliver"] = JsonNode.Parse(json);
-        using var handler = new Handler((_, _) => throw new InvalidOperationException("Must not send"));
-        using var http = new HttpClient(handler);
-        // Invalid union values fail deserialization, or required/null validation before HTTP.
-        await Assert.ThrowsAnyAsync<ArgumentException>(async () =>
-        {
-            SendTransactionalInput body;
-            try { body = node.Deserialize<SendTransactionalInput>(Json)!; }
-            catch (JsonException e) { throw new ArgumentException("Invalid union", e); }
-            await new KiroraClient(http, Options()).Transactional.SendAsync(body);
-        });
-        Assert.Equal(0, handler.Calls);
-    }
-
-    [Fact]
-    public async Task TypedDeliveryPriorityPreservesItsOrderOnTheWire()
-    {
-        var node = Fixture("sendTransactionalMessage")["request"]!.DeepClone();
-        node["deliver"] = new JsonObject { ["first"] = new JsonArray("push", "email") };
+        node["fallbackOrder"] = JsonNode.Parse(json);
+        if (json.Contains("push", StringComparison.Ordinal)) node["push"] = new JsonObject { ["title"] = "SDK", ["body"] = "Contract test" };
         using var handler = new Handler(async (request, token) =>
         {
             var sent = JsonNode.Parse(await request.Content!.ReadAsStringAsync(token))!;
-            Assert.True(JsonNode.DeepEquals(node["deliver"], sent["deliver"]));
+            Assert.True(JsonNode.DeepEquals(node["fallbackOrder"], sent["fallbackOrder"]));
+            Assert.False(sent.AsObject().ContainsKey("deliver"));
             return Success(Fixture("sendTransactionalMessage"));
         });
         using var http = new HttpClient(handler);
         await new KiroraClient(http, Options()).Transactional.SendAsync(node.Deserialize<SendTransactionalInput>(Json)!);
+    }
+
+    [Theory]
+    [InlineData("[]")]
+    [InlineData("[\"sms\"]")]
+    [InlineData("null")]
+    public async Task InvalidFallbackOrderIsRejectedBeforeSending(string json)
+    {
+        var node = Fixture("sendTransactionalMessage")["request"]!.DeepClone();
+        node["fallbackOrder"] = JsonNode.Parse(json);
+        using var handler = new Handler((_, _) => throw new InvalidOperationException("Must not send"));
+        using var http = new HttpClient(handler);
+        await Assert.ThrowsAnyAsync<ArgumentException>(() => new KiroraClient(http, Options()).Transactional.SendAsync(node.Deserialize<SendTransactionalInput>(Json)!));
+        Assert.Equal(0, handler.Calls);
     }
 
     [Theory]

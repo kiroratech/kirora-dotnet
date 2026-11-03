@@ -6,3 +6,4 @@ python3 tools/generate-core.py --check
 python3 tools/generate-core-fixtures.py --check
 python3 tools/generate-endpoint-invoker.py --check
 python3 tools/generate-coverage.py --check
+python3 tools/check-readme.py

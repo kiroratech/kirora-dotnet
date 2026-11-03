@@ -37,6 +37,7 @@ jobs:
           python tools/generate-core-fixtures.py --check
           python tools/generate-endpoint-invoker.py --check
           python tools/generate-coverage.py --check
+          python tools/check-readme.py
       - run: dotnet restore --locked-mode
       - run: dotnet build --configuration Release --no-restore
       - run: dotnet test --configuration Release --no-build --logger "trx;LogFileName=ci.trx"
