@@ -482,3 +482,18 @@ Staging verification must use the new local package rather than a stale same-ver
 ## Staging-source validation
 
 The isolated migration build passes with zero warnings/errors. All 1,656 SDK tests and 27 offline integration-gate/safety tests pass (1,683 total); five live tests are skipped with both opt-ins disabled. The two initial new-test failures were corrected: the first official create example is HTML, so the legacy-design case must select the design example; timestamp round trips use semantic comparison rather than literal formatting. All README snippets match buildable sources. No API request was sent. Final package, SourceLink and consumer checks are recorded separately after application to the branch.
+
+## Final branch validation
+
+Branch: `codex/update-openapi-80060d50`, based on `origin/main` at `630160cba3f1403ea5a34ba7e76f9f02f3caa83c`. Main was not modified. The pinned upstream commit is `80060d50bfa80f3c82b89a363a229c5b1c39506a`. Coverage remains 184/184 operations.
+
+- Locked restore and Release build passed with zero warnings/errors.
+- 1,683 .NET tests passed; five live integration tests skipped. Seven upstream comparison Python tests passed.
+- Generated models, fixtures, operation coverage, all four README examples, and exact public API snapshots passed consistency checks. Historical snapshots remain intact; documented removals are enforced rather than suppressed.
+- Package creation/validation, independent .NET 8 local-package consumer, SourceLink mapping checks, and byte-identical DLL/PDB reproducibility checks passed. SourceLink points at a local unpublished commit; remote source availability requires a separately approved push.
+- Dependency audit reported no vulnerable direct/transitive packages across seven projects. Repository audit found zero unexplained credentials and zero tracked/reachable build artifacts; reviewed upstream examples are explicitly accounted for. No Playground files are packaged or tracked. Workflow actionlint checks passed.
+- Native AOT publish and executable smoke passed on `osx-x64`, using fake HTTP only. The toolchain reported framework warning IL3000 in System.Net.Quic and Apple's deprecated `-ld_classic` linker flag. This verifies the smoke scenario on this platform, not all platforms or live API behavior.
+
+Validation logs and machine-readable results are local ignored files under `artifacts/openapi-20261103-validation/`. No live API calls, remote pushes, releases, or NuGet publication occurred.
+
+The branch is ready for review and another separately authorized staging verification. Rebuild/refresh the local NuGet consumer cache before testing because the candidate version remains `0.1.0-alpha.1`. Adapt callers using the breaking model members listed above, configure the approved staging base URL, and begin with an authorized read-only authentication check. Mutations and message recipients require separate explicit authorization. Public release remains blocked on maintainer license/ownership decisions and publication approval.
