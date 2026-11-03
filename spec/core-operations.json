@@ -2110,7 +2110,7 @@
     "key": false,
     "entries": null,
     "paths": [],
-    "summary": "Render blocks to email HTML",
+    "summary": "Render a design or HTML",
     "methodName": "RenderContent",
     "multipart": false,
     "csv": false

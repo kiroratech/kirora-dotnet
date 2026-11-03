@@ -2136,7 +2136,7 @@
     "message.skipped": {
       "post": {
         "summary": "message.skipped",
-        "description": "A guard stopped it before sending: no consent, a suppressed address, no device, a message limit, a suspended workspace, or a cancel. It also ends a transactional `deliver.first` fallback the first channel made unnecessary (`fallback_not_needed`), which is not a failure. `message.skip.reason` says which. Reconcile with `GET /v1/messages/{id}`.",
+        "description": "A guard stopped it before sending: no consent, a suppressed address, no device, a message limit, a suspended workspace, or a cancel. It also ends a transactional `fallbackOrder` fallback the first channel made unnecessary (`fallback_not_needed`), which is not a failure. `message.skip.reason` says which. Reconcile with `GET /v1/messages/{id}`.",
         "x-subscribable": true,
         "parameters": [
           {
@@ -2828,40 +2828,19 @@
             "description": "How to compare. Text comparisons (`equals`, `notEquals`, `contains`, `notContains`, `startsWith`, `in`) ignore case and accents (\"jose\" matches \"José\"). `notEquals` and `notContains` also match contacts without the value. Date operators (`before`, `after`, `withinLastDays`, `moreThanDaysAgo`) compare as dates and times in UTC: a stored ISO-8601 date is the start of that day, `before` means earlier than the given day and `after` later than it, and a value that is not an ISO-8601 date or date and time never matches. `inNextDays` is a date from today to that many days ahead. `anniversaryInNextDays` (0 = today) and `anniversaryThisMonth` ignore the year, so they suit birthdays, and also read a yearless `--MM-DD`; a 29 February counts on 28 February in other years. Days are UTC days; these three are for attributes and dates, not contact fields."
           },
           "value": {
-            "description": "What to compare with; its type depends on `operator`. Omit for `exists`, `notExists` and `anniversaryThisMonth`; an array of up to 100 for `in`; an ISO date for `before` and `after`; a number of days (up to 3650) for `withinLastDays`, `moreThanDaysAgo` and `inNextDays`, and 0 to 365 for `anniversaryInNextDays`.",
-            "anyOf": [
-              {
-                "anyOf": [
-                  {
-                    "type": "string",
-                    "maxLength": 255
-                  },
-                  {
-                    "type": "number"
-                  },
-                  {
-                    "type": "boolean"
-                  }
-                ]
-              },
-              {
-                "type": "array",
-                "items": {
-                  "anyOf": [
-                    {
-                      "type": "string",
-                      "maxLength": 255
-                    },
-                    {
-                      "type": "number"
-                    },
-                    {
-                      "type": "boolean"
-                    }
-                  ]
-                }
-              }
-            ]
+            "description": "What to compare with, always as text: `\"pro\"`, `\"3\"`, `\"true\"`. Equality compares the stored value as text, so a stored 5 matches `\"5\"`. An ISO date for `before` and `after`; a number for `gt`, `gte`, `lt` and `lte`; a whole number of days (1 to 3650) for `withinLastDays`, `moreThanDaysAgo` and `inNextDays`, and 0 to 365 for `anniversaryInNextDays`. Omit for `in`, `exists`, `notExists` and `anniversaryThisMonth`.",
+            "type": "string",
+            "maxLength": 255
+          },
+          "values": {
+            "description": "For `in` only: up to 100 values, each as text, any of which matches.",
+            "minItems": 1,
+            "maxItems": 100,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "maxLength": 255
+            }
           }
         },
         "required": [
@@ -2901,7 +2880,7 @@
               "lastPurchasedAt",
               "createdAt"
             ],
-            "description": "The contact column to test. Each takes these operators, and is refused with others: `email`: equals, notEquals, contains, startsWith, exists, notExists, in; `firstName`: equals, notEquals, contains, startsWith, exists, notExists, in; `lastName`: equals, notEquals, contains, startsWith, exists, notExists, in; `phone`: equals, notEquals, contains, startsWith, exists, notExists, in; `timezone`: equals, notEquals, contains, startsWith, exists, notExists, in; `externalId`: equals, notEquals, contains, startsWith, exists, notExists, in; `consent.email`: equals; `consent.push`: equals; `country`: equals, notEquals, in, exists, notExists; `locale`: equals, notEquals, startsWith, in, exists, notExists; `rfmGroup`: equals, notEquals, in, exists, notExists; `rfmRecency`: equals, notEquals, in, exists, notExists, gt, gte, lt, lte; `rfmFrequency`: equals, notEquals, in, exists, notExists, gt, gte, lt, lte; `rfmMonetary`: equals, notEquals, in, exists, notExists, gt, gte, lt, lte; `purchaseCount`: equals, gt, gte, lt, lte; `totalSpent`: equals, gt, gte, lt, lte; `lastPurchasedAt`: before, after, withinLastDays, moreThanDaysAgo, exists, notExists; `createdAt`: before, after, withinLastDays, moreThanDaysAgo. `phone` holds +country numbers: write `equals`, `notEquals` and `in` values with their country code. Consent takes `true` or `false`.\n\nPurchases: `purchaseCount`, `totalSpent` (in the main currency) and `lastPurchasedAt` are a customer's totals of the workspace's purchase event (`purchaseEvent` in workspace settings: an order, a paid invoice, a booking), recomputed daily; the contact's stored `totalSpent` is null when the workspace's purchases carry no amount. In comparisons on `purchaseCount` and `totalSpent` a missing count or spend is 0, so someone who never purchased has 0 purchases and 0 spent.\n\nRFM: `rfmGroup` and its scores `rfmRecency`, `rfmFrequency` and `rfmMonetary` (monetary value: how much they spend) come from the same daily pass. A score is a whole number from 1 to 5 (an array of them for `in`), 5 being the most recent, most frequent or highest spending; any other value is refused with 400. Someone who never purchased has no `rfmGroup` or scores: on those four fields they match only `notExists` and `notEquals`. So `rfmRecency` `notEquals` 5 includes everyone who never purchased; add an `exists` rule on the same field to leave them out (bought, but not recently)."
+            "description": "The contact column to test. Each takes these operators, and is refused with others: `email`: equals, notEquals, contains, startsWith, exists, notExists, in; `firstName`: equals, notEquals, contains, startsWith, exists, notExists, in; `lastName`: equals, notEquals, contains, startsWith, exists, notExists, in; `phone`: equals, notEquals, contains, startsWith, exists, notExists, in; `timezone`: equals, notEquals, contains, startsWith, exists, notExists, in; `externalId`: equals, notEquals, contains, startsWith, exists, notExists, in; `consent.email`: equals; `consent.push`: equals; `country`: equals, notEquals, in, exists, notExists; `locale`: equals, notEquals, startsWith, in, exists, notExists; `rfmGroup`: equals, notEquals, in, exists, notExists; `rfmRecency`: equals, notEquals, in, exists, notExists, gt, gte, lt, lte; `rfmFrequency`: equals, notEquals, in, exists, notExists, gt, gte, lt, lte; `rfmMonetary`: equals, notEquals, in, exists, notExists, gt, gte, lt, lte; `purchaseCount`: equals, gt, gte, lt, lte; `totalSpent`: equals, gt, gte, lt, lte; `lastPurchasedAt`: before, after, withinLastDays, moreThanDaysAgo, exists, notExists; `createdAt`: before, after, withinLastDays, moreThanDaysAgo. `phone` holds +country numbers: write `equals`, `notEquals` and `in` values with their country code. Consent takes `\"true\"` or `\"false\"`.\n\nPurchases: `purchaseCount`, `totalSpent` (in the main currency) and `lastPurchasedAt` are a customer's totals of the workspace's purchase event (`purchaseEvent` in workspace settings: an order, a paid invoice, a booking), recomputed daily; the contact's stored `totalSpent` is null when the workspace's purchases carry no amount. In comparisons on `purchaseCount` and `totalSpent` a missing count or spend is 0, so someone who never purchased has 0 purchases and 0 spent.\n\nRFM: `rfmGroup` and its scores `rfmRecency`, `rfmFrequency` and `rfmMonetary` (monetary value: how much they spend) come from the same daily pass. A score is a whole number from 1 to 5, written as text (`\"5\"`; `values` of them for `in`), 5 being the most recent, most frequent or highest spending; any other value is refused with 400. Someone who never purchased has no `rfmGroup` or scores: on those four fields they match only `notExists` and `notEquals`. So `rfmRecency` `notEquals` 5 includes everyone who never purchased; add an `exists` rule on the same field to leave them out (bought, but not recently)."
           },
           "operator": {
             "type": "string",
@@ -2929,40 +2908,19 @@
             "description": "How to compare. Text comparisons (`equals`, `notEquals`, `contains`, `notContains`, `startsWith`, `in`) ignore case and accents (\"jose\" matches \"José\"). `notEquals` and `notContains` also match contacts without the value. Date operators (`before`, `after`, `withinLastDays`, `moreThanDaysAgo`) compare as dates and times in UTC: a stored ISO-8601 date is the start of that day, `before` means earlier than the given day and `after` later than it, and a value that is not an ISO-8601 date or date and time never matches. `inNextDays` is a date from today to that many days ahead. `anniversaryInNextDays` (0 = today) and `anniversaryThisMonth` ignore the year, so they suit birthdays, and also read a yearless `--MM-DD`; a 29 February counts on 28 February in other years. Days are UTC days; these three are for attributes and dates, not contact fields."
           },
           "value": {
-            "description": "What to compare with; its type depends on `operator`. Omit for `exists`, `notExists` and `anniversaryThisMonth`; an array of up to 100 for `in`; an ISO date for `before` and `after`; a number of days (up to 3650) for `withinLastDays`, `moreThanDaysAgo` and `inNextDays`, and 0 to 365 for `anniversaryInNextDays`.",
-            "anyOf": [
-              {
-                "anyOf": [
-                  {
-                    "type": "string",
-                    "maxLength": 255
-                  },
-                  {
-                    "type": "number"
-                  },
-                  {
-                    "type": "boolean"
-                  }
-                ]
-              },
-              {
-                "type": "array",
-                "items": {
-                  "anyOf": [
-                    {
-                      "type": "string",
-                      "maxLength": 255
-                    },
-                    {
-                      "type": "number"
-                    },
-                    {
-                      "type": "boolean"
-                    }
-                  ]
-                }
-              }
-            ]
+            "description": "What to compare with, always as text: `\"pro\"`, `\"3\"`, `\"true\"`. Equality compares the stored value as text, so a stored 5 matches `\"5\"`. An ISO date for `before` and `after`; a number for `gt`, `gte`, `lt` and `lte`; a whole number of days (1 to 3650) for `withinLastDays`, `moreThanDaysAgo` and `inNextDays`, and 0 to 365 for `anniversaryInNextDays`. Omit for `in`, `exists`, `notExists` and `anniversaryThisMonth`.",
+            "type": "string",
+            "maxLength": 255
+          },
+          "values": {
+            "description": "For `in` only: up to 100 values, each as text, any of which matches.",
+            "minItems": 1,
+            "maxItems": 100,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "maxLength": 255
+            }
           }
         },
         "required": [
@@ -2987,7 +2945,7 @@
             "description": "The event name."
           },
           "withinDays": {
-            "description": "Only events in the last this many days.",
+            "description": "Only events from the last `withinDays` days.",
             "type": "integer",
             "exclusiveMinimum": 0,
             "maximum": 3650
@@ -3055,19 +3013,9 @@
                   "description": "`notEquals` also matches an event without the property. `equals` and `notEquals` ignore case and accents in text. The date operators read the property as a date, as attribute conditions do: UTC days, an ISO-8601 date is the start of that day, and a property that is missing or not an ISO-8601 date or date and time never matches. They read the property's own date; `withinDays` limits when the event happened. Membership moves with the calendar: a contact enters when the date comes into range, with no new event, and a journey triggered by entering the segment then starts for them."
                 },
                 "value": {
-                  "anyOf": [
-                    {
-                      "type": "string",
-                      "maxLength": 255
-                    },
-                    {
-                      "type": "number"
-                    },
-                    {
-                      "type": "boolean"
-                    }
-                  ],
-                  "description": "What to compare with: an ISO date for `before` and `after`; a whole number of days, 1 to 3650, for `withinLastDays`, `moreThanDaysAgo` and `inNextDays`."
+                  "type": "string",
+                  "maxLength": 255,
+                  "description": "What to compare with, as text: as for the other operators, an ISO date for `before` and `after`, and a whole number of days, `\"1\"` to `\"3650\"`, for `withinLastDays`, `moreThanDaysAgo` and `inNextDays`."
                 }
               },
               "required": [
@@ -3161,7 +3109,7 @@
             "pattern": "^[a-z0-9][a-z0-9_-]{0,63}$"
           },
           "withinDays": {
-            "description": "Only activity in the last this many days. For `notOpened` and `notClicked` it is a waiting time instead: only messages sent at least this many days ago count, so each has had that long to be opened or clicked.",
+            "description": "Only activity from the last `withinDays` days. For `notOpened` and `notClicked` it is a waiting time instead: only messages sent at least this many days ago count, so each has had that long to be opened or clicked.",
             "type": "integer",
             "exclusiveMinimum": 0,
             "maximum": 3650
@@ -5660,9 +5608,46 @@
         },
         "additionalProperties": false
       },
-      "TemplateSnapshotInput": {
+      "HtmlSnapshotInput": {
         "type": "object",
         "properties": {
+          "kind": {
+            "type": "string",
+            "const": "html",
+            "description": "`html`: the whole email written as HTML."
+          },
+          "html": {
+            "type": "string",
+            "maxLength": 512000,
+            "description": "The whole email as HTML. Merge tags work as in a design; `{{unsubscribe_url}}` as a link's href places the unsubscribe link, which marketing sends otherwise get below the email, with the workspace postal address when the email does not show it."
+          },
+          "plainTextOverride": {
+            "description": "Plain text sent instead of the version generated from the HTML.",
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 100000
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "kind",
+          "html"
+        ],
+        "additionalProperties": false
+      },
+      "DesignSnapshotInput": {
+        "type": "object",
+        "properties": {
+          "kind": {
+            "description": "`design`: built from blocks. Left out, `design`.",
+            "type": "string",
+            "const": "design"
+          },
           "schemaVersion": {
             "type": "integer",
             "exclusiveMinimum": 0,
@@ -5707,13 +5692,24 @@
         ],
         "additionalProperties": false
       },
-      "CreateTemplateInput": {
+      "TemplateSnapshotInput": {
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/DesignSnapshotInput"
+          },
+          {
+            "$ref": "#/components/schemas/HtmlSnapshotInput"
+          }
+        ],
+        "description": "The email: a design, or HTML. Copied from a template, or written here; later template edits do not change it."
+      },
+      "CreateDesignTemplateInput": {
         "type": "object",
         "properties": {
-          "name": {
+          "kind": {
+            "description": "`design`: built from blocks in the designer. Left out, `design`.",
             "type": "string",
-            "minLength": 1,
-            "maxLength": 255
+            "const": "design"
           },
           "schemaVersion": {
             "default": 1,
@@ -5741,8 +5737,13 @@
             "type": "string",
             "maxLength": 35
           },
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 255
+          },
           "plainTextOverride": {
-            "description": "Plain text sent instead of the version generated from the blocks; `null` clears it.",
+            "description": "Plain text sent instead of the version generated from the design or HTML; `null` clears it.",
             "anyOf": [
               {
                 "type": "string",
@@ -5837,10 +5838,140 @@
           }
         },
         "required": [
-          "name",
-          "blocks"
+          "blocks",
+          "name"
         ],
         "additionalProperties": false
+      },
+      "CreateHtmlTemplateInput": {
+        "type": "object",
+        "properties": {
+          "kind": {
+            "type": "string",
+            "const": "html",
+            "description": "`html`: the whole email written as HTML, kept as code."
+          },
+          "html": {
+            "type": "string",
+            "maxLength": 512000,
+            "description": "The whole email as HTML. Merge tags work as in a design; `{{unsubscribe_url}}` as a link's href places the unsubscribe link, which marketing sends otherwise get below the email, with the workspace postal address when the email does not show it."
+          },
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 255
+          },
+          "plainTextOverride": {
+            "description": "Plain text sent instead of the version generated from the design or HTML; `null` clears it.",
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 100000
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "transactionalDefaults": {
+            "description": "The subject, preview text and sender a transactional send of this template uses unless the send gives its own; campaigns and journeys set their own. A field left out stays as it is; `null` clears it.",
+            "type": "object",
+            "properties": {
+              "subject": {
+                "description": "Merge tags may read `event.properties.*`.",
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 998
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "previewText": {
+                "description": "Merge tags may read `event.properties.*`.",
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 255
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "from": {
+                "description": "One address, optionally with a display name; its domain must be verified when a send uses it.",
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 320,
+                    "description": "One email address, optionally with a display name. The domain may be internationalised; the part before the @ must be ASCII."
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "replyTo": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "maxLength": 320,
+                    "format": "email"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              }
+            },
+            "additionalProperties": false
+          },
+          "alias": {
+            "description": "Unique in the workspace; a transactional send may name the template by it in `email.template`. Null clears it.",
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 64,
+                "pattern": "^[a-z0-9]+(?:[-_][a-z0-9]+)*$"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "tags": {
+            "description": "Tag names, up to 20, matched without case; a tag the workspace lacks is created. On update, replaces the tags whole: `[]` removes them all.",
+            "maxItems": 20,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 64
+            }
+          }
+        },
+        "required": [
+          "kind",
+          "html",
+          "name"
+        ],
+        "additionalProperties": false
+      },
+      "CreateTemplateInput": {
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/CreateDesignTemplateInput"
+          },
+          {
+            "$ref": "#/components/schemas/CreateHtmlTemplateInput"
+          }
+        ]
       },
       "UpdateTemplateInput": {
         "type": "object",
@@ -5851,31 +5982,36 @@
             "maxLength": 255
           },
           "schemaVersion": {
-            "description": "The block format version.",
+            "description": "The block format version. A design only.",
             "type": "integer",
             "exclusiveMinimum": 0,
             "maximum": 1000
           },
           "blocks": {
+            "description": "The blocks. A design only.",
             "minItems": 1,
             "maxItems": 200,
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/EmailBlockInput"
-            },
-            "description": "The blocks, rendered top to bottom: at most 200 across the whole tree and five levels including the root. The footer stays at the root."
+            }
           },
           "theme": {
-            "description": "Theme values this email overrides.",
+            "description": "Theme values this email overrides. A design only.",
             "$ref": "#/components/schemas/EmailThemeInput"
           },
           "language": {
-            "description": "The language the email is written in, as a BCP 47 tag (\"en\", \"fr-BE\", \"ar\"). It sets the HTML `lang` and the reading direction: Arabic, Hebrew, Persian, Urdu and other right-to-left languages render right to left. Defaults to \"en\".",
+            "description": "The email's language. A design only: an HTML template's `<html lang>` says it.",
             "type": "string",
             "maxLength": 35
           },
+          "html": {
+            "description": "The whole email. An HTML template only: the kind never changes.",
+            "type": "string",
+            "maxLength": 512000
+          },
           "plainTextOverride": {
-            "description": "Plain text sent instead of the version generated from the blocks; `null` clears it.",
+            "description": "Plain text sent instead of the version generated from the design or HTML; `null` clears it.",
             "anyOf": [
               {
                 "type": "string",
@@ -5989,9 +6125,14 @@
         },
         "additionalProperties": false
       },
-      "RenderTemplateContentInput": {
+      "RenderDesignContentInput": {
         "type": "object",
         "properties": {
+          "kind": {
+            "description": "`design`: built from blocks in the designer. Left out, `design`.",
+            "type": "string",
+            "const": "design"
+          },
           "schemaVersion": {
             "description": "The block format version.",
             "type": "integer",
@@ -6018,7 +6159,7 @@
             "maxLength": 35
           },
           "plainTextOverride": {
-            "description": "Plain text used instead of the version generated from the blocks.",
+            "description": "Plain text used instead of the version generated from the design or HTML.",
             "anyOf": [
               {
                 "type": "string",
@@ -6054,25 +6195,88 @@
         ],
         "additionalProperties": false
       },
-      "RenderTemplateInput": {
+      "RenderHtmlContentInput": {
         "type": "object",
         "properties": {
-          "version": {
-            "default": "published",
-            "description": "`published` (the default): what sends use, with the brand and shared blocks it was published with. `draft`: the template as it is now, in the current brand and shared blocks. A number: that published version.",
+          "kind": {
+            "type": "string",
+            "const": "html",
+            "description": "`html`: the whole email written as HTML, kept as code."
+          },
+          "html": {
+            "type": "string",
+            "maxLength": 512000,
+            "description": "The whole email as HTML. Merge tags work as in a design; `{{unsubscribe_url}}` as a link's href places the unsubscribe link, which marketing sends otherwise get below the email, with the workspace postal address when the email does not show it."
+          },
+          "context": {
+            "default": "transactional",
+            "description": "HTML only. `marketing`: the email as a marketing send has it, with the postal address and an unsubscribe link (`{{unsubscribe_url}}`; `#` in a test send) added below when the HTML does not show them. `transactional` (the default): nothing is added, as a transactional send adds nothing, and the HTML is as saving keeps it.",
+            "type": "string",
+            "enum": [
+              "marketing",
+              "transactional"
+            ]
+          },
+          "plainTextOverride": {
+            "description": "Plain text used instead of the version generated from the design or HTML.",
             "anyOf": [
               {
                 "type": "string",
-                "enum": [
-                  "published",
-                  "draft"
-                ]
+                "maxLength": 100000
               },
               {
-                "type": "integer",
-                "exclusiveMinimum": 0
+                "type": "null"
               }
             ]
+          },
+          "contact": {
+            "description": "A contact whose values fill the merge tags and decide each block's `visibleIf`. Without one, merge tags show their defaults.",
+            "$ref": "#/components/schemas/ContactIdentifierInput"
+          },
+          "subject": {
+            "description": "The subject line, returned rendered.",
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 998
+          },
+          "data": {
+            "description": "Sample data for `{{ event.properties.* }}` tags and repeat lists: what a transactional send's `data` or a journey's event would carry. Without it, a repeat shows once with its item tags as written.",
+            "type": "object",
+            "propertyNames": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9_-]{1,64}$"
+            },
+            "additionalProperties": {}
+          }
+        },
+        "required": [
+          "kind",
+          "html"
+        ],
+        "additionalProperties": false
+      },
+      "RenderTemplateContentInput": {
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/RenderDesignContentInput"
+          },
+          {
+            "$ref": "#/components/schemas/RenderHtmlContentInput"
+          }
+        ]
+      },
+      "RenderTemplateInput": {
+        "type": "object",
+        "properties": {
+          "draft": {
+            "default": false,
+            "description": "`true`: the template as it is now, in the current brand and shared blocks. Left out, the published version: what sends use, with the brand and shared blocks it was published with.",
+            "type": "boolean"
+          },
+          "version": {
+            "description": "A published version to render instead of the current one.",
+            "type": "integer",
+            "exclusiveMinimum": 0
           },
           "contact": {
             "description": "A contact whose values fill the merge tags and decide each block's `visibleIf`. Without one, merge tags show their defaults.",
@@ -6086,13 +6290,27 @@
               "pattern": "^[A-Za-z0-9_-]{1,64}$"
             },
             "additionalProperties": {}
+          },
+          "context": {
+            "default": "transactional",
+            "description": "HTML only. `marketing`: the email as a marketing send has it, with the postal address and an unsubscribe link (`{{unsubscribe_url}}`; `#` in a test send) added below when the HTML does not show them. `transactional` (the default): nothing is added, as a transactional send adds nothing, and the HTML is as saving keeps it.",
+            "type": "string",
+            "enum": [
+              "marketing",
+              "transactional"
+            ]
           }
         },
         "additionalProperties": false
       },
-      "SendTemplateTestInput": {
+      "SendDesignTemplateTestInput": {
         "type": "object",
         "properties": {
+          "kind": {
+            "description": "`design`: built from blocks in the designer. Left out, `design`.",
+            "type": "string",
+            "const": "design"
+          },
           "schemaVersion": {
             "description": "The block format version.",
             "type": "integer",
@@ -6119,7 +6337,7 @@
             "maxLength": 35
           },
           "plainTextOverride": {
-            "description": "Plain text used instead of the version generated from the blocks.",
+            "description": "Plain text used instead of the version generated from the design or HTML.",
             "anyOf": [
               {
                 "type": "string",
@@ -6168,6 +6386,90 @@
           "to"
         ],
         "additionalProperties": false
+      },
+      "SendHtmlTemplateTestInput": {
+        "type": "object",
+        "properties": {
+          "kind": {
+            "type": "string",
+            "const": "html",
+            "description": "`html`: the whole email written as HTML, kept as code."
+          },
+          "html": {
+            "type": "string",
+            "maxLength": 512000,
+            "description": "The whole email as HTML. Merge tags work as in a design; `{{unsubscribe_url}}` as a link's href places the unsubscribe link, which marketing sends otherwise get below the email, with the workspace postal address when the email does not show it."
+          },
+          "context": {
+            "default": "transactional",
+            "description": "HTML only. `marketing`: the email as a marketing send has it, with the postal address and an unsubscribe link (`{{unsubscribe_url}}`; `#` in a test send) added below when the HTML does not show them. `transactional` (the default): nothing is added, as a transactional send adds nothing, and the HTML is as saving keeps it.",
+            "type": "string",
+            "enum": [
+              "marketing",
+              "transactional"
+            ]
+          },
+          "plainTextOverride": {
+            "description": "Plain text used instead of the version generated from the design or HTML.",
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 100000
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "contact": {
+            "description": "A contact whose values fill the merge tags and decide each block's `visibleIf`. Without one, merge tags show their defaults.",
+            "$ref": "#/components/schemas/ContactIdentifierInput"
+          },
+          "subject": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 998,
+            "description": "The subject line."
+          },
+          "data": {
+            "description": "Sample data for `{{ event.properties.* }}` tags and repeat lists: what a transactional send's `data` or a journey's event would carry. Without it, a repeat shows once with its item tags as written.",
+            "type": "object",
+            "propertyNames": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9_-]{1,64}$"
+            },
+            "additionalProperties": {}
+          },
+          "from": {
+            "description": "The address the test comes from, on one of the workspace's verified domains; the workspace's default sender when omitted.",
+            "type": "string",
+            "maxLength": 320,
+            "format": "email"
+          },
+          "to": {
+            "type": "string",
+            "maxLength": 320,
+            "format": "email",
+            "description": "Where to send the test: any member of the workspace who has accepted their invitation."
+          }
+        },
+        "required": [
+          "kind",
+          "html",
+          "subject",
+          "to"
+        ],
+        "additionalProperties": false
+      },
+      "SendTemplateTestInput": {
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/SendDesignTemplateTestInput"
+          },
+          {
+            "$ref": "#/components/schemas/SendHtmlTemplateTestInput"
+          }
+        ]
       },
       "CampaignUtmInput": {
         "type": "object",
@@ -6301,21 +6603,12 @@
                     "lt",
                     "lte"
                   ],
-                  "description": "`notEquals` also matches an event without the property. `equals` and `notEquals` ignore case and accents in text."
+                  "description": "`notEquals` also matches an event without the property. `equals` and `notEquals` compare the property as text, ignoring case and accents."
                 },
                 "value": {
-                  "anyOf": [
-                    {
-                      "type": "string",
-                      "maxLength": 255
-                    },
-                    {
-                      "type": "number"
-                    },
-                    {
-                      "type": "boolean"
-                    }
-                  ]
+                  "type": "string",
+                  "maxLength": 255,
+                  "description": "What to compare with, as text (`\"pro\"`, `\"true\"`); a number (`\"50\"`) for `gt`, `gte`, `lt` and `lte`."
                 }
               },
               "required": [
@@ -8571,6 +8864,30 @@
         },
         "additionalProperties": false
       },
+      "TopicChoiceInput": {
+        "type": "object",
+        "properties": {
+          "subscribed": {
+            "description": "Join (true) or leave (false) the topic on every channel; it clears each channel's own choice.",
+            "type": "boolean"
+          },
+          "channels": {
+            "description": "One channel's choice each, applied after `subscribed`; a channel left out keeps its choice.",
+            "type": "object",
+            "propertyNames": {
+              "type": "string",
+              "enum": [
+                "email",
+                "push"
+              ]
+            },
+            "additionalProperties": {
+              "type": "boolean"
+            }
+          }
+        },
+        "additionalProperties": false
+      },
       "IdentifyContactInput": {
         "type": "object",
         "properties": {
@@ -8690,33 +9007,14 @@
             "$ref": "#/components/schemas/SetContactConsentInput"
           },
           "topics": {
-            "description": "Topic choices keyed by topic id, at most 50, as `PUT /v1/contacts/{id}/topics/{topicId}` sets them: `true` or `false` for every channel, or `{ \"email\": …, \"push\": … }` per channel. Each change is recorded in consent changes with this request; an unknown topic id refuses the whole write with `VALIDATION_ERROR` at `topics.<id>`.",
+            "description": "Topic choices keyed by topic id, at most 50, as `PUT /v1/contacts/{id}/topics/{topicId}` sets them: `{ \"subscribed\": true }` for every channel, or `{ \"channels\": { \"email\": … } }` per channel. Each change is recorded in consent changes with this request; an unknown topic id refuses the whole write with `VALIDATION_ERROR` at `topics.<id>`.",
             "type": "object",
             "propertyNames": {
               "type": "string",
               "format": "uuid"
             },
             "additionalProperties": {
-              "anyOf": [
-                {
-                  "type": "boolean",
-                  "description": "Join (true) or leave (false) the topic on every channel."
-                },
-                {
-                  "type": "object",
-                  "propertyNames": {
-                    "type": "string",
-                    "enum": [
-                      "email",
-                      "push"
-                    ]
-                  },
-                  "additionalProperties": {
-                    "type": "boolean"
-                  },
-                  "description": "One channel's choice each; a channel left out keeps its choice."
-                }
-              ]
+              "$ref": "#/components/schemas/TopicChoiceInput"
             }
           },
           "lists": {
@@ -8977,21 +9275,12 @@
                         "lt",
                         "lte"
                       ],
-                      "description": "`notEquals` also matches an event without the property. `equals` and `notEquals` ignore case and accents in text."
+                      "description": "`notEquals` also matches an event without the property. `equals` and `notEquals` compare the property as text, ignoring case and accents."
                     },
                     "value": {
-                      "anyOf": [
-                        {
-                          "type": "string",
-                          "maxLength": 255
-                        },
-                        {
-                          "type": "number"
-                        },
-                        {
-                          "type": "boolean"
-                        }
-                      ]
+                      "type": "string",
+                      "maxLength": 255,
+                      "description": "What to compare with, as text (`\"pro\"`, `\"true\"`); a number (`\"50\"`) for `gt`, `gte`, `lt` and `lte`."
                     }
                   },
                   "required": [
@@ -9225,21 +9514,12 @@
                         "lt",
                         "lte"
                       ],
-                      "description": "`notEquals` also matches an event without the property. `equals` and `notEquals` ignore case and accents in text."
+                      "description": "`notEquals` also matches an event without the property. `equals` and `notEquals` compare the property as text, ignoring case and accents."
                     },
                     "value": {
-                      "anyOf": [
-                        {
-                          "type": "string",
-                          "maxLength": 255
-                        },
-                        {
-                          "type": "number"
-                        },
-                        {
-                          "type": "boolean"
-                        }
-                      ]
+                      "type": "string",
+                      "maxLength": 255,
+                      "description": "What to compare with, as text (`\"pro\"`, `\"true\"`); a number (`\"50\"`) for `gt`, `gte`, `lt` and `lte`."
                     }
                   },
                   "required": [
@@ -9340,21 +9620,12 @@
                         "lt",
                         "lte"
                       ],
-                      "description": "`notEquals` also matches an event without the property. `equals` and `notEquals` ignore case and accents in text."
+                      "description": "`notEquals` also matches an event without the property. `equals` and `notEquals` compare the property as text, ignoring case and accents."
                     },
                     "value": {
-                      "anyOf": [
-                        {
-                          "type": "string",
-                          "maxLength": 255
-                        },
-                        {
-                          "type": "number"
-                        },
-                        {
-                          "type": "boolean"
-                        }
-                      ]
+                      "type": "string",
+                      "maxLength": 255,
+                      "description": "What to compare with, as text (`\"pro\"`, `\"true\"`); a number (`\"50\"`) for `gt`, `gte`, `lt` and `lte`."
                     }
                   },
                   "required": [
@@ -9553,21 +9824,12 @@
                               "lt",
                               "lte"
                             ],
-                            "description": "`notEquals` also matches an event without the property. `equals` and `notEquals` ignore case and accents in text."
+                            "description": "`notEquals` also matches an event without the property. `equals` and `notEquals` compare the property as text, ignoring case and accents."
                           },
                           "value": {
-                            "anyOf": [
-                              {
-                                "type": "string",
-                                "maxLength": 255
-                              },
-                              {
-                                "type": "number"
-                              },
-                              {
-                                "type": "boolean"
-                              }
-                            ]
+                            "type": "string",
+                            "maxLength": 255,
+                            "description": "What to compare with, as text (`\"pro\"`, `\"true\"`); a number (`\"50\"`) for `gt`, `gte`, `lt` and `lte`."
                           }
                         },
                         "required": [
@@ -9782,21 +10044,12 @@
                                   "lt",
                                   "lte"
                                 ],
-                                "description": "`notEquals` also matches an event without the property. `equals` and `notEquals` ignore case and accents in text."
+                                "description": "`notEquals` also matches an event without the property. `equals` and `notEquals` compare the property as text, ignoring case and accents."
                               },
                               "value": {
-                                "anyOf": [
-                                  {
-                                    "type": "string",
-                                    "maxLength": 255
-                                  },
-                                  {
-                                    "type": "number"
-                                  },
-                                  {
-                                    "type": "boolean"
-                                  }
-                                ]
+                                "type": "string",
+                                "maxLength": 255,
+                                "description": "What to compare with, as text (`\"pro\"`, `\"true\"`); a number (`\"50\"`) for `gt`, `gte`, `lt` and `lte`."
                               }
                             },
                             "required": [
@@ -10645,21 +10898,12 @@
                               "lt",
                               "lte"
                             ],
-                            "description": "`notEquals` also matches an event without the property. `equals` and `notEquals` ignore case and accents in text."
+                            "description": "`notEquals` also matches an event without the property. `equals` and `notEquals` compare the property as text, ignoring case and accents."
                           },
                           "value": {
-                            "anyOf": [
-                              {
-                                "type": "string",
-                                "maxLength": 255
-                              },
-                              {
-                                "type": "number"
-                              },
-                              {
-                                "type": "boolean"
-                              }
-                            ]
+                            "type": "string",
+                            "maxLength": 255,
+                            "description": "What to compare with, as text (`\"pro\"`, `\"true\"`); a number (`\"50\"`) for `gt`, `gte`, `lt` and `lte`."
                           }
                         },
                         "required": [
@@ -11225,21 +11469,12 @@
                               "lt",
                               "lte"
                             ],
-                            "description": "`notEquals` also matches an event without the property. `equals` and `notEquals` ignore case and accents in text."
+                            "description": "`notEquals` also matches an event without the property. `equals` and `notEquals` compare the property as text, ignoring case and accents."
                           },
                           "value": {
-                            "anyOf": [
-                              {
-                                "type": "string",
-                                "maxLength": 255
-                              },
-                              {
-                                "type": "number"
-                              },
-                              {
-                                "type": "boolean"
-                              }
-                            ]
+                            "type": "string",
+                            "maxLength": 255,
+                            "description": "What to compare with, as text (`\"pro\"`, `\"true\"`); a number (`\"50\"`) for `gt`, `gte`, `lt` and `lte`."
                           }
                         },
                         "required": [
@@ -11454,21 +11689,12 @@
                                   "lt",
                                   "lte"
                                 ],
-                                "description": "`notEquals` also matches an event without the property. `equals` and `notEquals` ignore case and accents in text."
+                                "description": "`notEquals` also matches an event without the property. `equals` and `notEquals` compare the property as text, ignoring case and accents."
                               },
                               "value": {
-                                "anyOf": [
-                                  {
-                                    "type": "string",
-                                    "maxLength": 255
-                                  },
-                                  {
-                                    "type": "number"
-                                  },
-                                  {
-                                    "type": "boolean"
-                                  }
-                                ]
+                                "type": "string",
+                                "maxLength": 255,
+                                "description": "What to compare with, as text (`\"pro\"`, `\"true\"`); a number (`\"50\"`) for `gt`, `gte`, `lt` and `lte`."
                               }
                             },
                             "required": [
@@ -12317,21 +12543,12 @@
                               "lt",
                               "lte"
                             ],
-                            "description": "`notEquals` also matches an event without the property. `equals` and `notEquals` ignore case and accents in text."
+                            "description": "`notEquals` also matches an event without the property. `equals` and `notEquals` compare the property as text, ignoring case and accents."
                           },
                           "value": {
-                            "anyOf": [
-                              {
-                                "type": "string",
-                                "maxLength": 255
-                              },
-                              {
-                                "type": "number"
-                              },
-                              {
-                                "type": "boolean"
-                              }
-                            ]
+                            "type": "string",
+                            "maxLength": 255,
+                            "description": "What to compare with, as text (`\"pro\"`, `\"true\"`); a number (`\"50\"`) for `gt`, `gte`, `lt` and `lte`."
                           }
                         },
                         "required": [
@@ -13457,39 +13674,6 @@
         ],
         "additionalProperties": false
       },
-      "TransactionalDeliverFirstInput": {
-        "type": "object",
-        "properties": {
-          "first": {
-            "minItems": 1,
-            "type": "array",
-            "items": {
-              "type": "string",
-              "enum": [
-                "email",
-                "push"
-              ]
-            },
-            "description": "Every channel given, each once, in the order to try them. The first the contact can receive is sent; when sending it fails, it is skipped or it bounces, the next is sent."
-          }
-        },
-        "required": [
-          "first"
-        ],
-        "additionalProperties": false
-      },
-      "TransactionalDeliverInput": {
-        "anyOf": [
-          {
-            "type": "string",
-            "const": "all",
-            "description": "Every channel given that the contact can receive."
-          },
-          {
-            "$ref": "#/components/schemas/TransactionalDeliverFirstInput"
-          }
-        ]
-      },
       "EmailAttachmentInput": {
         "type": "object",
         "properties": {
@@ -13721,14 +13905,21 @@
             "$ref": "#/components/schemas/TransactionalPushInput"
           },
           "sendAt": {
-            "description": "When to send, up to 90 days ahead, with its UTC offset. Suppression and push reachability are checked when the request is accepted and again when it goes. A `deliver.first` fallback keeps this time but goes only after the message before it fails, is skipped or bounces.",
+            "description": "When to send, up to 90 days ahead, with its UTC offset. Suppression and push reachability are checked when the request is accepted and again when it goes. A `fallbackOrder` fallback keeps this time but goes only after the message before it fails, is skipped or bounces.",
             "type": "string",
             "format": "date-time"
           },
-          "deliver": {
-            "default": "all",
-            "description": "With both `push` and `email`: `all` (the default) sends each the contact can receive; `{ \"first\": [\"email\", \"push\"] }` sends the first in that order the contact can receive, and the next only if it fails, is skipped or bounces.",
-            "$ref": "#/components/schemas/TransactionalDeliverInput"
+          "fallbackOrder": {
+            "description": "With both `push` and `email`, each once, in the order to try them: the first the contact can receive is sent, and the next only if it fails, is skipped or bounces. Left out, each channel the contact can receive is sent.",
+            "minItems": 1,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "email",
+                "push"
+              ]
+            }
           }
         },
         "required": [
@@ -13936,35 +14127,28 @@
         "type": "object",
         "properties": {
           "subscribed": {
-            "anyOf": [
-              {
-                "type": "boolean",
-                "description": "Join (true) or leave (false) the topic on every channel."
-              },
-              {
-                "type": "object",
-                "propertyNames": {
-                  "type": "string",
-                  "enum": [
-                    "email",
-                    "push"
-                  ]
-                },
-                "additionalProperties": {
-                  "type": "boolean"
-                },
-                "description": "One channel's choice each; a channel left out keeps its choice."
-              }
-            ]
+            "description": "Join (true) or leave (false) the topic on every channel; it clears each channel's own choice.",
+            "type": "boolean"
+          },
+          "channels": {
+            "description": "One channel's choice each, applied after `subscribed`; a channel left out keeps its choice.",
+            "type": "object",
+            "propertyNames": {
+              "type": "string",
+              "enum": [
+                "email",
+                "push"
+              ]
+            },
+            "additionalProperties": {
+              "type": "boolean"
+            }
           },
           "statement": {
             "description": "How the contact agreed; required to join on any channel.",
             "$ref": "#/components/schemas/ConsentStatementInput"
           }
         },
-        "required": [
-          "subscribed"
-        ],
         "additionalProperties": false
       },
       "FormFieldInput": {
@@ -14159,18 +14343,19 @@
             "type": "object",
             "properties": {
               "width": {
-                "description": "`full` for the form width, or a width in px.",
-                "anyOf": [
-                  {
-                    "type": "string",
-                    "const": "full"
-                  },
-                  {
-                    "type": "integer",
-                    "minimum": 200,
-                    "maximum": 720
-                  }
+                "description": "`fit` (unset): a short answer's field is 320px and a long one fills the form; `full`: every field fills the form; `fixed`: every field `widthPx` wide at most.",
+                "type": "string",
+                "enum": [
+                  "fit",
+                  "full",
+                  "fixed"
                 ]
+              },
+              "widthPx": {
+                "description": "With `width` `fixed`: the width, in px.",
+                "type": "integer",
+                "minimum": 200,
+                "maximum": 720
               },
               "height": {
                 "description": "In px.",
@@ -14378,6 +14563,48 @@
           }
         ]
       },
+      "FormHiddenValueInput": {
+        "oneOf": [
+          {
+            "type": "object",
+            "properties": {
+              "source": {
+                "type": "string",
+                "const": "fixed"
+              },
+              "value": {
+                "type": "string",
+                "maxLength": 1000,
+                "description": "Saved as it is on every submitter."
+              }
+            },
+            "required": [
+              "source",
+              "value"
+            ],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "source": {
+                "type": "string",
+                "const": "link"
+              },
+              "param": {
+                "type": "string",
+                "pattern": "^[A-Za-z0-9_.-]{1,64}$",
+                "description": "The link parameter it takes its value from, such as `utm_campaign`; left unset when the link has none."
+              }
+            },
+            "required": [
+              "source",
+              "param"
+            ],
+            "additionalProperties": false
+          }
+        ]
+      },
       "KiroraCaptchaInput": {
         "type": "object",
         "properties": {
@@ -14569,33 +14796,14 @@
           },
           "hiddenFields": {
             "default": {},
-            "description": "Values saved on each submitter with no field shown, each a contact attribute: fixed (`\"spring\"`), or taken from the link (`{ \"fromParam\": \"utm_campaign\" }`).",
+            "description": "Values saved on each submitter with no field shown, each a contact attribute: fixed (`{ \"source\": \"fixed\", \"value\": \"spring\" }`), or taken from the link (`{ \"source\": \"link\", \"param\": \"utm_campaign\" }`).",
             "type": "object",
             "propertyNames": {
               "type": "string",
               "pattern": "^[\\p{L}\\p{N}\\p{M}_.-]{1,64}$"
             },
             "additionalProperties": {
-              "anyOf": [
-                {
-                  "type": "string",
-                  "maxLength": 1000
-                },
-                {
-                  "type": "object",
-                  "properties": {
-                    "fromParam": {
-                      "type": "string",
-                      "pattern": "^[A-Za-z0-9_.-]{1,64}$",
-                      "description": "The link parameter it takes its value from, such as `utm_campaign`; left unset when the link has none."
-                    }
-                  },
-                  "required": [
-                    "fromParam"
-                  ],
-                  "additionalProperties": false
-                }
-              ]
+              "$ref": "#/components/schemas/FormHiddenValueInput"
             },
             "maxProperties": 50
           },
@@ -14881,26 +15089,7 @@
               "pattern": "^[\\p{L}\\p{N}\\p{M}_.-]{1,64}$"
             },
             "additionalProperties": {
-              "anyOf": [
-                {
-                  "type": "string",
-                  "maxLength": 1000
-                },
-                {
-                  "type": "object",
-                  "properties": {
-                    "fromParam": {
-                      "type": "string",
-                      "pattern": "^[A-Za-z0-9_.-]{1,64}$",
-                      "description": "The link parameter it takes its value from, such as `utm_campaign`; left unset when the link has none."
-                    }
-                  },
-                  "required": [
-                    "fromParam"
-                  ],
-                  "additionalProperties": false
-                }
-              ]
+              "$ref": "#/components/schemas/FormHiddenValueInput"
             },
             "maxProperties": 50
           },
@@ -15034,22 +15223,28 @@
               "maxLength": 80
             },
             "additionalProperties": {
-              "anyOf": [
-                {
-                  "type": "string",
-                  "maxLength": 1000
-                },
-                {
-                  "maxItems": 50,
-                  "type": "array",
-                  "items": {
-                    "type": "string",
-                    "maxLength": 100
-                  }
-                }
-              ]
+              "type": "string",
+              "maxLength": 1000
             },
-            "description": "Answers by field `key`. A checkbox field sends the list of ticked option values; every other field a string."
+            "description": "Answers by field `key`. A checkbox field's ticks go in `choices`; a plain HTML form may send one tick here."
+          },
+          "choices": {
+            "default": {},
+            "description": "Each checkbox field's ticked option values, by field `key`.",
+            "type": "object",
+            "propertyNames": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 80
+            },
+            "additionalProperties": {
+              "maxItems": 50,
+              "type": "array",
+              "items": {
+                "type": "string",
+                "maxLength": 100
+              }
+            }
           }
         },
         "required": [
@@ -15189,21 +15384,12 @@
                           "lt",
                           "lte"
                         ],
-                        "description": "`notEquals` also matches an event without the property. `equals` and `notEquals` ignore case and accents in text."
+                        "description": "`notEquals` also matches an event without the property. `equals` and `notEquals` compare the property as text, ignoring case and accents."
                       },
                       "value": {
-                        "anyOf": [
-                          {
-                            "type": "string",
-                            "maxLength": 255
-                          },
-                          {
-                            "type": "number"
-                          },
-                          {
-                            "type": "boolean"
-                          }
-                        ]
+                        "type": "string",
+                        "maxLength": 255,
+                        "description": "What to compare with, as text (`\"pro\"`, `\"true\"`); a number (`\"50\"`) for `gt`, `gte`, `lt` and `lte`."
                       }
                     },
                     "required": [
@@ -15756,40 +15942,19 @@
             "description": "How to compare. Text comparisons (`equals`, `notEquals`, `contains`, `notContains`, `startsWith`, `in`) ignore case and accents (\"jose\" matches \"José\"). `notEquals` and `notContains` also match contacts without the value. Date operators (`before`, `after`, `withinLastDays`, `moreThanDaysAgo`) compare as dates and times in UTC: a stored ISO-8601 date is the start of that day, `before` means earlier than the given day and `after` later than it, and a value that is not an ISO-8601 date or date and time never matches. `inNextDays` is a date from today to that many days ahead. `anniversaryInNextDays` (0 = today) and `anniversaryThisMonth` ignore the year, so they suit birthdays, and also read a yearless `--MM-DD`; a 29 February counts on 28 February in other years. Days are UTC days; these three are for attributes and dates, not contact fields."
           },
           "value": {
-            "description": "What to compare with; its type depends on `operator`. Omit for `exists`, `notExists` and `anniversaryThisMonth`; an array of up to 100 for `in`; an ISO date for `before` and `after`; a number of days (up to 3650) for `withinLastDays`, `moreThanDaysAgo` and `inNextDays`, and 0 to 365 for `anniversaryInNextDays`.",
-            "anyOf": [
-              {
-                "anyOf": [
-                  {
-                    "type": "string",
-                    "maxLength": 255
-                  },
-                  {
-                    "type": "number"
-                  },
-                  {
-                    "type": "boolean"
-                  }
-                ]
-              },
-              {
-                "type": "array",
-                "items": {
-                  "anyOf": [
-                    {
-                      "type": "string",
-                      "maxLength": 255
-                    },
-                    {
-                      "type": "number"
-                    },
-                    {
-                      "type": "boolean"
-                    }
-                  ]
-                }
-              }
-            ]
+            "description": "What to compare with, always as text: `\"pro\"`, `\"3\"`, `\"true\"`. Equality compares the stored value as text, so a stored 5 matches `\"5\"`. An ISO date for `before` and `after`; a number for `gt`, `gte`, `lt` and `lte`; a whole number of days (1 to 3650) for `withinLastDays`, `moreThanDaysAgo` and `inNextDays`, and 0 to 365 for `anniversaryInNextDays`. Omit for `in`, `exists`, `notExists` and `anniversaryThisMonth`.",
+            "type": "string",
+            "maxLength": 255
+          },
+          "values": {
+            "description": "For `in` only: up to 100 values, each as text, any of which matches.",
+            "minItems": 1,
+            "maxItems": 100,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "maxLength": 255
+            }
           }
         },
         "required": [
@@ -15829,7 +15994,7 @@
               "lastPurchasedAt",
               "createdAt"
             ],
-            "description": "The contact column to test. Each takes these operators, and is refused with others: `email`: equals, notEquals, contains, startsWith, exists, notExists, in; `firstName`: equals, notEquals, contains, startsWith, exists, notExists, in; `lastName`: equals, notEquals, contains, startsWith, exists, notExists, in; `phone`: equals, notEquals, contains, startsWith, exists, notExists, in; `timezone`: equals, notEquals, contains, startsWith, exists, notExists, in; `externalId`: equals, notEquals, contains, startsWith, exists, notExists, in; `consent.email`: equals; `consent.push`: equals; `country`: equals, notEquals, in, exists, notExists; `locale`: equals, notEquals, startsWith, in, exists, notExists; `rfmGroup`: equals, notEquals, in, exists, notExists; `rfmRecency`: equals, notEquals, in, exists, notExists, gt, gte, lt, lte; `rfmFrequency`: equals, notEquals, in, exists, notExists, gt, gte, lt, lte; `rfmMonetary`: equals, notEquals, in, exists, notExists, gt, gte, lt, lte; `purchaseCount`: equals, gt, gte, lt, lte; `totalSpent`: equals, gt, gte, lt, lte; `lastPurchasedAt`: before, after, withinLastDays, moreThanDaysAgo, exists, notExists; `createdAt`: before, after, withinLastDays, moreThanDaysAgo. `phone` holds +country numbers: write `equals`, `notEquals` and `in` values with their country code. Consent takes `true` or `false`.\n\nPurchases: `purchaseCount`, `totalSpent` (in the main currency) and `lastPurchasedAt` are a customer's totals of the workspace's purchase event (`purchaseEvent` in workspace settings: an order, a paid invoice, a booking), recomputed daily; the contact's stored `totalSpent` is null when the workspace's purchases carry no amount. In comparisons on `purchaseCount` and `totalSpent` a missing count or spend is 0, so someone who never purchased has 0 purchases and 0 spent.\n\nRFM: `rfmGroup` and its scores `rfmRecency`, `rfmFrequency` and `rfmMonetary` (monetary value: how much they spend) come from the same daily pass. A score is a whole number from 1 to 5 (an array of them for `in`), 5 being the most recent, most frequent or highest spending; any other value is refused with 400. Someone who never purchased has no `rfmGroup` or scores: on those four fields they match only `notExists` and `notEquals`. So `rfmRecency` `notEquals` 5 includes everyone who never purchased; add an `exists` rule on the same field to leave them out (bought, but not recently)."
+            "description": "The contact column to test. Each takes these operators, and is refused with others: `email`: equals, notEquals, contains, startsWith, exists, notExists, in; `firstName`: equals, notEquals, contains, startsWith, exists, notExists, in; `lastName`: equals, notEquals, contains, startsWith, exists, notExists, in; `phone`: equals, notEquals, contains, startsWith, exists, notExists, in; `timezone`: equals, notEquals, contains, startsWith, exists, notExists, in; `externalId`: equals, notEquals, contains, startsWith, exists, notExists, in; `consent.email`: equals; `consent.push`: equals; `country`: equals, notEquals, in, exists, notExists; `locale`: equals, notEquals, startsWith, in, exists, notExists; `rfmGroup`: equals, notEquals, in, exists, notExists; `rfmRecency`: equals, notEquals, in, exists, notExists, gt, gte, lt, lte; `rfmFrequency`: equals, notEquals, in, exists, notExists, gt, gte, lt, lte; `rfmMonetary`: equals, notEquals, in, exists, notExists, gt, gte, lt, lte; `purchaseCount`: equals, gt, gte, lt, lte; `totalSpent`: equals, gt, gte, lt, lte; `lastPurchasedAt`: before, after, withinLastDays, moreThanDaysAgo, exists, notExists; `createdAt`: before, after, withinLastDays, moreThanDaysAgo. `phone` holds +country numbers: write `equals`, `notEquals` and `in` values with their country code. Consent takes `\"true\"` or `\"false\"`.\n\nPurchases: `purchaseCount`, `totalSpent` (in the main currency) and `lastPurchasedAt` are a customer's totals of the workspace's purchase event (`purchaseEvent` in workspace settings: an order, a paid invoice, a booking), recomputed daily; the contact's stored `totalSpent` is null when the workspace's purchases carry no amount. In comparisons on `purchaseCount` and `totalSpent` a missing count or spend is 0, so someone who never purchased has 0 purchases and 0 spent.\n\nRFM: `rfmGroup` and its scores `rfmRecency`, `rfmFrequency` and `rfmMonetary` (monetary value: how much they spend) come from the same daily pass. A score is a whole number from 1 to 5, written as text (`\"5\"`; `values` of them for `in`), 5 being the most recent, most frequent or highest spending; any other value is refused with 400. Someone who never purchased has no `rfmGroup` or scores: on those four fields they match only `notExists` and `notEquals`. So `rfmRecency` `notEquals` 5 includes everyone who never purchased; add an `exists` rule on the same field to leave them out (bought, but not recently)."
           },
           "operator": {
             "type": "string",
@@ -15857,40 +16022,19 @@
             "description": "How to compare. Text comparisons (`equals`, `notEquals`, `contains`, `notContains`, `startsWith`, `in`) ignore case and accents (\"jose\" matches \"José\"). `notEquals` and `notContains` also match contacts without the value. Date operators (`before`, `after`, `withinLastDays`, `moreThanDaysAgo`) compare as dates and times in UTC: a stored ISO-8601 date is the start of that day, `before` means earlier than the given day and `after` later than it, and a value that is not an ISO-8601 date or date and time never matches. `inNextDays` is a date from today to that many days ahead. `anniversaryInNextDays` (0 = today) and `anniversaryThisMonth` ignore the year, so they suit birthdays, and also read a yearless `--MM-DD`; a 29 February counts on 28 February in other years. Days are UTC days; these three are for attributes and dates, not contact fields."
           },
           "value": {
-            "description": "What to compare with; its type depends on `operator`. Omit for `exists`, `notExists` and `anniversaryThisMonth`; an array of up to 100 for `in`; an ISO date for `before` and `after`; a number of days (up to 3650) for `withinLastDays`, `moreThanDaysAgo` and `inNextDays`, and 0 to 365 for `anniversaryInNextDays`.",
-            "anyOf": [
-              {
-                "anyOf": [
-                  {
-                    "type": "string",
-                    "maxLength": 255
-                  },
-                  {
-                    "type": "number"
-                  },
-                  {
-                    "type": "boolean"
-                  }
-                ]
-              },
-              {
-                "type": "array",
-                "items": {
-                  "anyOf": [
-                    {
-                      "type": "string",
-                      "maxLength": 255
-                    },
-                    {
-                      "type": "number"
-                    },
-                    {
-                      "type": "boolean"
-                    }
-                  ]
-                }
-              }
-            ]
+            "description": "What to compare with, always as text: `\"pro\"`, `\"3\"`, `\"true\"`. Equality compares the stored value as text, so a stored 5 matches `\"5\"`. An ISO date for `before` and `after`; a number for `gt`, `gte`, `lt` and `lte`; a whole number of days (1 to 3650) for `withinLastDays`, `moreThanDaysAgo` and `inNextDays`, and 0 to 365 for `anniversaryInNextDays`. Omit for `in`, `exists`, `notExists` and `anniversaryThisMonth`.",
+            "type": "string",
+            "maxLength": 255
+          },
+          "values": {
+            "description": "For `in` only: up to 100 values, each as text, any of which matches.",
+            "minItems": 1,
+            "maxItems": 100,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "maxLength": 255
+            }
           }
         },
         "required": [
@@ -15915,7 +16059,7 @@
             "description": "The event name."
           },
           "withinDays": {
-            "description": "Only events in the last this many days.",
+            "description": "Only events from the last `withinDays` days.",
             "type": "integer",
             "exclusiveMinimum": 0,
             "maximum": 3650
@@ -15983,19 +16127,9 @@
                   "description": "`notEquals` also matches an event without the property. `equals` and `notEquals` ignore case and accents in text. The date operators read the property as a date, as attribute conditions do: UTC days, an ISO-8601 date is the start of that day, and a property that is missing or not an ISO-8601 date or date and time never matches. They read the property's own date; `withinDays` limits when the event happened. Membership moves with the calendar: a contact enters when the date comes into range, with no new event, and a journey triggered by entering the segment then starts for them."
                 },
                 "value": {
-                  "anyOf": [
-                    {
-                      "type": "string",
-                      "maxLength": 255
-                    },
-                    {
-                      "type": "number"
-                    },
-                    {
-                      "type": "boolean"
-                    }
-                  ],
-                  "description": "What to compare with: an ISO date for `before` and `after`; a whole number of days, 1 to 3650, for `withinLastDays`, `moreThanDaysAgo` and `inNextDays`."
+                  "type": "string",
+                  "maxLength": 255,
+                  "description": "What to compare with, as text: as for the other operators, an ISO date for `before` and `after`, and a whole number of days, `\"1\"` to `\"3650\"`, for `withinLastDays`, `moreThanDaysAgo` and `inNextDays`."
                 }
               },
               "required": [
@@ -16089,7 +16223,7 @@
             "pattern": "^[a-z0-9][a-z0-9_-]{0,63}$"
           },
           "withinDays": {
-            "description": "Only activity in the last this many days. For `notOpened` and `notClicked` it is a waiting time instead: only messages sent at least this many days ago count, so each has had that long to be opened or clicked.",
+            "description": "Only activity from the last `withinDays` days. For `notOpened` and `notClicked` it is a waiting time instead: only messages sent at least this many days ago count, so each has had that long to be opened or clicked.",
             "type": "integer",
             "exclusiveMinimum": 0,
             "maximum": 3650
@@ -19584,9 +19718,46 @@
         },
         "additionalProperties": false
       },
-      "TemplateSnapshot": {
+      "HtmlSnapshot": {
         "type": "object",
         "properties": {
+          "kind": {
+            "type": "string",
+            "const": "html",
+            "description": "`html`: the whole email written as HTML."
+          },
+          "html": {
+            "type": "string",
+            "maxLength": 512000,
+            "description": "The whole email as HTML. Merge tags work as in a design; `{{unsubscribe_url}}` as a link's href places the unsubscribe link, which marketing sends otherwise get below the email, with the workspace postal address when the email does not show it."
+          },
+          "plainTextOverride": {
+            "description": "Plain text sent instead of the version generated from the HTML.",
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 100000
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "kind",
+          "html"
+        ],
+        "additionalProperties": false
+      },
+      "DesignSnapshot": {
+        "type": "object",
+        "properties": {
+          "kind": {
+            "description": "`design`: built from blocks. Left out, `design`.",
+            "type": "string",
+            "const": "design"
+          },
           "schemaVersion": {
             "type": "integer",
             "exclusiveMinimum": 0,
@@ -19630,6 +19801,17 @@
           "theme"
         ],
         "additionalProperties": false
+      },
+      "TemplateSnapshot": {
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/DesignSnapshot"
+          },
+          {
+            "$ref": "#/components/schemas/HtmlSnapshot"
+          }
+        ],
+        "description": "The email: a design, or HTML. Copied from a template, or written here; later template edits do not change it."
       },
       "TransactionalDefaults": {
         "type": "object",
@@ -19677,7 +19859,7 @@
         "additionalProperties": false,
         "description": "What a transactional send of the template uses unless the send gives its own; `null` leaves it to the send. Campaigns and journeys set their own."
       },
-      "Template": {
+      "DesignTemplate": {
         "type": "object",
         "properties": {
           "id": {
@@ -19687,31 +19869,8 @@
           "name": {
             "type": "string"
           },
-          "schemaVersion": {
-            "type": "integer",
-            "exclusiveMinimum": 0,
-            "maximum": 1000,
-            "description": "The block format version."
-          },
-          "blocks": {
-            "minItems": 1,
-            "maxItems": 200,
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/EmailBlock"
-            },
-            "description": "The blocks, rendered top to bottom: at most 200 across the whole tree and five levels including the root. The footer stays at the root."
-          },
-          "theme": {
-            "description": "Theme values this email overrides.",
-            "$ref": "#/components/schemas/EmailTheme"
-          },
-          "language": {
-            "type": "string",
-            "description": "The language the email is written in, as a BCP 47 tag (\"en\", \"fr-BE\", \"ar\"). It sets the HTML `lang` and the reading direction: Arabic, Hebrew, Persian, Urdu and other right-to-left languages render right to left. Defaults to \"en\"."
-          },
           "plainTextOverride": {
-            "description": "Plain text sent instead of the version generated from the blocks.",
+            "description": "Plain text sent instead of the version generated from the design or HTML.",
             "type": [
               "string",
               "null"
@@ -19775,15 +19934,39 @@
           "updatedAt": {
             "type": "string",
             "format": "date-time"
+          },
+          "kind": {
+            "type": "string",
+            "const": "design",
+            "description": "Built from blocks in the designer."
+          },
+          "schemaVersion": {
+            "type": "integer",
+            "exclusiveMinimum": 0,
+            "maximum": 1000,
+            "description": "The block format version."
+          },
+          "blocks": {
+            "minItems": 1,
+            "maxItems": 200,
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/EmailBlock"
+            },
+            "description": "The blocks, rendered top to bottom: at most 200 across the whole tree and five levels including the root. The footer stays at the root."
+          },
+          "theme": {
+            "description": "Theme values this email overrides.",
+            "$ref": "#/components/schemas/EmailTheme"
+          },
+          "language": {
+            "type": "string",
+            "description": "The language the email is written in, as a BCP 47 tag (\"en\", \"fr-BE\", \"ar\"). It sets the HTML `lang` and the reading direction: Arabic, Hebrew, Persian, Urdu and other right-to-left languages render right to left. Defaults to \"en\"."
           }
         },
         "required": [
           "id",
           "name",
-          "schemaVersion",
-          "blocks",
-          "theme",
-          "language",
           "plainTextOverride",
           "transactionalDefaults",
           "alias",
@@ -19793,9 +19976,128 @@
           "thumbnailUrl",
           "tags",
           "createdAt",
-          "updatedAt"
+          "updatedAt",
+          "kind",
+          "schemaVersion",
+          "blocks",
+          "theme",
+          "language"
         ],
         "additionalProperties": false
+      },
+      "HtmlTemplate": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string"
+          },
+          "plainTextOverride": {
+            "description": "Plain text sent instead of the version generated from the design or HTML.",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "transactionalDefaults": {
+            "$ref": "#/components/schemas/TransactionalDefaults"
+          },
+          "alias": {
+            "description": "The name a transactional send may use in `email.template`.",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "publishedVersion": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "exclusiveMinimum": 0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "The version API sends use; null until published. The template itself is the draft."
+          },
+          "hasUnpublishedChanges": {
+            "type": "boolean",
+            "description": "The draft differs from the published version, the brand or a shared block it places has changed since it was published, or it was never published."
+          },
+          "revision": {
+            "type": "integer",
+            "exclusiveMinimum": 0,
+            "maximum": 2147483647,
+            "description": "Raised by every edit. Send it back as `expectedRevision` on the update so a change made since you read it is refused instead of overwritten."
+          },
+          "thumbnailUrl": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uri"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "A small picture of the design (WebP, 640 × 853, shown at half size), redrawn a few seconds after each save, at a new address each time; null until the first is drawn."
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Tag names, sorted without case."
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "kind": {
+            "type": "string",
+            "const": "html",
+            "description": "The whole email written as HTML, kept as code."
+          },
+          "html": {
+            "type": "string",
+            "description": "The whole email, scripts and the like removed when it was saved."
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "plainTextOverride",
+          "transactionalDefaults",
+          "alias",
+          "publishedVersion",
+          "hasUnpublishedChanges",
+          "revision",
+          "thumbnailUrl",
+          "tags",
+          "createdAt",
+          "updatedAt",
+          "kind",
+          "html"
+        ],
+        "additionalProperties": false
+      },
+      "Template": {
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/DesignTemplate"
+          },
+          {
+            "$ref": "#/components/schemas/HtmlTemplate"
+          }
+        ]
       },
       "TemplateVersionListItem": {
         "type": "object",
@@ -19830,7 +20132,7 @@
         ],
         "additionalProperties": false
       },
-      "TemplateVersion": {
+      "DesignTemplateVersion": {
         "type": "object",
         "properties": {
           "version": {
@@ -19855,6 +20157,21 @@
             "format": "date-time",
             "description": "When this version was published."
           },
+          "plainTextOverride": {
+            "description": "Plain text sent instead of the version generated from the design or HTML.",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "transactionalDefaults": {
+            "$ref": "#/components/schemas/TransactionalDefaults"
+          },
+          "kind": {
+            "type": "string",
+            "const": "design",
+            "description": "Built from blocks in the designer."
+          },
           "schemaVersion": {
             "type": "integer",
             "exclusiveMinimum": 0,
@@ -19877,16 +20194,6 @@
           "language": {
             "type": "string",
             "description": "The language the email is written in, as a BCP 47 tag (\"en\", \"fr-BE\", \"ar\"). It sets the HTML `lang` and the reading direction: Arabic, Hebrew, Persian, Urdu and other right-to-left languages render right to left. Defaults to \"en\"."
-          },
-          "plainTextOverride": {
-            "description": "Plain text sent instead of the version generated from the blocks.",
-            "type": [
-              "string",
-              "null"
-            ]
-          },
-          "transactionalDefaults": {
-            "$ref": "#/components/schemas/TransactionalDefaults"
           },
           "sharedBlocks": {
             "type": "object",
@@ -19992,16 +20299,83 @@
           "version",
           "publishedByUserId",
           "publishedAt",
+          "plainTextOverride",
+          "transactionalDefaults",
+          "kind",
           "schemaVersion",
           "blocks",
           "theme",
           "language",
-          "plainTextOverride",
-          "transactionalDefaults",
           "sharedBlocks",
           "brandKit"
         ],
         "additionalProperties": false
+      },
+      "HtmlTemplateVersion": {
+        "type": "object",
+        "properties": {
+          "version": {
+            "type": "integer",
+            "exclusiveMinimum": 0,
+            "description": "The version number, from 1."
+          },
+          "publishedByUserId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Who published it; `null` when published through an API key, or by a member since removed."
+          },
+          "publishedAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "When this version was published."
+          },
+          "plainTextOverride": {
+            "description": "Plain text sent instead of the version generated from the design or HTML.",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "transactionalDefaults": {
+            "$ref": "#/components/schemas/TransactionalDefaults"
+          },
+          "kind": {
+            "type": "string",
+            "const": "html",
+            "description": "The whole email written as HTML, kept as code."
+          },
+          "html": {
+            "type": "string",
+            "description": "The whole email, scripts and the like removed when it was saved."
+          }
+        },
+        "required": [
+          "version",
+          "publishedByUserId",
+          "publishedAt",
+          "plainTextOverride",
+          "transactionalDefaults",
+          "kind",
+          "html"
+        ],
+        "additionalProperties": false
+      },
+      "TemplateVersion": {
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/DesignTemplateVersion"
+          },
+          {
+            "$ref": "#/components/schemas/HtmlTemplateVersion"
+          }
+        ]
       },
       "TemplateListItem": {
         "type": "object",
@@ -20023,10 +20397,18 @@
           "transactionalDefaults": {
             "$ref": "#/components/schemas/TransactionalDefaults"
           },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "design",
+              "html"
+            ],
+            "description": "`design`: built from blocks; `html`: the whole email written as HTML."
+          },
           "blockCount": {
             "type": "integer",
             "minimum": 0,
-            "description": "Top-level blocks in the design; blocks inside columns, sections and repeats are not counted."
+            "description": "Top-level blocks in the design; blocks inside columns, sections and repeats are not counted. 0 for an HTML template."
           },
           "publishedVersion": {
             "anyOf": [
@@ -20077,6 +20459,7 @@
           "name",
           "alias",
           "transactionalDefaults",
+          "kind",
           "blockCount",
           "publishedVersion",
           "hasUnpublishedChanges",
@@ -20940,21 +21323,12 @@
                         "lt",
                         "lte"
                       ],
-                      "description": "`notEquals` also matches an event without the property. `equals` and `notEquals` ignore case and accents in text."
+                      "description": "`notEquals` also matches an event without the property. `equals` and `notEquals` compare the property as text, ignoring case and accents."
                     },
                     "value": {
-                      "anyOf": [
-                        {
-                          "type": "string",
-                          "maxLength": 255
-                        },
-                        {
-                          "type": "number"
-                        },
-                        {
-                          "type": "boolean"
-                        }
-                      ]
+                      "type": "string",
+                      "maxLength": 255,
+                      "description": "What to compare with, as text (`\"pro\"`, `\"true\"`); a number (`\"50\"`) for `gt`, `gte`, `lt` and `lte`."
                     }
                   },
                   "required": [
@@ -21217,49 +21591,87 @@
                 "format": "email"
               },
               "templateSnapshot": {
-                "description": "The email design, copied into the campaign so later template edits do not change it.",
-                "type": "object",
-                "properties": {
-                  "schemaVersion": {
-                    "type": "integer",
-                    "exclusiveMinimum": 0,
-                    "maximum": 1000
-                  },
-                  "blocks": {
-                    "minItems": 1,
-                    "maxItems": 200,
-                    "type": "array",
-                    "items": {
-                      "$ref": "#/components/schemas/EmailBlock"
+                "description": "The email design or HTML, copied into the campaign so later template edits do not change it.",
+                "oneOf": [
+                  {
+                    "type": "object",
+                    "properties": {
+                      "kind": {
+                        "type": "string",
+                        "const": "design"
+                      },
+                      "schemaVersion": {
+                        "type": "integer",
+                        "exclusiveMinimum": 0,
+                        "maximum": 1000
+                      },
+                      "blocks": {
+                        "minItems": 1,
+                        "maxItems": 200,
+                        "type": "array",
+                        "items": {
+                          "$ref": "#/components/schemas/EmailBlock"
+                        },
+                        "description": "The blocks, rendered top to bottom: at most 200 across the whole tree and five levels including the root. The footer stays at the root."
+                      },
+                      "theme": {
+                        "$ref": "#/components/schemas/EmailTheme"
+                      },
+                      "language": {
+                        "type": "string",
+                        "description": "The language the email is written in, as a BCP 47 tag (\"en\", \"fr-BE\", \"ar\"). It sets the HTML `lang` and the reading direction: Arabic, Hebrew, Persian, Urdu and other right-to-left languages render right to left. Defaults to \"en\"."
+                      },
+                      "plainTextOverride": {
+                        "description": "Plain text sent instead of the version generated from the design or HTML.",
+                        "anyOf": [
+                          {
+                            "type": "string",
+                            "maxLength": 512000
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
+                      }
                     },
-                    "description": "The blocks, rendered top to bottom: at most 200 across the whole tree and five levels including the root. The footer stays at the root."
+                    "required": [
+                      "schemaVersion",
+                      "blocks",
+                      "theme"
+                    ],
+                    "additionalProperties": false
                   },
-                  "theme": {
-                    "$ref": "#/components/schemas/EmailTheme"
-                  },
-                  "language": {
-                    "type": "string",
-                    "description": "The language the email is written in, as a BCP 47 tag (\"en\", \"fr-BE\", \"ar\"). It sets the HTML `lang` and the reading direction: Arabic, Hebrew, Persian, Urdu and other right-to-left languages render right to left. Defaults to \"en\"."
-                  },
-                  "plainTextOverride": {
-                    "description": "Plain text sent instead of the version generated from the blocks.",
-                    "anyOf": [
-                      {
+                  {
+                    "type": "object",
+                    "properties": {
+                      "kind": {
+                        "type": "string",
+                        "const": "html"
+                      },
+                      "html": {
                         "type": "string",
                         "maxLength": 512000
                       },
-                      {
-                        "type": "null"
+                      "plainTextOverride": {
+                        "description": "Plain text sent instead of the version generated from the design or HTML.",
+                        "anyOf": [
+                          {
+                            "type": "string",
+                            "maxLength": 512000
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
                       }
-                    ]
+                    },
+                    "required": [
+                      "kind",
+                      "html"
+                    ],
+                    "additionalProperties": false
                   }
-                },
-                "required": [
-                  "schemaVersion",
-                  "blocks",
-                  "theme"
-                ],
-                "additionalProperties": false
+                ]
               }
             },
             "additionalProperties": false
@@ -21772,49 +22184,87 @@
                       "format": "email"
                     },
                     "templateSnapshot": {
-                      "description": "The email design, copied into the campaign so later template edits do not change it.",
-                      "type": "object",
-                      "properties": {
-                        "schemaVersion": {
-                          "type": "integer",
-                          "exclusiveMinimum": 0,
-                          "maximum": 1000
-                        },
-                        "blocks": {
-                          "minItems": 1,
-                          "maxItems": 200,
-                          "type": "array",
-                          "items": {
-                            "$ref": "#/components/schemas/EmailBlock"
+                      "description": "The email design or HTML, copied into the campaign so later template edits do not change it.",
+                      "oneOf": [
+                        {
+                          "type": "object",
+                          "properties": {
+                            "kind": {
+                              "type": "string",
+                              "const": "design"
+                            },
+                            "schemaVersion": {
+                              "type": "integer",
+                              "exclusiveMinimum": 0,
+                              "maximum": 1000
+                            },
+                            "blocks": {
+                              "minItems": 1,
+                              "maxItems": 200,
+                              "type": "array",
+                              "items": {
+                                "$ref": "#/components/schemas/EmailBlock"
+                              },
+                              "description": "The blocks, rendered top to bottom: at most 200 across the whole tree and five levels including the root. The footer stays at the root."
+                            },
+                            "theme": {
+                              "$ref": "#/components/schemas/EmailTheme"
+                            },
+                            "language": {
+                              "type": "string",
+                              "description": "The language the email is written in, as a BCP 47 tag (\"en\", \"fr-BE\", \"ar\"). It sets the HTML `lang` and the reading direction: Arabic, Hebrew, Persian, Urdu and other right-to-left languages render right to left. Defaults to \"en\"."
+                            },
+                            "plainTextOverride": {
+                              "description": "Plain text sent instead of the version generated from the design or HTML.",
+                              "anyOf": [
+                                {
+                                  "type": "string",
+                                  "maxLength": 512000
+                                },
+                                {
+                                  "type": "null"
+                                }
+                              ]
+                            }
                           },
-                          "description": "The blocks, rendered top to bottom: at most 200 across the whole tree and five levels including the root. The footer stays at the root."
+                          "required": [
+                            "schemaVersion",
+                            "blocks",
+                            "theme"
+                          ],
+                          "additionalProperties": false
                         },
-                        "theme": {
-                          "$ref": "#/components/schemas/EmailTheme"
-                        },
-                        "language": {
-                          "type": "string",
-                          "description": "The language the email is written in, as a BCP 47 tag (\"en\", \"fr-BE\", \"ar\"). It sets the HTML `lang` and the reading direction: Arabic, Hebrew, Persian, Urdu and other right-to-left languages render right to left. Defaults to \"en\"."
-                        },
-                        "plainTextOverride": {
-                          "description": "Plain text sent instead of the version generated from the blocks.",
-                          "anyOf": [
-                            {
+                        {
+                          "type": "object",
+                          "properties": {
+                            "kind": {
+                              "type": "string",
+                              "const": "html"
+                            },
+                            "html": {
                               "type": "string",
                               "maxLength": 512000
                             },
-                            {
-                              "type": "null"
+                            "plainTextOverride": {
+                              "description": "Plain text sent instead of the version generated from the design or HTML.",
+                              "anyOf": [
+                                {
+                                  "type": "string",
+                                  "maxLength": 512000
+                                },
+                                {
+                                  "type": "null"
+                                }
+                              ]
                             }
-                          ]
+                          },
+                          "required": [
+                            "kind",
+                            "html"
+                          ],
+                          "additionalProperties": false
                         }
-                      },
-                      "required": [
-                        "schemaVersion",
-                        "blocks",
-                        "theme"
-                      ],
-                      "additionalProperties": false
+                      ]
                     }
                   },
                   "additionalProperties": false
@@ -25410,21 +25860,12 @@
                             "lt",
                             "lte"
                           ],
-                          "description": "`notEquals` also matches an event without the property. `equals` and `notEquals` ignore case and accents in text."
+                          "description": "`notEquals` also matches an event without the property. `equals` and `notEquals` compare the property as text, ignoring case and accents."
                         },
                         "value": {
-                          "anyOf": [
-                            {
-                              "type": "string",
-                              "maxLength": 255
-                            },
-                            {
-                              "type": "number"
-                            },
-                            {
-                              "type": "boolean"
-                            }
-                          ]
+                          "type": "string",
+                          "maxLength": 255,
+                          "description": "What to compare with, as text (`\"pro\"`, `\"true\"`); a number (`\"50\"`) for `gt`, `gte`, `lt` and `lte`."
                         }
                       },
                       "required": [
@@ -26271,21 +26712,12 @@
                         "lt",
                         "lte"
                       ],
-                      "description": "`notEquals` also matches an event without the property. `equals` and `notEquals` ignore case and accents in text."
+                      "description": "`notEquals` also matches an event without the property. `equals` and `notEquals` compare the property as text, ignoring case and accents."
                     },
                     "value": {
-                      "anyOf": [
-                        {
-                          "type": "string",
-                          "maxLength": 255
-                        },
-                        {
-                          "type": "number"
-                        },
-                        {
-                          "type": "boolean"
-                        }
-                      ]
+                      "type": "string",
+                      "maxLength": 255,
+                      "description": "What to compare with, as text (`\"pro\"`, `\"true\"`); a number (`\"50\"`) for `gt`, `gte`, `lt` and `lte`."
                     }
                   },
                   "required": [
@@ -26789,21 +27221,12 @@
                         "lt",
                         "lte"
                       ],
-                      "description": "`notEquals` also matches an event without the property. `equals` and `notEquals` ignore case and accents in text."
+                      "description": "`notEquals` also matches an event without the property. `equals` and `notEquals` compare the property as text, ignoring case and accents."
                     },
                     "value": {
-                      "anyOf": [
-                        {
-                          "type": "string",
-                          "maxLength": 255
-                        },
-                        {
-                          "type": "number"
-                        },
-                        {
-                          "type": "boolean"
-                        }
-                      ]
+                      "type": "string",
+                      "maxLength": 255,
+                      "description": "What to compare with, as text (`\"pro\"`, `\"true\"`); a number (`\"50\"`) for `gt`, `gte`, `lt` and `lte`."
                     }
                   },
                   "required": [
@@ -27044,21 +27467,12 @@
                         "lt",
                         "lte"
                       ],
-                      "description": "`notEquals` also matches an event without the property. `equals` and `notEquals` ignore case and accents in text."
+                      "description": "`notEquals` also matches an event without the property. `equals` and `notEquals` compare the property as text, ignoring case and accents."
                     },
                     "value": {
-                      "anyOf": [
-                        {
-                          "type": "string",
-                          "maxLength": 255
-                        },
-                        {
-                          "type": "number"
-                        },
-                        {
-                          "type": "boolean"
-                        }
-                      ]
+                      "type": "string",
+                      "maxLength": 255,
+                      "description": "What to compare with, as text (`\"pro\"`, `\"true\"`); a number (`\"50\"`) for `gt`, `gte`, `lt` and `lte`."
                     }
                   },
                   "required": [
@@ -27161,21 +27575,12 @@
                         "lt",
                         "lte"
                       ],
-                      "description": "`notEquals` also matches an event without the property. `equals` and `notEquals` ignore case and accents in text."
+                      "description": "`notEquals` also matches an event without the property. `equals` and `notEquals` compare the property as text, ignoring case and accents."
                     },
                     "value": {
-                      "anyOf": [
-                        {
-                          "type": "string",
-                          "maxLength": 255
-                        },
-                        {
-                          "type": "number"
-                        },
-                        {
-                          "type": "boolean"
-                        }
-                      ]
+                      "type": "string",
+                      "maxLength": 255,
+                      "description": "What to compare with, as text (`\"pro\"`, `\"true\"`); a number (`\"50\"`) for `gt`, `gte`, `lt` and `lte`."
                     }
                   },
                   "required": [
@@ -27378,21 +27783,12 @@
                               "lt",
                               "lte"
                             ],
-                            "description": "`notEquals` also matches an event without the property. `equals` and `notEquals` ignore case and accents in text."
+                            "description": "`notEquals` also matches an event without the property. `equals` and `notEquals` compare the property as text, ignoring case and accents."
                           },
                           "value": {
-                            "anyOf": [
-                              {
-                                "type": "string",
-                                "maxLength": 255
-                              },
-                              {
-                                "type": "number"
-                              },
-                              {
-                                "type": "boolean"
-                              }
-                            ]
+                            "type": "string",
+                            "maxLength": 255,
+                            "description": "What to compare with, as text (`\"pro\"`, `\"true\"`); a number (`\"50\"`) for `gt`, `gte`, `lt` and `lte`."
                           }
                         },
                         "required": [
@@ -27586,21 +27982,12 @@
                               "lt",
                               "lte"
                             ],
-                            "description": "`notEquals` also matches an event without the property. `equals` and `notEquals` ignore case and accents in text."
+                            "description": "`notEquals` also matches an event without the property. `equals` and `notEquals` compare the property as text, ignoring case and accents."
                           },
                           "value": {
-                            "anyOf": [
-                              {
-                                "type": "string",
-                                "maxLength": 255
-                              },
-                              {
-                                "type": "number"
-                              },
-                              {
-                                "type": "boolean"
-                              }
-                            ]
+                            "type": "string",
+                            "maxLength": 255,
+                            "description": "What to compare with, as text (`\"pro\"`, `\"true\"`); a number (`\"50\"`) for `gt`, `gte`, `lt` and `lte`."
                           }
                         },
                         "required": [
@@ -28373,7 +28760,7 @@
                 "type": "null"
               }
             ],
-            "description": "With `deliver.first`: the message this one stands in for. It waits as `queued` until that one ends: sent when it failed, was skipped or bounced, else skipped with reason `fallback_not_needed`. Null otherwise."
+            "description": "With `fallbackOrder`: the message this one stands in for. It waits as `queued` until that one ends: sent when it failed, was skipped or bounced, else skipped with reason `fallback_not_needed`. Null otherwise."
           }
         },
         "required": [
@@ -28884,7 +29271,7 @@
                   },
                   "reason": {
                     "type": "string",
-                    "description": "Which guard stopped it before sending, such as `suppressed`, `consent_missing` or `cancelled`; `fallback_not_needed`: a transactional `deliver.first` fallback whose first channel arrived; `plan_limit_reached`: a fallback the plan had no room for when it was due."
+                    "description": "Which guard stopped it before sending, such as `suppressed`, `consent_missing` or `cancelled`; `fallback_not_needed`: a transactional `fallbackOrder` fallback whose first channel arrived; `plan_limit_reached`: a fallback the plan had no room for when it was due."
                   },
                   "suppressionReason": {
                     "anyOf": [
@@ -30182,18 +30569,19 @@
             "type": "object",
             "properties": {
               "width": {
-                "description": "`full` for the form width, or a width in px.",
-                "anyOf": [
-                  {
-                    "type": "string",
-                    "const": "full"
-                  },
-                  {
-                    "type": "integer",
-                    "minimum": 200,
-                    "maximum": 720
-                  }
+                "description": "`fit` (unset): a short answer's field is 320px and a long one fills the form; `full`: every field fills the form; `fixed`: every field `widthPx` wide at most.",
+                "type": "string",
+                "enum": [
+                  "fit",
+                  "full",
+                  "fixed"
                 ]
+              },
+              "widthPx": {
+                "description": "With `width` `fixed`: the width, in px.",
+                "type": "integer",
+                "minimum": 200,
+                "maximum": 720
               },
               "height": {
                 "description": "In px.",
@@ -30398,6 +30786,48 @@
             ],
             "additionalProperties": false,
             "title": "Popup"
+          }
+        ]
+      },
+      "FormHiddenValue": {
+        "oneOf": [
+          {
+            "type": "object",
+            "properties": {
+              "source": {
+                "type": "string",
+                "const": "fixed"
+              },
+              "value": {
+                "type": "string",
+                "maxLength": 1000,
+                "description": "Saved as it is on every submitter."
+              }
+            },
+            "required": [
+              "source",
+              "value"
+            ],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "source": {
+                "type": "string",
+                "const": "link"
+              },
+              "param": {
+                "type": "string",
+                "pattern": "^[A-Za-z0-9_.-]{1,64}$",
+                "description": "The link parameter it takes its value from, such as `utm_campaign`; left unset when the link has none."
+              }
+            },
+            "required": [
+              "source",
+              "param"
+            ],
+            "additionalProperties": false
           }
         ]
       },
@@ -30700,26 +31130,7 @@
               "pattern": "^[\\p{L}\\p{N}\\p{M}_.-]{1,64}$"
             },
             "additionalProperties": {
-              "anyOf": [
-                {
-                  "type": "string",
-                  "maxLength": 1000
-                },
-                {
-                  "type": "object",
-                  "properties": {
-                    "fromParam": {
-                      "type": "string",
-                      "pattern": "^[A-Za-z0-9_.-]{1,64}$",
-                      "description": "The link parameter it takes its value from, such as `utm_campaign`; left unset when the link has none."
-                    }
-                  },
-                  "required": [
-                    "fromParam"
-                  ],
-                  "additionalProperties": false
-                }
-              ]
+              "$ref": "#/components/schemas/FormHiddenValue"
             },
             "maxProperties": 50,
             "description": "Values saved on each submitter with no field shown: fixed, or taken from the link."
@@ -35948,8 +36359,10 @@
                     "externalId": "customer-4821",
                     "topics": {
                       "0192f3b0-6a1b-7c2d-8e3f-4a5b6c7d8e9f": {
-                        "email": true,
-                        "push": false
+                        "channels": {
+                          "email": true,
+                          "push": false
+                        }
                       }
                     }
                   }
@@ -36306,7 +36719,9 @@
                         "email": "amaka@example.com",
                         "firstName": "Amaka",
                         "topics": {
-                          "0192f3b0-6a1b-7c2d-8e3f-4a5b6c7d8e9f": true
+                          "0192f3b0-6a1b-7c2d-8e3f-4a5b6c7d8e9f": {
+                            "subscribed": true
+                          }
                         }
                       },
                       {
@@ -38208,7 +38623,7 @@
                 "emailOnly": {
                   "summary": "Join by email, not by push",
                   "value": {
-                    "subscribed": {
+                    "channels": {
                       "email": true,
                       "push": false
                     },
@@ -43855,7 +44270,7 @@
         "tags": [
           "segments"
         ],
-        "description": "Returns what uses the segment: campaigns whose audience is this segment or whose rules or exclusions name it, journeys whose rules or steps name it, and other segments whose rules name it, up to 50 of each (`hasMore` when a kind holds more). Deleting the segment is refused (409 `IN_USE`) while any of them is a campaign not yet sent or cancelled (`draft`, `scheduled`, `testing` for an A/B test, or `sending`), an `active` or `paused` journey, or another segment.\n\nRequires API-key scope: `segments:read`.",
+        "description": "Returns what uses the segment: campaigns whose audience is this segment, whose rules or exclusions name it, or whose content shows a block only to it (in any A/B version), journeys whose rules or steps name it, and other segments whose rules name it, up to 50 of each (`hasMore` when a kind holds more). Deleting the segment is refused (409 `IN_USE`) while any of them is a campaign not yet sent or cancelled (`draft`, `scheduled`, `testing` for an A/B test, or `sending`), an `active` or `paused` journey, or another segment.\n\nRequires API-key scope: `segments:read`.",
         "parameters": [
           {
             "schema": {
@@ -45695,7 +46110,7 @@
         "tags": [
           "transactional"
         ],
-        "description": "Sends a one-off message to one recipient — a receipt, a password reset, a confirmation — bypassing campaigns. It ignores marketing preferences (it is the critical tier) but respects suppression. Agent keys are refused with 403.\n\n**Channels.** Give `email`, `push`, or both. With both, `deliver: \"all\"` (the default) sends each one the contact can receive. `deliver: { \"first\": [\"email\", \"push\"] }` tries them in that order: the first the contact can receive goes, and each later one waits as a fallback (`fallbackFor`), sent only when the one before it fails, is skipped or bounces (an email gets 15 minutes to bounce), else skipped with reason `fallback_not_needed`. A fallback is charged only when it goes; with no room left in the plan by then it is skipped with reason `plan_limit_reached`. A channel the contact cannot receive, or the plan has no room for, is passed over and listed in `skippedChannels` with its error code; only when none is left does the send fail, with that channel's error. So with `all` too, a 202 can leave a channel unsent: check `skippedChannels`. The response lists one message per channel stored.\n\n**Data.** `data` holds the values the content reads as `{{ data.<key> }}`, once for every channel: a stored template, inline email, and the push `title` and `body`. Inline content (email or push) whose `{{ data.<key> }}` tag has no value in `data`, and no default, is refused with 400 rather than sent blank.\n\n**Email.** Inline (`subject`, `from`, `html`, optional `text`, `previewText`, `replyTo`), or a stored template named by `template` (its alias, such as `password-reset`, or its id). The template's published version is rendered when the request is accepted and supplies the envelope; each envelope field given overrides it. The result needs a `subject` and a `from` (409 `TEMPLATE_ENVELOPE_INCOMPLETE`), and the `from` domain must be verified. A template never published is 409 `TEMPLATE_NOT_PUBLISHED`. Email is tracked only when `tracking` asks, and never for a contact in the EEA or the UK; `threading` continues a conversation. `attachments`, `threading` and `tracking` sit inside `email`.\n\n**Push.** `push` takes the notification fields (`title`, `body`, `actionUrl`, …) beside `pushProjectId`, which is needed only when the workspace has several push projects. Unlike email, push needs the contact's push consent (`consent.push`) besides a device that allows notifications.\n\n**Recipient.** `to` names one `contactId`, `externalId` or `email`, and nothing else: set a contact's name or attributes with `POST /v1/contacts/identify` first. An `email` that matches no contact creates one for transactional mail only.\n\n**Retries.** Send an `Idempotency-Key` header to make a retry safe. A retry with the same key and request returns the first result, with `Idempotency-Replay: true`, and sends nothing again; the same key with a different request is 409 `IDEMPOTENCY_KEY_REUSED`. Without a key, every request sends: a retry after a timeout can send the message twice. A replay answers from the messages as they are now, so its `status` can differ from the first answer, and an `externalId` or `email` recipient the first request created or updated stays so even when the send itself was refused. Set `correlationId` to your own reference: it is echoed on each message's webhooks and its read, and `GET /v1/messages?correlationId=` finds them. `sendAt` times the send, email and push alike.\n\nRequires API-key scope: `transactional:send`.",
+        "description": "Sends a one-off message to one recipient — a receipt, a password reset, a confirmation — bypassing campaigns. It ignores marketing preferences (it is the critical tier) but respects suppression. Agent keys are refused with 403.\n\n**Channels.** Give `email`, `push`, or both. With both, each one the contact can receive is sent. `fallbackOrder: [\"email\", \"push\"]` tries them in that order instead: the first the contact can receive goes, and each later one waits as a fallback (`fallbackFor`), sent only when the one before it fails, is skipped or bounces (an email gets 15 minutes to bounce), else skipped with reason `fallback_not_needed`. A fallback is charged only when it goes; with no room left in the plan by then it is skipped with reason `plan_limit_reached`. A channel the contact cannot receive, or the plan has no room for, is passed over and listed in `skippedChannels` with its error code; only when none is left does the send fail, with that channel's error. So without `fallbackOrder` too, a 202 can leave a channel unsent: check `skippedChannels`. The response lists one message per channel stored.\n\n**Data.** `data` holds the values the content reads as `{{ data.<key> }}`, once for every channel: a stored template, inline email, and the push `title` and `body`. Inline content (email or push) whose `{{ data.<key> }}` tag has no value in `data`, and no default, is refused with 400 rather than sent blank.\n\n**Email.** Inline (`subject`, `from`, `html`, optional `text`, `previewText`, `replyTo`), or a stored template named by `template` (its alias, such as `password-reset`, or its id). The template's published version is rendered when the request is accepted and supplies the envelope; each envelope field given overrides it. The result needs a `subject` and a `from` (409 `TEMPLATE_ENVELOPE_INCOMPLETE`), and the `from` domain must be verified. A template never published is 409 `TEMPLATE_NOT_PUBLISHED`. Email is tracked only when `tracking` asks, and never for a contact in the EEA or the UK; `threading` continues a conversation. `attachments`, `threading` and `tracking` sit inside `email`.\n\n**Push.** `push` takes the notification fields (`title`, `body`, `actionUrl`, …) beside `pushProjectId`, which is needed only when the workspace has several push projects. Unlike email, push needs the contact's push consent (`consent.push`) besides a device that allows notifications.\n\n**Recipient.** `to` names one `contactId`, `externalId` or `email`, and nothing else: set a contact's name or attributes with `POST /v1/contacts/identify` first. An `email` that matches no contact creates one for transactional mail only.\n\n**Retries.** Send an `Idempotency-Key` header to make a retry safe. A retry with the same key and request returns the first result, with `Idempotency-Replay: true`, and sends nothing again; the same key with a different request is 409 `IDEMPOTENCY_KEY_REUSED`. Without a key, every request sends: a retry after a timeout can send the message twice. A replay answers from the messages as they are now, so its `status` can differ from the first answer, and an `externalId` or `email` recipient the first request created or updated stays so even when the send itself was refused. Set `correlationId` to your own reference: it is echoed on each message's webhooks and its read, and `GET /v1/messages?correlationId=` finds them. `sendAt` times the send, email and push alike.\n\nRequires API-key scope: `transactional:send`.",
         "requestBody": {
           "required": true,
           "content": {
@@ -45757,8 +46172,7 @@
                     },
                     "email": {
                       "template": "order-shipped"
-                    },
-                    "deliver": "all"
+                    }
                   }
                 },
                 "pushThenEmail": {
@@ -45781,12 +46195,10 @@
                       "from": "Juniper Kitchen <security@juniperkitchen.com>",
                       "html": "<p>Your code is <strong>{{ data.code }}</strong>.</p>"
                     },
-                    "deliver": {
-                      "first": [
-                        "push",
-                        "email"
-                      ]
-                    }
+                    "fallbackOrder": [
+                      "push",
+                      "email"
+                    ]
                   }
                 },
                 "scheduled": {
@@ -53244,7 +53656,7 @@
                       {
                         "property": "total",
                         "operator": "gte",
-                        "value": 50
+                        "value": "50"
                       }
                     ],
                     "occurrence": "first",
@@ -53322,7 +53734,7 @@
                           {
                             "property": "total",
                             "operator": "gte",
-                            "value": 50
+                            "value": "50"
                           }
                         ],
                         "occurrence": "first",
@@ -53807,7 +54219,7 @@
         "tags": [
           "templates"
         ],
-        "description": "Returns templates in this workspace. The list form omits the block tree; retrieve a template individually to get its full content. Results are cursor-paginated: pass `meta.pagination.nextCursor` back as `cursor` until it comes back `null`. The cursor is opaque — do not construct or parse one.\n\nRequires API-key scope: `templates:read`.",
+        "description": "Returns templates in this workspace, each with its `kind`. The list form omits the block tree and HTML; retrieve a template individually to get its full content. Results are cursor-paginated: pass `meta.pagination.nextCursor` back as `cursor` until it comes back `null`. The cursor is opaque — do not construct or parse one.\n\nRequires API-key scope: `templates:read`.",
         "parameters": [
           {
             "schema": {
@@ -53910,6 +54322,7 @@
                             "from": "Acme Shop <hello@mail.acme-shop.com>",
                             "replyTo": "support@acme-shop.com"
                           },
+                          "kind": "design",
                           "blockCount": 5,
                           "publishedVersion": 1,
                           "hasUnpublishedChanges": false,
@@ -53976,7 +54389,7 @@
         "tags": [
           "templates"
         ],
-        "description": "Creates a reusable email design and publishes it as version 1, so a transactional send can use it at once by its `id` or `alias`. An agent key's template stays a draft until a person publishes it.\n\n`transactionalDefaults` holds the subject, preview text and sender that a **transactional send** of this template uses unless the send gives its own, so a subject change needs no deploy. Campaigns and journeys copy the design when they pick the template and set their own subject and sender; later edits to the template don't change them.\n\nEach use checks what it needs: campaigns and journeys refuse raw HTML blocks, and marketing email gets its unsubscribe link and postal address added at send time.\n\nWith an `alias`, a retry after the first call succeeded is refused with 409 `ALREADY_EXISTS`: the first call created it. Without one, send an `Idempotency-Key`.\n\nRequires API-key scope: `templates:write`.",
+        "description": "Creates a reusable email and publishes it as version 1, so a transactional send can use it at once by its `id` or `alias`. An agent key's template stays a draft until a person publishes it.\n\n`transactionalDefaults` holds the subject, preview text and sender that a **transactional send** of this template uses unless the send gives its own, so a subject change needs no deploy. Campaigns and journeys copy the design when they pick the template and set their own subject and sender; later edits to the template don't change them.\n\nA template is one of two kinds, fixed when it is created. A `design` (the default) is built from blocks. An `html` template holds the whole email as `html`, kept as code: saving removes scripts, event handlers, frames, forms, SVG, `javascript:` links and stylesheet links other than Google Fonts (email apps drop them anyway), and keeps the rest as written, Outlook conditional comments included. CSS is not inlined. `POST /v1/templates/render` lists what saving would remove.\n\nEach use checks what it needs: campaigns and journeys refuse raw HTML blocks in a design, and marketing email gets an unsubscribe link and the postal address added at send time unless the email already shows them; in HTML, `{{unsubscribe_url}}` as a link's href places the link.\n\nWith an `alias`, a retry after the first call succeeded is refused with 409 `ALREADY_EXISTS`: the first call created it. Without one, send an `Idempotency-Key`.\n\nRequires API-key scope: `templates:write`.",
         "requestBody": {
           "required": true,
           "content": {
@@ -53985,6 +54398,14 @@
                 "$ref": "#/components/schemas/CreateTemplateInput"
               },
               "examples": {
+                "html": {
+                  "summary": "A monthly newsletter brought as HTML, kept as code",
+                  "value": {
+                    "kind": "html",
+                    "name": "Monthly newsletter",
+                    "html": "<!DOCTYPE html><html lang=\"en\"><head><meta charset=\"utf-8\"><style>p{font-family:Arial,sans-serif}</style></head><body><h1>The Acme Shop monthly</h1><p>Hi {{ contact.firstName | default: \"there\" }}, here is what is new.</p><p><a href=\"{{unsubscribe_url}}\">Unsubscribe</a></p></body></html>"
+                  }
+                },
                 "welcome": {
                   "summary": "A welcome email, created with an integration key: live as version 1",
                   "value": {
@@ -54137,12 +54558,39 @@
                   "description": "The newly created template."
                 },
                 "examples": {
+                  "html": {
+                    "summary": "A monthly newsletter brought as HTML, kept as code",
+                    "value": {
+                      "data": {
+                        "id": "01a19ecb-7c2d-7e31-9f40-5b6a7c8d9e0f",
+                        "name": "Monthly newsletter",
+                        "plainTextOverride": null,
+                        "transactionalDefaults": {
+                          "subject": null,
+                          "previewText": null,
+                          "from": null,
+                          "replyTo": null
+                        },
+                        "alias": null,
+                        "publishedVersion": 1,
+                        "hasUnpublishedChanges": false,
+                        "revision": 1,
+                        "thumbnailUrl": null,
+                        "tags": [],
+                        "createdAt": "2026-10-01T09:30:00.000Z",
+                        "updatedAt": "2026-10-01T09:30:00.000Z",
+                        "kind": "html",
+                        "html": "<!DOCTYPE html><html lang=\"en\"><head><meta charset=\"utf-8\"><style>p{font-family:Arial,sans-serif}</style></head><body><h1>The Acme Shop monthly</h1><p>Hi {{ contact.firstName | default: \"there\" }}, here is what is new.</p><p><a href=\"{{unsubscribe_url}}\">Unsubscribe</a></p></body></html>"
+                      }
+                    }
+                  },
                   "welcome": {
                     "summary": "A welcome email, created with an integration key: live as version 1",
                     "value": {
                       "data": {
                         "id": "0192f3d0-1a2b-7c3d-8e4f-5a6b7c8d9e0f",
                         "name": "Welcome email",
+                        "kind": "design",
                         "schemaVersion": 1,
                         "blocks": [
                           {
@@ -54213,6 +54661,7 @@
                       "data": {
                         "id": "0192f3d0-1a2b-7c3d-8e4f-5a6b7c8d9e0f",
                         "name": "Welcome email",
+                        "kind": "design",
                         "schemaVersion": 1,
                         "blocks": [
                           {
@@ -54346,7 +54795,7 @@
         "tags": [
           "templates"
         ],
-        "description": "Returns one template including its full block tree and theme.\n\nRequires API-key scope: `templates:read`.",
+        "description": "Returns one template including its full content: a design's block tree and theme, or an HTML template's `html`.\n\nRequires API-key scope: `templates:read`.",
         "parameters": [
           {
             "schema": {
@@ -54399,6 +54848,7 @@
                       "data": {
                         "id": "0192f3d0-1a2b-7c3d-8e4f-5a6b7c8d9e0f",
                         "name": "Welcome email",
+                        "kind": "design",
                         "schemaVersion": 1,
                         "blocks": [
                           {
@@ -54510,7 +54960,7 @@
         "tags": [
           "templates"
         ],
-        "description": "Edits the template's draft. Campaigns and journeys that already copied it keep the content they were built with, and transactional sends keep the published version until `POST /v1/templates/{id}/publish`. `transactionalDefaults` is part of the draft and is published with it: a field left out stays as it is, and `null` clears it.\n\nWith `expectedRevision`, a retry after the first call succeeded is refused with 409 `REVISION_CONFLICT`, since the revision has moved on: read the template, compare, then retry.\n\nRequires API-key scope: `templates:write`.",
+        "description": "Edits the template's draft: a design's blocks, or an HTML template's `html`; a template never changes kind (400 `VALIDATION_ERROR`). Campaigns and journeys that already copied it keep the content they were built with, and transactional sends keep the published version until `POST /v1/templates/{id}/publish`. `transactionalDefaults` is part of the draft and is published with it: a field left out stays as it is, and `null` clears it.\n\nWith `expectedRevision`, a retry after the first call succeeded is refused with 409 `REVISION_CONFLICT`, since the revision has moved on: read the template, compare, then retry.\n\nRequires API-key scope: `templates:write`.",
         "requestBody": {
           "required": true,
           "content": {
@@ -54585,6 +55035,7 @@
                       "data": {
                         "id": "0192f3d0-1a2b-7c3d-8e4f-5a6b7c8d9e0f",
                         "name": "Welcome email",
+                        "kind": "design",
                         "schemaVersion": 1,
                         "blocks": [
                           {
@@ -54946,7 +55397,7 @@
         "tags": [
           "templates"
         ],
-        "description": "Renders a saved template to the subject, HTML and plain text a recipient would get, without sending or changing anything. By default it renders the published version, which is what sends use, drawn with the brand and shared blocks it was published with; pass `\"version\": \"draft\"` for the draft as it stands now, or a version number. A template never published is 409 `TEMPLATE_NOT_PUBLISHED` for `published`. Merge tags show their defaults, or pass `contact` to render them as that contact would see them, and `data` for what a send's `data` would carry. `warnings` flags problems that do not stop rendering, such as an oversized message.\n\nRequires API-key scope: `templates:read`.",
+        "description": "Renders a saved template to the subject, HTML and plain text a recipient would get, without sending or changing anything. By default it renders the published version, which is what sends use, drawn with the brand and shared blocks it was published with; pass `\"draft\": true` for the draft as it stands now, or `\"version\"` for an earlier published version. Rendering the published version of a template never published is 409 `TEMPLATE_NOT_PUBLISHED`. Merge tags show their defaults, or pass `contact` to render them as that contact would see them, and `data` for what a send's `data` would carry. `warnings` flags problems that do not stop rendering, such as an oversized message.\n\nRequires API-key scope: `templates:read`.",
         "requestBody": {
           "required": true,
           "content": {
@@ -54958,7 +55409,6 @@
                 "published": {
                   "summary": "Render what sends use, as one contact would see it",
                   "value": {
-                    "version": "published",
                     "contact": {
                       "externalId": "customer-881"
                     }
@@ -54967,7 +55417,7 @@
                 "draft": {
                   "summary": "Render the draft with merge tags at their defaults",
                   "value": {
-                    "version": "draft"
+                    "draft": true
                   }
                 }
               }
@@ -55101,11 +55551,11 @@
     "/v1/templates/render": {
       "post": {
         "operationId": "renderTemplateContent",
-        "summary": "Render blocks to email HTML",
+        "summary": "Render a design or HTML",
         "tags": [
           "templates"
         ],
-        "description": "Renders a block tree and theme sent in the request to the HTML and plain text a recipient would get, without saving anything: the builder preview, plain-text view and HTML export. To render a saved template, use `POST /v1/templates/{id}/render`. Merge tags show their defaults, or pass `contact` to render them as that contact would see them (not from an embed session). `warnings` flags problems that do not stop rendering, such as an oversized message, or `POSTAL_ADDRESS_MISSING` while the workspace has no `postalAddress` for the footer.\n\nRequires API-key scope: `templates:read`.",
+        "description": "Renders a block tree and theme sent in the request, or an email written as HTML (`\"kind\": \"html\"`), to the HTML and plain text a recipient would get, without saving anything: the builder or code editor preview, plain-text view and HTML export. HTML is returned as saving would keep it, with `HTML_REMOVED` listing what saving removes, `UNSUBSCRIBE_LINK_ADDED` when no link goes to `{{unsubscribe_url}}`, `UNUSABLE_ADDRESS` naming empty, `#` or relative link and image addresses, and `PLACEHOLDER_LINK` naming placeholder addresses (example.com and the like), which sending refuses as it does in a design. With `\"context\": \"marketing\"` the HTML shows the postal address and unsubscribe link a marketing send adds when the email lacks them; `\"transactional\"`, the default, adds nothing and returns the HTML as saving keeps it. To render a saved template, use `POST /v1/templates/{id}/render`. Merge tags show their defaults, or pass `contact` to render them as that contact would see them (not from an embed session). `warnings` flags problems that do not stop rendering, such as an oversized message, or `POSTAL_ADDRESS_MISSING` while the workspace has no `postalAddress` for the footer.\n\nRequires API-key scope: `templates:read`.",
         "requestBody": {
           "required": true,
           "content": {
@@ -55164,6 +55614,13 @@
                     },
                     "subject": "Welcome to Acme Shop"
                   }
+                },
+                "html": {
+                  "summary": "Preview HTML in the code editor: what saving keeps, and what it removes",
+                  "value": {
+                    "kind": "html",
+                    "html": "<!DOCTYPE html><html lang=\"en\"><head><meta charset=\"utf-8\"><style>p{font-family:Arial,sans-serif}</style></head><body><h1>The Acme Shop monthly</h1><p>Hi {{ contact.firstName | default: \"there\" }}, here is what is new.</p><p><a href=\"{{unsubscribe_url}}\">Unsubscribe</a></p><script>track()</script></body></html>"
+                  }
                 }
               }
             }
@@ -55210,6 +55667,23 @@
                         "subject": "Welcome to Acme Shop",
                         "sizeBytes": 2048,
                         "warnings": []
+                      }
+                    }
+                  },
+                  "html": {
+                    "summary": "Preview HTML in the code editor: what saving keeps, and what it removes",
+                    "value": {
+                      "data": {
+                        "html": "<!DOCTYPE html><html lang=\"en\"><head><meta charset=\"utf-8\"><style>p{font-family:Arial,sans-serif}</style></head><body><h1>The Acme Shop monthly</h1><p>Hi there, here is what is new.</p><p><a href=\"{{unsubscribe_url}}\">Unsubscribe</a></p></body></html>",
+                        "text": "The Acme Shop monthly\n\nHi there, here is what is new.\n\nUnsubscribe ({{unsubscribe_url}})",
+                        "sizeBytes": 255,
+                        "warnings": [
+                          {
+                            "code": "HTML_REMOVED",
+                            "title": "Some code is removed",
+                            "detail": "Saving removes scripts. Email apps do not run them, so the email looks the same in an inbox."
+                          }
+                        ]
                       }
                     }
                   }
@@ -55276,7 +55750,7 @@
         "tags": [
           "templates"
         ],
-        "description": "Sends the design in the request to one workspace member who has accepted their invitation; call once per recipient. Pass `contact` to render merge tags as that contact would see them. The test comes from `from`, or the workspace's default sender, on a verified sending domain: there is no shared sender, so a workspace sends tests once its own domain is verified (`SENDING_DOMAIN_UNVERIFIED` before then). Nothing is recorded as a message. An embed session may call this too: a session lets the chosen builders read what they need, render previews, count audiences, upload images and, when `testSendTo` lists addresses, send test emails to those addresses only. It never saves, publishes or sends anything else; your server saves what the builders return. From a session, the test goes only to an address its `testSendTo` names, instead of to a workspace member (400 `VALIDATION_ERROR` for any other).\n\nRequires API-key scope: `templates:write`.",
+        "description": "Sends the design or HTML in the request to one workspace member who has accepted their invitation; call once per recipient. Pass `contact` to render merge tags as that contact would see them. The test comes from `from`, or the workspace's default sender, on a verified sending domain: there is no shared sender, so a workspace sends tests once its own domain is verified (`SENDING_DOMAIN_UNVERIFIED` before then). Nothing is recorded as a message. An embed session may call this too: a session lets the chosen builders read what they need, render previews, count audiences, upload images and, when `testSendTo` lists addresses, send test emails to those addresses only. It never saves, publishes or sends anything else; your server saves what the builders return. From a session, the test goes only to an address its `testSendTo` names, instead of to a workspace member (400 `VALIDATION_ERROR` for any other).\n\nRequires API-key scope: `templates:write`.",
         "requestBody": {
           "required": true,
           "content": {
@@ -55506,6 +55980,7 @@
                       "data": {
                         "id": "0192f3d0-1a2b-7c3d-8e4f-5a6b7c8d9e0f",
                         "name": "Welcome email",
+                        "kind": "design",
                         "schemaVersion": 1,
                         "blocks": [
                           {
@@ -55834,6 +56309,7 @@
                         "version": 1,
                         "publishedByUserId": "0192f3a0-7081-7293-8ea5-1a2b3c4d5e6f",
                         "publishedAt": "2026-10-02T14:05:00.000Z",
+                        "kind": "design",
                         "schemaVersion": 1,
                         "blocks": [
                           {
@@ -56047,6 +56523,7 @@
                       "data": {
                         "id": "0192f3d0-1a2b-7c3d-8e4f-5a6b7c8d9e0f",
                         "name": "Welcome email",
+                        "kind": "design",
                         "schemaVersion": 1,
                         "blocks": [
                           {
@@ -56166,7 +56643,7 @@
         "tags": [
           "templates"
         ],
-        "description": "Copies a template's draft (its blocks, theme and `transactionalDefaults`, not its alias) into a new template, published as version 1, as on create. A copy made with an agent key, or of an agent's template, stays a draft until a person publishes it.\n\nRequires API-key scope: `templates:write`.",
+        "description": "Copies a template's draft (its blocks and theme or its HTML, and `transactionalDefaults`, not its alias) into a new template, published as version 1, as on create. A copy made with an agent key, or of an agent's template, stays a draft until a person publishes it.\n\nRequires API-key scope: `templates:write`.",
         "requestBody": {
           "required": false,
           "content": {
@@ -56241,6 +56718,7 @@
                       "data": {
                         "id": "0192f3d0-2b3c-7d4e-9f50-6b7c8d9e0f1a",
                         "name": "Welcome email, spring",
+                        "kind": "design",
                         "schemaVersion": 1,
                         "blocks": [
                           {
@@ -58215,7 +58693,8 @@
                     },
                     "hiddenFields": {
                       "signup_campaign": {
-                        "fromParam": "utm_campaign"
+                        "source": "link",
+                        "param": "utm_campaign"
                       }
                     },
                     "listId": "0192f3a2-1b3c-7e5d-8a21-4f6a7b8c9d0e",
@@ -58321,7 +58800,8 @@
                         ],
                         "hiddenFields": {
                           "signup_campaign": {
-                            "fromParam": "utm_campaign"
+                            "source": "link",
+                            "param": "utm_campaign"
                           }
                         },
                         "share": {
@@ -58508,7 +58988,8 @@
                         ],
                         "hiddenFields": {
                           "signup_campaign": {
-                            "fromParam": "utm_campaign"
+                            "source": "link",
+                            "param": "utm_campaign"
                           }
                         },
                         "share": {
@@ -58692,7 +59173,8 @@
                         ],
                         "hiddenFields": {
                           "signup_campaign": {
-                            "fromParam": "utm_campaign"
+                            "source": "link",
+                            "param": "utm_campaign"
                           }
                         },
                         "share": {
@@ -59228,7 +59710,8 @@
                         ],
                         "hiddenFields": {
                           "signup_campaign": {
-                            "fromParam": "utm_campaign"
+                            "source": "link",
+                            "param": "utm_campaign"
                           }
                         },
                         "share": {
@@ -59404,7 +59887,8 @@
                         ],
                         "hiddenFields": {
                           "signup_campaign": {
-                            "fromParam": "utm_campaign"
+                            "source": "link",
+                            "param": "utm_campaign"
                           }
                         },
                         "share": {
@@ -59581,7 +60065,8 @@
                         ],
                         "hiddenFields": {
                           "signup_campaign": {
-                            "fromParam": "utm_campaign"
+                            "source": "link",
+                            "param": "utm_campaign"
                           }
                         },
                         "share": {
@@ -59758,7 +60243,8 @@
                         ],
                         "hiddenFields": {
                           "signup_campaign": {
-                            "fromParam": "utm_campaign"
+                            "source": "link",
+                            "param": "utm_campaign"
                           }
                         },
                         "share": {
@@ -65085,7 +65571,7 @@
                           {
                             "property": "total",
                             "operator": "gte",
-                            "value": 20
+                            "value": "20"
                           }
                         ]
                       }

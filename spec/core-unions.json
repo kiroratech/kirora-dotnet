@@ -1,24 +1,4 @@
 {
-  "IdentifyContactInputTopicsValue": [
-    {
-      "type": "boolean",
-      "description": "Join (true) or leave (false) the topic on every channel."
-    },
-    {
-      "type": "object",
-      "propertyNames": {
-        "type": "string",
-        "enum": [
-          "email",
-          "push"
-        ]
-      },
-      "additionalProperties": {
-        "type": "boolean"
-      },
-      "description": "One channel's choice each; a channel left out keeps its choice."
-    }
-  ],
   "IdentifyContactsBatchResultResultsItem": [
     {
       "type": "object",
@@ -172,26 +152,6 @@
       ],
       "additionalProperties": false,
       "title": "By email"
-    }
-  ],
-  "SetContactTopicInputSubscribed": [
-    {
-      "type": "boolean",
-      "description": "Join (true) or leave (false) the topic on every channel."
-    },
-    {
-      "type": "object",
-      "propertyNames": {
-        "type": "string",
-        "enum": [
-          "email",
-          "push"
-        ]
-      },
-      "additionalProperties": {
-        "type": "boolean"
-      },
-      "description": "One channel's choice each; a channel left out keeps its choice."
     }
   ],
   "Event": [
@@ -987,132 +947,6 @@
       "title": "By emails"
     }
   ],
-  "AttributeConditionValueVariant1": [
-    {
-      "type": "string",
-      "maxLength": 255
-    },
-    {
-      "type": "number"
-    },
-    {
-      "type": "boolean"
-    }
-  ],
-  "AttributeConditionValueVariant2Item": [
-    {
-      "type": "string",
-      "maxLength": 255
-    },
-    {
-      "type": "number"
-    },
-    {
-      "type": "boolean"
-    }
-  ],
-  "AttributeConditionValue": [
-    {
-      "anyOf": [
-        {
-          "type": "string",
-          "maxLength": 255
-        },
-        {
-          "type": "number"
-        },
-        {
-          "type": "boolean"
-        }
-      ]
-    },
-    {
-      "type": "array",
-      "items": {
-        "anyOf": [
-          {
-            "type": "string",
-            "maxLength": 255
-          },
-          {
-            "type": "number"
-          },
-          {
-            "type": "boolean"
-          }
-        ]
-      }
-    }
-  ],
-  "ContactFieldConditionValueVariant1": [
-    {
-      "type": "string",
-      "maxLength": 255
-    },
-    {
-      "type": "number"
-    },
-    {
-      "type": "boolean"
-    }
-  ],
-  "ContactFieldConditionValueVariant2Item": [
-    {
-      "type": "string",
-      "maxLength": 255
-    },
-    {
-      "type": "number"
-    },
-    {
-      "type": "boolean"
-    }
-  ],
-  "ContactFieldConditionValue": [
-    {
-      "anyOf": [
-        {
-          "type": "string",
-          "maxLength": 255
-        },
-        {
-          "type": "number"
-        },
-        {
-          "type": "boolean"
-        }
-      ]
-    },
-    {
-      "type": "array",
-      "items": {
-        "anyOf": [
-          {
-            "type": "string",
-            "maxLength": 255
-          },
-          {
-            "type": "number"
-          },
-          {
-            "type": "boolean"
-          }
-        ]
-      }
-    }
-  ],
-  "EventConditionWhereItemValue": [
-    {
-      "type": "string",
-      "maxLength": 255
-    },
-    {
-      "type": "number"
-    },
-    {
-      "type": "boolean"
-    }
-  ],
   "SegmentRulesMatchAllAllItemVariant1": [
     {
       "$ref": "#/components/schemas/AttributeCondition"
@@ -1475,132 +1309,6 @@
       ],
       "additionalProperties": false,
       "title": "Match any"
-    }
-  ],
-  "AttributeConditionInputValueVariant1": [
-    {
-      "type": "string",
-      "maxLength": 255
-    },
-    {
-      "type": "number"
-    },
-    {
-      "type": "boolean"
-    }
-  ],
-  "AttributeConditionInputValueVariant2Item": [
-    {
-      "type": "string",
-      "maxLength": 255
-    },
-    {
-      "type": "number"
-    },
-    {
-      "type": "boolean"
-    }
-  ],
-  "AttributeConditionInputValue": [
-    {
-      "anyOf": [
-        {
-          "type": "string",
-          "maxLength": 255
-        },
-        {
-          "type": "number"
-        },
-        {
-          "type": "boolean"
-        }
-      ]
-    },
-    {
-      "type": "array",
-      "items": {
-        "anyOf": [
-          {
-            "type": "string",
-            "maxLength": 255
-          },
-          {
-            "type": "number"
-          },
-          {
-            "type": "boolean"
-          }
-        ]
-      }
-    }
-  ],
-  "ContactFieldConditionInputValueVariant1": [
-    {
-      "type": "string",
-      "maxLength": 255
-    },
-    {
-      "type": "number"
-    },
-    {
-      "type": "boolean"
-    }
-  ],
-  "ContactFieldConditionInputValueVariant2Item": [
-    {
-      "type": "string",
-      "maxLength": 255
-    },
-    {
-      "type": "number"
-    },
-    {
-      "type": "boolean"
-    }
-  ],
-  "ContactFieldConditionInputValue": [
-    {
-      "anyOf": [
-        {
-          "type": "string",
-          "maxLength": 255
-        },
-        {
-          "type": "number"
-        },
-        {
-          "type": "boolean"
-        }
-      ]
-    },
-    {
-      "type": "array",
-      "items": {
-        "anyOf": [
-          {
-            "type": "string",
-            "maxLength": 255
-          },
-          {
-            "type": "number"
-          },
-          {
-            "type": "boolean"
-          }
-        ]
-      }
-    }
-  ],
-  "EventConditionInputWhereItemValue": [
-    {
-      "type": "string",
-      "maxLength": 255
-    },
-    {
-      "type": "number"
-    },
-    {
-      "type": "boolean"
     }
   ],
   "SegmentRulesInputMatchAllAllItemVariant1": [
@@ -2157,16 +1865,6 @@
       "title": "Inline content"
     }
   ],
-  "TransactionalDeliverInput": [
-    {
-      "type": "string",
-      "const": "all",
-      "description": "Every channel given that the contact can receive."
-    },
-    {
-      "$ref": "#/components/schemas/TransactionalDeliverFirstInput"
-    }
-  ],
   "SendTransactionalMessagesBatchResultResultsItem": [
     {
       "type": "object",
@@ -2410,6 +2108,14 @@
       "$ref": "#/components/schemas/SharedBlockReferenceInput"
     }
   ],
+  "TemplateSnapshotInput": [
+    {
+      "$ref": "#/components/schemas/DesignSnapshotInput"
+    },
+    {
+      "$ref": "#/components/schemas/HtmlSnapshotInput"
+    }
+  ],
   "ImageGroupBlockCount": [
     {
       "type": "number",
@@ -2489,6 +2195,166 @@
     },
     {
       "$ref": "#/components/schemas/SharedBlockReference"
+    }
+  ],
+  "CampaignContentEmailTemplateSnapshot": [
+    {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "type": "string",
+          "const": "design"
+        },
+        "schemaVersion": {
+          "type": "integer",
+          "exclusiveMinimum": 0,
+          "maximum": 1000
+        },
+        "blocks": {
+          "minItems": 1,
+          "maxItems": 200,
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/EmailBlock"
+          },
+          "description": "The blocks, rendered top to bottom: at most 200 across the whole tree and five levels including the root. The footer stays at the root."
+        },
+        "theme": {
+          "$ref": "#/components/schemas/EmailTheme"
+        },
+        "language": {
+          "type": "string",
+          "description": "The language the email is written in, as a BCP 47 tag (\"en\", \"fr-BE\", \"ar\"). It sets the HTML `lang` and the reading direction: Arabic, Hebrew, Persian, Urdu and other right-to-left languages render right to left. Defaults to \"en\"."
+        },
+        "plainTextOverride": {
+          "description": "Plain text sent instead of the version generated from the design or HTML.",
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 512000
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "schemaVersion",
+        "blocks",
+        "theme"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "type": "string",
+          "const": "html"
+        },
+        "html": {
+          "type": "string",
+          "maxLength": 512000
+        },
+        "plainTextOverride": {
+          "description": "Plain text sent instead of the version generated from the design or HTML.",
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 512000
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "kind",
+        "html"
+      ],
+      "additionalProperties": false
+    }
+  ],
+  "CampaignAbTestVersionsItemEmailTemplateSnapshot": [
+    {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "type": "string",
+          "const": "design"
+        },
+        "schemaVersion": {
+          "type": "integer",
+          "exclusiveMinimum": 0,
+          "maximum": 1000
+        },
+        "blocks": {
+          "minItems": 1,
+          "maxItems": 200,
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/EmailBlock"
+          },
+          "description": "The blocks, rendered top to bottom: at most 200 across the whole tree and five levels including the root. The footer stays at the root."
+        },
+        "theme": {
+          "$ref": "#/components/schemas/EmailTheme"
+        },
+        "language": {
+          "type": "string",
+          "description": "The language the email is written in, as a BCP 47 tag (\"en\", \"fr-BE\", \"ar\"). It sets the HTML `lang` and the reading direction: Arabic, Hebrew, Persian, Urdu and other right-to-left languages render right to left. Defaults to \"en\"."
+        },
+        "plainTextOverride": {
+          "description": "Plain text sent instead of the version generated from the design or HTML.",
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 512000
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "schemaVersion",
+        "blocks",
+        "theme"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "type": "string",
+          "const": "html"
+        },
+        "html": {
+          "type": "string",
+          "maxLength": 512000
+        },
+        "plainTextOverride": {
+          "description": "Plain text sent instead of the version generated from the design or HTML.",
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 512000
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "kind",
+        "html"
+      ],
+      "additionalProperties": false
     }
   ],
   "CampaignEligibilityChannelsItem": [
@@ -2635,18 +2501,6 @@
       "title": "Recipient by email"
     }
   ],
-  "JourneyTriggerEventTriggerWhereItemValue": [
-    {
-      "type": "string",
-      "maxLength": 255
-    },
-    {
-      "type": "number"
-    },
-    {
-      "type": "boolean"
-    }
-  ],
   "JourneyTriggerEventTriggerReentry": [
     {
       "type": "object",
@@ -2764,18 +2618,6 @@
       "title": "Repeatable"
     }
   ],
-  "JourneyTriggerFormTriggerWhereItemValue": [
-    {
-      "type": "string",
-      "maxLength": 255
-    },
-    {
-      "type": "number"
-    },
-    {
-      "type": "boolean"
-    }
-  ],
   "JourneyTriggerFormTriggerReentry": [
     {
       "type": "object",
@@ -2813,18 +2655,6 @@
       ],
       "additionalProperties": false,
       "title": "Repeatable"
-    }
-  ],
-  "JourneyTriggerAttributeTriggerWhereItemValue": [
-    {
-      "type": "string",
-      "maxLength": 255
-    },
-    {
-      "type": "number"
-    },
-    {
-      "type": "boolean"
     }
   ],
   "JourneyTriggerAttributeTriggerReentry": [
@@ -2907,21 +2737,12 @@
                   "lt",
                   "lte"
                 ],
-                "description": "`notEquals` also matches an event without the property. `equals` and `notEquals` ignore case and accents in text."
+                "description": "`notEquals` also matches an event without the property. `equals` and `notEquals` compare the property as text, ignoring case and accents."
               },
               "value": {
-                "anyOf": [
-                  {
-                    "type": "string",
-                    "maxLength": 255
-                  },
-                  {
-                    "type": "number"
-                  },
-                  {
-                    "type": "boolean"
-                  }
-                ]
+                "type": "string",
+                "maxLength": 255,
+                "description": "What to compare with, as text (`\"pro\"`, `\"true\"`); a number (`\"50\"`) for `gt`, `gte`, `lt` and `lte`."
               }
             },
             "required": [
@@ -3162,21 +2983,12 @@
                   "lt",
                   "lte"
                 ],
-                "description": "`notEquals` also matches an event without the property. `equals` and `notEquals` ignore case and accents in text."
+                "description": "`notEquals` also matches an event without the property. `equals` and `notEquals` compare the property as text, ignoring case and accents."
               },
               "value": {
-                "anyOf": [
-                  {
-                    "type": "string",
-                    "maxLength": 255
-                  },
-                  {
-                    "type": "number"
-                  },
-                  {
-                    "type": "boolean"
-                  }
-                ]
+                "type": "string",
+                "maxLength": 255,
+                "description": "What to compare with, as text (`\"pro\"`, `\"true\"`); a number (`\"50\"`) for `gt`, `gte`, `lt` and `lte`."
               }
             },
             "required": [
@@ -3279,21 +3091,12 @@
                   "lt",
                   "lte"
                 ],
-                "description": "`notEquals` also matches an event without the property. `equals` and `notEquals` ignore case and accents in text."
+                "description": "`notEquals` also matches an event without the property. `equals` and `notEquals` compare the property as text, ignoring case and accents."
               },
               "value": {
-                "anyOf": [
-                  {
-                    "type": "string",
-                    "maxLength": 255
-                  },
-                  {
-                    "type": "number"
-                  },
-                  {
-                    "type": "boolean"
-                  }
-                ]
+                "type": "string",
+                "maxLength": 255,
+                "description": "What to compare with, as text (`\"pro\"`, `\"true\"`); a number (`\"50\"`) for `gt`, `gte`, `lt` and `lte`."
               }
             },
             "required": [
@@ -3437,18 +3240,6 @@
       "title": "Date trigger"
     }
   ],
-  "JourneyTriggerInputEventTriggerWhereItemValue": [
-    {
-      "type": "string",
-      "maxLength": 255
-    },
-    {
-      "type": "number"
-    },
-    {
-      "type": "boolean"
-    }
-  ],
   "JourneyTriggerInputEventTriggerReentry": [
     {
       "type": "object",
@@ -3563,18 +3354,6 @@
       "title": "Repeatable"
     }
   ],
-  "JourneyTriggerInputFormTriggerWhereItemValue": [
-    {
-      "type": "string",
-      "maxLength": 255
-    },
-    {
-      "type": "number"
-    },
-    {
-      "type": "boolean"
-    }
-  ],
   "JourneyTriggerInputFormTriggerReentry": [
     {
       "type": "object",
@@ -3611,18 +3390,6 @@
       ],
       "additionalProperties": false,
       "title": "Repeatable"
-    }
-  ],
-  "JourneyTriggerInputAttributeTriggerWhereItemValue": [
-    {
-      "type": "string",
-      "maxLength": 255
-    },
-    {
-      "type": "number"
-    },
-    {
-      "type": "boolean"
     }
   ],
   "JourneyTriggerInputAttributeTriggerReentry": [
@@ -3704,21 +3471,12 @@
                   "lt",
                   "lte"
                 ],
-                "description": "`notEquals` also matches an event without the property. `equals` and `notEquals` ignore case and accents in text."
+                "description": "`notEquals` also matches an event without the property. `equals` and `notEquals` compare the property as text, ignoring case and accents."
               },
               "value": {
-                "anyOf": [
-                  {
-                    "type": "string",
-                    "maxLength": 255
-                  },
-                  {
-                    "type": "number"
-                  },
-                  {
-                    "type": "boolean"
-                  }
-                ]
+                "type": "string",
+                "maxLength": 255,
+                "description": "What to compare with, as text (`\"pro\"`, `\"true\"`); a number (`\"50\"`) for `gt`, `gte`, `lt` and `lte`."
               }
             },
             "required": [
@@ -3952,21 +3710,12 @@
                   "lt",
                   "lte"
                 ],
-                "description": "`notEquals` also matches an event without the property. `equals` and `notEquals` ignore case and accents in text."
+                "description": "`notEquals` also matches an event without the property. `equals` and `notEquals` compare the property as text, ignoring case and accents."
               },
               "value": {
-                "anyOf": [
-                  {
-                    "type": "string",
-                    "maxLength": 255
-                  },
-                  {
-                    "type": "number"
-                  },
-                  {
-                    "type": "boolean"
-                  }
-                ]
+                "type": "string",
+                "maxLength": 255,
+                "description": "What to compare with, as text (`\"pro\"`, `\"true\"`); a number (`\"50\"`) for `gt`, `gte`, `lt` and `lte`."
               }
             },
             "required": [
@@ -4067,21 +3816,12 @@
                   "lt",
                   "lte"
                 ],
-                "description": "`notEquals` also matches an event without the property. `equals` and `notEquals` ignore case and accents in text."
+                "description": "`notEquals` also matches an event without the property. `equals` and `notEquals` compare the property as text, ignoring case and accents."
               },
               "value": {
-                "anyOf": [
-                  {
-                    "type": "string",
-                    "maxLength": 255
-                  },
-                  {
-                    "type": "number"
-                  },
-                  {
-                    "type": "boolean"
-                  }
-                ]
+                "type": "string",
+                "maxLength": 255,
+                "description": "What to compare with, as text (`\"pro\"`, `\"true\"`); a number (`\"50\"`) for `gt`, `gte`, `lt` and `lte`."
               }
             },
             "required": [
@@ -4220,18 +3960,6 @@
       "title": "Date trigger"
     }
   ],
-  "CreateJourneyInputExitConditionsItemEventExitWhereItemValue": [
-    {
-      "type": "string",
-      "maxLength": 255
-    },
-    {
-      "type": "number"
-    },
-    {
-      "type": "boolean"
-    }
-  ],
   "CreateJourneyInputExitConditionsItem": [
     {
       "type": "object",
@@ -4273,21 +4001,12 @@
                   "lt",
                   "lte"
                 ],
-                "description": "`notEquals` also matches an event without the property. `equals` and `notEquals` ignore case and accents in text."
+                "description": "`notEquals` also matches an event without the property. `equals` and `notEquals` compare the property as text, ignoring case and accents."
               },
               "value": {
-                "anyOf": [
-                  {
-                    "type": "string",
-                    "maxLength": 255
-                  },
-                  {
-                    "type": "number"
-                  },
-                  {
-                    "type": "boolean"
-                  }
-                ]
+                "type": "string",
+                "maxLength": 255,
+                "description": "What to compare with, as text (`\"pro\"`, `\"true\"`); a number (`\"50\"`) for `gt`, `gte`, `lt` and `lte`."
               }
             },
             "required": [
@@ -4319,18 +4038,6 @@
       ],
       "additionalProperties": false,
       "title": "Conversion goal exit"
-    }
-  ],
-  "CreateJourneyInputStepsItemWaitUntilStepEventWhereItemValue": [
-    {
-      "type": "string",
-      "maxLength": 255
-    },
-    {
-      "type": "number"
-    },
-    {
-      "type": "boolean"
     }
   ],
   "CreateJourneyInputStepsItemVariant4": [
@@ -4990,18 +4697,6 @@
       "title": "Push send step"
     }
   ],
-  "CreateJourneyInputStepsItemBranchStepWhereItemValue": [
-    {
-      "type": "string",
-      "maxLength": 255
-    },
-    {
-      "type": "number"
-    },
-    {
-      "type": "boolean"
-    }
-  ],
   "CreateJourneyInputStepsItemActionStepActionSetAttributeValue": [
     {
       "type": "string",
@@ -5356,21 +5051,12 @@
                       "lt",
                       "lte"
                     ],
-                    "description": "`notEquals` also matches an event without the property. `equals` and `notEquals` ignore case and accents in text."
+                    "description": "`notEquals` also matches an event without the property. `equals` and `notEquals` compare the property as text, ignoring case and accents."
                   },
                   "value": {
-                    "anyOf": [
-                      {
-                        "type": "string",
-                        "maxLength": 255
-                      },
-                      {
-                        "type": "number"
-                      },
-                      {
-                        "type": "boolean"
-                      }
-                    ]
+                    "type": "string",
+                    "maxLength": 255,
+                    "description": "What to compare with, as text (`\"pro\"`, `\"true\"`); a number (`\"50\"`) for `gt`, `gte`, `lt` and `lte`."
                   }
                 },
                 "required": [
@@ -6219,21 +5905,12 @@
                   "lt",
                   "lte"
                 ],
-                "description": "`notEquals` also matches an event without the property. `equals` and `notEquals` ignore case and accents in text."
+                "description": "`notEquals` also matches an event without the property. `equals` and `notEquals` compare the property as text, ignoring case and accents."
               },
               "value": {
-                "anyOf": [
-                  {
-                    "type": "string",
-                    "maxLength": 255
-                  },
-                  {
-                    "type": "number"
-                  },
-                  {
-                    "type": "boolean"
-                  }
-                ]
+                "type": "string",
+                "maxLength": 255,
+                "description": "What to compare with, as text (`\"pro\"`, `\"true\"`); a number (`\"50\"`) for `gt`, `gte`, `lt` and `lte`."
               }
             },
             "required": [
@@ -6692,18 +6369,6 @@
       "title": "Action step"
     }
   ],
-  "JourneyExitConditionsItemEventExitWhereItemValue": [
-    {
-      "type": "string",
-      "maxLength": 255
-    },
-    {
-      "type": "number"
-    },
-    {
-      "type": "boolean"
-    }
-  ],
   "JourneyExitConditionsItem": [
     {
       "type": "object",
@@ -6745,21 +6410,12 @@
                   "lt",
                   "lte"
                 ],
-                "description": "`notEquals` also matches an event without the property. `equals` and `notEquals` ignore case and accents in text."
+                "description": "`notEquals` also matches an event without the property. `equals` and `notEquals` compare the property as text, ignoring case and accents."
               },
               "value": {
-                "anyOf": [
-                  {
-                    "type": "string",
-                    "maxLength": 255
-                  },
-                  {
-                    "type": "number"
-                  },
-                  {
-                    "type": "boolean"
-                  }
-                ]
+                "type": "string",
+                "maxLength": 255,
+                "description": "What to compare with, as text (`\"pro\"`, `\"true\"`); a number (`\"50\"`) for `gt`, `gte`, `lt` and `lte`."
               }
             },
             "required": [
@@ -6793,28 +6449,12 @@
       "title": "Conversion goal exit"
     }
   ],
-  "JourneyStepWaitUntilStepEventWhereItemValue": [
+  "TemplateSnapshot": [
     {
-      "type": "string",
-      "maxLength": 255
+      "$ref": "#/components/schemas/DesignSnapshot"
     },
     {
-      "type": "number"
-    },
-    {
-      "type": "boolean"
-    }
-  ],
-  "JourneyStepBranchStepWhereItemValue": [
-    {
-      "type": "string",
-      "maxLength": 255
-    },
-    {
-      "type": "number"
-    },
-    {
-      "type": "boolean"
+      "$ref": "#/components/schemas/HtmlSnapshot"
     }
   ],
   "JourneyStepActionStepActionSetAttributeValue": [
@@ -7172,21 +6812,12 @@
                       "lt",
                       "lte"
                     ],
-                    "description": "`notEquals` also matches an event without the property. `equals` and `notEquals` ignore case and accents in text."
+                    "description": "`notEquals` also matches an event without the property. `equals` and `notEquals` compare the property as text, ignoring case and accents."
                   },
                   "value": {
-                    "anyOf": [
-                      {
-                        "type": "string",
-                        "maxLength": 255
-                      },
-                      {
-                        "type": "number"
-                      },
-                      {
-                        "type": "boolean"
-                      }
-                    ]
+                    "type": "string",
+                    "maxLength": 255,
+                    "description": "What to compare with, as text (`\"pro\"`, `\"true\"`); a number (`\"50\"`) for `gt`, `gte`, `lt` and `lte`."
                   }
                 },
                 "required": [
@@ -8033,21 +7664,12 @@
                   "lt",
                   "lte"
                 ],
-                "description": "`notEquals` also matches an event without the property. `equals` and `notEquals` ignore case and accents in text."
+                "description": "`notEquals` also matches an event without the property. `equals` and `notEquals` compare the property as text, ignoring case and accents."
               },
               "value": {
-                "anyOf": [
-                  {
-                    "type": "string",
-                    "maxLength": 255
-                  },
-                  {
-                    "type": "number"
-                  },
-                  {
-                    "type": "boolean"
-                  }
-                ]
+                "type": "string",
+                "maxLength": 255,
+                "description": "What to compare with, as text (`\"pro\"`, `\"true\"`); a number (`\"50\"`) for `gt`, `gte`, `lt` and `lte`."
               }
             },
             "required": [
@@ -8508,18 +8130,6 @@
       "title": "Action step"
     }
   ],
-  "UpdateJourneyInputExitConditionsItemEventExitWhereItemValue": [
-    {
-      "type": "string",
-      "maxLength": 255
-    },
-    {
-      "type": "number"
-    },
-    {
-      "type": "boolean"
-    }
-  ],
   "UpdateJourneyInputExitConditionsItem": [
     {
       "type": "object",
@@ -8561,21 +8171,12 @@
                   "lt",
                   "lte"
                 ],
-                "description": "`notEquals` also matches an event without the property. `equals` and `notEquals` ignore case and accents in text."
+                "description": "`notEquals` also matches an event without the property. `equals` and `notEquals` compare the property as text, ignoring case and accents."
               },
               "value": {
-                "anyOf": [
-                  {
-                    "type": "string",
-                    "maxLength": 255
-                  },
-                  {
-                    "type": "number"
-                  },
-                  {
-                    "type": "boolean"
-                  }
-                ]
+                "type": "string",
+                "maxLength": 255,
+                "description": "What to compare with, as text (`\"pro\"`, `\"true\"`); a number (`\"50\"`) for `gt`, `gte`, `lt` and `lte`."
               }
             },
             "required": [
@@ -8607,18 +8208,6 @@
       ],
       "additionalProperties": false,
       "title": "Conversion goal exit"
-    }
-  ],
-  "UpdateJourneyInputStepsItemWaitUntilStepEventWhereItemValue": [
-    {
-      "type": "string",
-      "maxLength": 255
-    },
-    {
-      "type": "number"
-    },
-    {
-      "type": "boolean"
     }
   ],
   "UpdateJourneyInputStepsItemVariant4": [
@@ -9278,18 +8867,6 @@
       "title": "Push send step"
     }
   ],
-  "UpdateJourneyInputStepsItemBranchStepWhereItemValue": [
-    {
-      "type": "string",
-      "maxLength": 255
-    },
-    {
-      "type": "number"
-    },
-    {
-      "type": "boolean"
-    }
-  ],
   "UpdateJourneyInputStepsItemActionStepActionSetAttributeValue": [
     {
       "type": "string",
@@ -9644,21 +9221,12 @@
                       "lt",
                       "lte"
                     ],
-                    "description": "`notEquals` also matches an event without the property. `equals` and `notEquals` ignore case and accents in text."
+                    "description": "`notEquals` also matches an event without the property. `equals` and `notEquals` compare the property as text, ignoring case and accents."
                   },
                   "value": {
-                    "anyOf": [
-                      {
-                        "type": "string",
-                        "maxLength": 255
-                      },
-                      {
-                        "type": "number"
-                      },
-                      {
-                        "type": "boolean"
-                      }
-                    ]
+                    "type": "string",
+                    "maxLength": 255,
+                    "description": "What to compare with, as text (`\"pro\"`, `\"true\"`); a number (`\"50\"`) for `gt`, `gte`, `lt` and `lte`."
                   }
                 },
                 "required": [
@@ -10507,21 +10075,12 @@
                   "lt",
                   "lte"
                 ],
-                "description": "`notEquals` also matches an event without the property. `equals` and `notEquals` ignore case and accents in text."
+                "description": "`notEquals` also matches an event without the property. `equals` and `notEquals` compare the property as text, ignoring case and accents."
               },
               "value": {
-                "anyOf": [
-                  {
-                    "type": "string",
-                    "maxLength": 255
-                  },
-                  {
-                    "type": "number"
-                  },
-                  {
-                    "type": "boolean"
-                  }
-                ]
+                "type": "string",
+                "maxLength": 255,
+                "description": "What to compare with, as text (`\"pro\"`, `\"true\"`); a number (`\"50\"`) for `gt`, `gte`, `lt` and `lte`."
               }
             },
             "required": [
@@ -10980,18 +10539,6 @@
       "title": "Action step"
     }
   ],
-  "EndedJourneyExitConditionsItemEventExitWhereItemValue": [
-    {
-      "type": "string",
-      "maxLength": 255
-    },
-    {
-      "type": "number"
-    },
-    {
-      "type": "boolean"
-    }
-  ],
   "EndedJourneyExitConditionsItem": [
     {
       "type": "object",
@@ -11033,21 +10580,12 @@
                   "lt",
                   "lte"
                 ],
-                "description": "`notEquals` also matches an event without the property. `equals` and `notEquals` ignore case and accents in text."
+                "description": "`notEquals` also matches an event without the property. `equals` and `notEquals` compare the property as text, ignoring case and accents."
               },
               "value": {
-                "anyOf": [
-                  {
-                    "type": "string",
-                    "maxLength": 255
-                  },
-                  {
-                    "type": "number"
-                  },
-                  {
-                    "type": "boolean"
-                  }
-                ]
+                "type": "string",
+                "maxLength": 255,
+                "description": "What to compare with, as text (`\"pro\"`, `\"true\"`); a number (`\"50\"`) for `gt`, `gte`, `lt` and `lte`."
               }
             },
             "required": [
@@ -11081,41 +10619,44 @@
       "title": "Conversion goal exit"
     }
   ],
-  "ConversionGoalWhereItemValue": [
+  "CreateTemplateInput": [
     {
-      "type": "string",
-      "maxLength": 255
+      "$ref": "#/components/schemas/CreateDesignTemplateInput"
     },
     {
-      "type": "number"
-    },
-    {
-      "type": "boolean"
+      "$ref": "#/components/schemas/CreateHtmlTemplateInput"
     }
   ],
-  "CreateConversionGoalInputWhereItemValue": [
+  "Template": [
     {
-      "type": "string",
-      "maxLength": 255
+      "$ref": "#/components/schemas/DesignTemplate"
     },
     {
-      "type": "number"
-    },
-    {
-      "type": "boolean"
+      "$ref": "#/components/schemas/HtmlTemplate"
     }
   ],
-  "RenderTemplateInputVersion": [
+  "RenderTemplateContentInput": [
     {
-      "type": "string",
-      "enum": [
-        "published",
-        "draft"
-      ]
+      "$ref": "#/components/schemas/RenderDesignContentInput"
     },
     {
-      "type": "integer",
-      "exclusiveMinimum": 0
+      "$ref": "#/components/schemas/RenderHtmlContentInput"
+    }
+  ],
+  "SendTemplateTestInput": [
+    {
+      "$ref": "#/components/schemas/SendDesignTemplateTestInput"
+    },
+    {
+      "$ref": "#/components/schemas/SendHtmlTemplateTestInput"
+    }
+  ],
+  "TemplateVersion": [
+    {
+      "$ref": "#/components/schemas/DesignTemplateVersion"
+    },
+    {
+      "$ref": "#/components/schemas/HtmlTemplateVersion"
     }
   ],
   "FormListItemCaptcha": [
@@ -11126,35 +10667,44 @@
       "$ref": "#/components/schemas/OwnCaptchaSetting"
     }
   ],
-  "CreateFormInputHiddenFieldsValue": [
+  "FormHiddenValueInput": [
     {
-      "type": "string",
-      "maxLength": 1000
+      "type": "object",
+      "properties": {
+        "source": {
+          "type": "string",
+          "const": "fixed"
+        },
+        "value": {
+          "type": "string",
+          "maxLength": 1000,
+          "description": "Saved as it is on every submitter."
+        }
+      },
+      "required": [
+        "source",
+        "value"
+      ],
+      "additionalProperties": false
     },
     {
       "type": "object",
       "properties": {
-        "fromParam": {
+        "source": {
+          "type": "string",
+          "const": "link"
+        },
+        "param": {
           "type": "string",
           "pattern": "^[A-Za-z0-9_.-]{1,64}$",
           "description": "The link parameter it takes its value from, such as `utm_campaign`; left unset when the link has none."
         }
       },
       "required": [
-        "fromParam"
+        "source",
+        "param"
       ],
       "additionalProperties": false
-    }
-  ],
-  "FormThemeInputInputsWidth": [
-    {
-      "type": "string",
-      "const": "full"
-    },
-    {
-      "type": "integer",
-      "minimum": 200,
-      "maximum": 720
     }
   ],
   "FormDisplayInput": [
@@ -11288,35 +10838,44 @@
       "title": "Redirect"
     }
   ],
-  "FormHiddenFieldsValue": [
+  "FormHiddenValue": [
     {
-      "type": "string",
-      "maxLength": 1000
+      "type": "object",
+      "properties": {
+        "source": {
+          "type": "string",
+          "const": "fixed"
+        },
+        "value": {
+          "type": "string",
+          "maxLength": 1000,
+          "description": "Saved as it is on every submitter."
+        }
+      },
+      "required": [
+        "source",
+        "value"
+      ],
+      "additionalProperties": false
     },
     {
       "type": "object",
       "properties": {
-        "fromParam": {
+        "source": {
+          "type": "string",
+          "const": "link"
+        },
+        "param": {
           "type": "string",
           "pattern": "^[A-Za-z0-9_.-]{1,64}$",
           "description": "The link parameter it takes its value from, such as `utm_campaign`; left unset when the link has none."
         }
       },
       "required": [
-        "fromParam"
+        "source",
+        "param"
       ],
       "additionalProperties": false
-    }
-  ],
-  "FormThemeInputsWidth": [
-    {
-      "type": "string",
-      "const": "full"
-    },
-    {
-      "type": "integer",
-      "minimum": 200,
-      "maximum": 720
     }
   ],
   "FormDisplay": [
@@ -11447,26 +11006,6 @@
       "title": "Redirect"
     }
   ],
-  "UpdateFormInputHiddenFieldsValue": [
-    {
-      "type": "string",
-      "maxLength": 1000
-    },
-    {
-      "type": "object",
-      "properties": {
-        "fromParam": {
-          "type": "string",
-          "pattern": "^[A-Za-z0-9_.-]{1,64}$",
-          "description": "The link parameter it takes its value from, such as `utm_campaign`; left unset when the link has none."
-        }
-      },
-      "required": [
-        "fromParam"
-      ],
-      "additionalProperties": false
-    }
-  ],
   "UpdateFormInputCaptcha": [
     {
       "$ref": "#/components/schemas/KiroraCaptchaInput"
@@ -11519,20 +11058,6 @@
       "title": "Redirect"
     }
   ],
-  "SubmitFormInputFieldsValue": [
-    {
-      "type": "string",
-      "maxLength": 1000
-    },
-    {
-      "maxItems": 50,
-      "type": "array",
-      "items": {
-        "type": "string",
-        "maxLength": 100
-      }
-    }
-  ],
   "PushCredential": [
     {
       "type": "object",
@@ -11583,18 +11108,6 @@
       ],
       "additionalProperties": false,
       "title": "FCM (Android)"
-    }
-  ],
-  "FunnelDefinitionInputStepsItemWhereItemValue": [
-    {
-      "type": "string",
-      "maxLength": 255
-    },
-    {
-      "type": "number"
-    },
-    {
-      "type": "boolean"
     }
   ]
 }

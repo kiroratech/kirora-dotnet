@@ -51,7 +51,7 @@ public static class CoreResourceExamples
             To = new TransactionalRecipientInputByExternalId { ExternalId = "example-user-123" },
             Email = email,
             Push = new TransactionalPushInput { Title = "Order received", Body = "Thank you for your order." },
-            Deliver = (TransactionalDeliverInput)new TransactionalDeliverFirstInput { First = ["email", "push"] }
+            FallbackOrder = new[] { "email", "push" }
         }, new KiroraRequestOptions { IdempotencyKey = $"order-{orderId}-receipt" }, cancellationToken);
         Console.WriteLine(result.Data.Messages.Count);
         // Read delivery details/content through kirora.Messages.GetAsync(id) and GetContentAsync(id).

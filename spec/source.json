@@ -1,6 +1,6 @@
 {
   "description": "Official Kirora OpenAPI contract pinned to an immutable upstream commit. Code generation verifies version and SHA-256.",
-  "url": "https://raw.githubusercontent.com/kiroratech/openapi/30043317efd68ffceeab882019431e57b7463018/openapi.json",
+  "url": "https://raw.githubusercontent.com/kiroratech/openapi/80060d50bfa80f3c82b89a363a229c5b1c39506a/openapi.json",
   "version": "1.0.0",
-  "sha256": "b6b5b3a071f06b91b9d6ca271e10f4baca1e3dcb32d75303d83b67b1b7547653"
+  "sha256": "b6bec37ca55ab8c0355d94fa608b21a2d8d100dbed8792abc6783c9c6b09bb4d"
 }

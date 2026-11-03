@@ -302,10 +302,10 @@ public sealed partial class IdentifyContactInput
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
     public Optional<SetContactConsentInput> Consent { get; init; }
 
-    /// <summary>Topic choices keyed by topic id, at most 50, as `PUT /v1/contacts/{id}/topics/{topicId}` sets them: `true` or `false` for every channel, or `{ "email": …, "push": … }` per channel. Each change is recorded in consent changes with this request; an unknown topic id refuses the whole write with `VALIDATION_ERROR` at `topics.&lt;id&gt;`. Omit this field to leave it unspecified.</summary>
+    /// <summary>Topic choices keyed by topic id, at most 50, as `PUT /v1/contacts/{id}/topics/{topicId}` sets them: `{ "subscribed": true }` for every channel, or `{ "channels": { "email": … } }` per channel. Each change is recorded in consent changes with this request; an unknown topic id refuses the whole write with `VALIDATION_ERROR` at `topics.&lt;id&gt;`. Omit this field to leave it unspecified.</summary>
     [JsonPropertyName("topics")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
-    public Optional<Dictionary<string, IdentifyContactInputTopicsValue>> Topics { get; init; }
+    public Optional<Dictionary<string, TopicChoiceInput>> Topics { get; init; }
 
     /// <summary>Names of lists to add the contact to, up to 20, matched without case; a list the workspace lacks is created. Adds only: the contact stays in the lists it is already in. Omit this field to leave it unspecified.</summary>
     [JsonPropertyName("lists")]
@@ -357,19 +357,19 @@ public sealed partial class ConsentStatementInput
 
 }
 
-/// <summary>IdentifyContactInputTopicsValue Kirora API contract.</summary>
-[JsonConverter(typeof(IdentifyContactInputTopicsValueConverter))]
-public sealed class IdentifyContactInputTopicsValue
+/// <summary>TopicChoiceInput Kirora API contract.</summary>
+public sealed partial class TopicChoiceInput
 {
-    /// <summary>Provides the documented configuration or response value.</summary>
-    public object Value { get; }
-    private IdentifyContactInputTopicsValue(object value) => Value = value;
-    /// <summary>Provides the documented operation.</summary>
-    public T As<T>() => Value is T value ? value : throw new InvalidOperationException("The union holds another variant.");
-    /// <summary>Provides the documented operation.</summary>
-    public static implicit operator IdentifyContactInputTopicsValue(bool value) => new(value);
-    /// <summary>Provides the documented operation.</summary>
-    public static implicit operator IdentifyContactInputTopicsValue(Dictionary<string, bool> value) => new(value ?? throw new ArgumentNullException(nameof(value)));
+    /// <summary>Join (true) or leave (false) the topic on every channel; it clears each channel's own choice. Omit this field to leave it unspecified.</summary>
+    [JsonPropertyName("subscribed")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+    public Optional<bool> Subscribed { get; init; }
+
+    /// <summary>One channel's choice each, applied after `subscribed`; a channel left out keeps its choice. Omit this field to leave it unspecified.</summary>
+    [JsonPropertyName("channels")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+    public Optional<Dictionary<string, bool>> Channels { get; init; }
+
 }
 
 /// <summary>IdentifyContactResponse Kirora API contract.</summary>
@@ -1452,30 +1452,21 @@ public sealed partial class SetContactTopicQuery
 /// <summary>SetContactTopicInput Kirora API contract.</summary>
 public sealed partial class SetContactTopicInput
 {
-    /// <summary>The documented subscribed value.</summary>
+    /// <summary>Join (true) or leave (false) the topic on every channel; it clears each channel's own choice. Omit this field to leave it unspecified.</summary>
     [JsonPropertyName("subscribed")]
-    public required SetContactTopicInputSubscribed Subscribed { get; init; }
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+    public Optional<bool> Subscribed { get; init; }
+
+    /// <summary>One channel's choice each, applied after `subscribed`; a channel left out keeps its choice. Omit this field to leave it unspecified.</summary>
+    [JsonPropertyName("channels")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+    public Optional<Dictionary<string, bool>> Channels { get; init; }
 
     /// <summary>How the contact agreed; required to join on any channel. Omit this field to leave it unspecified.</summary>
     [JsonPropertyName("statement")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
     public Optional<ConsentStatementInput> Statement { get; init; }
 
-}
-
-/// <summary>SetContactTopicInputSubscribed Kirora API contract.</summary>
-[JsonConverter(typeof(SetContactTopicInputSubscribedConverter))]
-public sealed class SetContactTopicInputSubscribed
-{
-    /// <summary>Provides the documented configuration or response value.</summary>
-    public object Value { get; }
-    private SetContactTopicInputSubscribed(object value) => Value = value;
-    /// <summary>Provides the documented operation.</summary>
-    public T As<T>() => Value is T value ? value : throw new InvalidOperationException("The union holds another variant.");
-    /// <summary>Provides the documented operation.</summary>
-    public static implicit operator SetContactTopicInputSubscribed(bool value) => new(value);
-    /// <summary>Provides the documented operation.</summary>
-    public static implicit operator SetContactTopicInputSubscribed(Dictionary<string, bool> value) => new(value ?? throw new ArgumentNullException(nameof(value)));
 }
 
 /// <summary>SetContactTopicResponse Kirora API contract.</summary>
@@ -2168,7 +2159,7 @@ public sealed partial class OutboundMessageSkip
     [JsonPropertyName("occurredAt")]
     public required DateTimeOffset OccurredAt { get; init; }
 
-    /// <summary>Which guard stopped it before sending, such as `suppressed`, `consent_missing` or `cancelled`; `fallback_not_needed`: a transactional `deliver.first` fallback whose first channel arrived; `plan_limit_reached`: a fallback the plan had no room for when it was due.</summary>
+    /// <summary>Which guard stopped it before sending, such as `suppressed`, `consent_missing` or `cancelled`; `fallback_not_needed`: a transactional `fallbackOrder` fallback whose first channel arrived; `plan_limit_reached`: a fallback the plan had no room for when it was due.</summary>
     [JsonPropertyName("reason")]
     public required string Reason { get; init; }
 
@@ -3856,60 +3847,16 @@ public sealed partial class AttributeCondition
     [JsonPropertyName("operator")]
     public required string Operator { get; init; }
 
-    /// <summary>What to compare with; its type depends on `operator`. Omit for `exists`, `notExists` and `anniversaryThisMonth`; an array of up to 100 for `in`; an ISO date for `before` and `after`; a number of days (up to 3650) for `withinLastDays`, `moreThanDaysAgo` and `inNextDays`, and 0 to 365 for `anniversaryInNextDays`. Omit this field to leave it unspecified.</summary>
+    /// <summary>What to compare with, always as text: `"pro"`, `"3"`, `"true"`. Equality compares the stored value as text, so a stored 5 matches `"5"`. An ISO date for `before` and `after`; a number for `gt`, `gte`, `lt` and `lte`; a whole number of days (1 to 3650) for `withinLastDays`, `moreThanDaysAgo` and `inNextDays`, and 0 to 365 for `anniversaryInNextDays`. Omit for `in`, `exists`, `notExists` and `anniversaryThisMonth`. Omit this field to leave it unspecified.</summary>
     [JsonPropertyName("value")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
-    public Optional<AttributeConditionValue> Value { get; init; }
+    public Optional<string> Value { get; init; }
 
-}
+    /// <summary>For `in` only: up to 100 values, each as text, any of which matches. Omit this field to leave it unspecified.</summary>
+    [JsonPropertyName("values")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+    public Optional<IReadOnlyList<string>> Values { get; init; }
 
-/// <summary>AttributeConditionValue Kirora API contract.</summary>
-[JsonConverter(typeof(AttributeConditionValueConverter))]
-public sealed class AttributeConditionValue
-{
-    /// <summary>Provides the documented configuration or response value.</summary>
-    public object Value { get; }
-    private AttributeConditionValue(object value) => Value = value;
-    /// <summary>Provides the documented operation.</summary>
-    public T As<T>() => Value is T value ? value : throw new InvalidOperationException("The union holds another variant.");
-    /// <summary>Provides the documented operation.</summary>
-    public static implicit operator AttributeConditionValue(AttributeConditionValueVariant1 value) => new(value ?? throw new ArgumentNullException(nameof(value)));
-    /// <summary>Provides the documented operation.</summary>
-    public static implicit operator AttributeConditionValue(AttributeConditionValueVariant2Item[] value) => new(value ?? throw new ArgumentNullException(nameof(value)));
-}
-
-/// <summary>AttributeConditionValueVariant1 Kirora API contract.</summary>
-[JsonConverter(typeof(AttributeConditionValueVariant1Converter))]
-public sealed class AttributeConditionValueVariant1
-{
-    /// <summary>Provides the documented configuration or response value.</summary>
-    public object Value { get; }
-    private AttributeConditionValueVariant1(object value) => Value = value;
-    /// <summary>Provides the documented operation.</summary>
-    public T As<T>() => Value is T value ? value : throw new InvalidOperationException("The union holds another variant.");
-    /// <summary>Provides the documented operation.</summary>
-    public static implicit operator AttributeConditionValueVariant1(string value) => new(value ?? throw new ArgumentNullException(nameof(value)));
-    /// <summary>Provides the documented operation.</summary>
-    public static implicit operator AttributeConditionValueVariant1(decimal value) => new(value);
-    /// <summary>Provides the documented operation.</summary>
-    public static implicit operator AttributeConditionValueVariant1(bool value) => new(value);
-}
-
-/// <summary>AttributeConditionValueVariant2Item Kirora API contract.</summary>
-[JsonConverter(typeof(AttributeConditionValueVariant2ItemConverter))]
-public sealed class AttributeConditionValueVariant2Item
-{
-    /// <summary>Provides the documented configuration or response value.</summary>
-    public object Value { get; }
-    private AttributeConditionValueVariant2Item(object value) => Value = value;
-    /// <summary>Provides the documented operation.</summary>
-    public T As<T>() => Value is T value ? value : throw new InvalidOperationException("The union holds another variant.");
-    /// <summary>Provides the documented operation.</summary>
-    public static implicit operator AttributeConditionValueVariant2Item(string value) => new(value ?? throw new ArgumentNullException(nameof(value)));
-    /// <summary>Provides the documented operation.</summary>
-    public static implicit operator AttributeConditionValueVariant2Item(decimal value) => new(value);
-    /// <summary>Provides the documented operation.</summary>
-    public static implicit operator AttributeConditionValueVariant2Item(bool value) => new(value);
 }
 
 /// <summary>ContactFieldCondition Kirora API contract.</summary>
@@ -3919,7 +3866,7 @@ public sealed partial class ContactFieldCondition
     [JsonPropertyName("type")]
     public required string Type { get; init; }
 
-    /// <summary>The contact column to test. Each takes these operators, and is refused with others: `email`: equals, notEquals, contains, startsWith, exists, notExists, in; `firstName`: equals, notEquals, contains, startsWith, exists, notExists, in; `lastName`: equals, notEquals, contains, startsWith, exists, notExists, in; `phone`: equals, notEquals, contains, startsWith, exists, notExists, in; `timezone`: equals, notEquals, contains, startsWith, exists, notExists, in; `externalId`: equals, notEquals, contains, startsWith, exists, notExists, in; `consent.email`: equals; `consent.push`: equals; `country`: equals, notEquals, in, exists, notExists; `locale`: equals, notEquals, startsWith, in, exists, notExists; `rfmGroup`: equals, notEquals, in, exists, notExists; `rfmRecency`: equals, notEquals, in, exists, notExists, gt, gte, lt, lte; `rfmFrequency`: equals, notEquals, in, exists, notExists, gt, gte, lt, lte; `rfmMonetary`: equals, notEquals, in, exists, notExists, gt, gte, lt, lte; `purchaseCount`: equals, gt, gte, lt, lte; `totalSpent`: equals, gt, gte, lt, lte; `lastPurchasedAt`: before, after, withinLastDays, moreThanDaysAgo, exists, notExists; `createdAt`: before, after, withinLastDays, moreThanDaysAgo. `phone` holds +country numbers: write `equals`, `notEquals` and `in` values with their country code. Consent takes `true` or `false`. Purchases: `purchaseCount`, `totalSpent` (in the main </summary>
+    /// <summary>The contact column to test. Each takes these operators, and is refused with others: `email`: equals, notEquals, contains, startsWith, exists, notExists, in; `firstName`: equals, notEquals, contains, startsWith, exists, notExists, in; `lastName`: equals, notEquals, contains, startsWith, exists, notExists, in; `phone`: equals, notEquals, contains, startsWith, exists, notExists, in; `timezone`: equals, notEquals, contains, startsWith, exists, notExists, in; `externalId`: equals, notEquals, contains, startsWith, exists, notExists, in; `consent.email`: equals; `consent.push`: equals; `country`: equals, notEquals, in, exists, notExists; `locale`: equals, notEquals, startsWith, in, exists, notExists; `rfmGroup`: equals, notEquals, in, exists, notExists; `rfmRecency`: equals, notEquals, in, exists, notExists, gt, gte, lt, lte; `rfmFrequency`: equals, notEquals, in, exists, notExists, gt, gte, lt, lte; `rfmMonetary`: equals, notEquals, in, exists, notExists, gt, gte, lt, lte; `purchaseCount`: equals, gt, gte, lt, lte; `totalSpent`: equals, gt, gte, lt, lte; `lastPurchasedAt`: before, after, withinLastDays, moreThanDaysAgo, exists, notExists; `createdAt`: before, after, withinLastDays, moreThanDaysAgo. `phone` holds +country numbers: write `equals`, `notEquals` and `in` values with their country code. Consent takes `"true"` or `"false"`. Purchases: `purchaseCount`, `totalSpent` (in the m</summary>
     [JsonPropertyName("field")]
     public required string Field { get; init; }
 
@@ -3927,60 +3874,16 @@ public sealed partial class ContactFieldCondition
     [JsonPropertyName("operator")]
     public required string Operator { get; init; }
 
-    /// <summary>What to compare with; its type depends on `operator`. Omit for `exists`, `notExists` and `anniversaryThisMonth`; an array of up to 100 for `in`; an ISO date for `before` and `after`; a number of days (up to 3650) for `withinLastDays`, `moreThanDaysAgo` and `inNextDays`, and 0 to 365 for `anniversaryInNextDays`. Omit this field to leave it unspecified.</summary>
+    /// <summary>What to compare with, always as text: `"pro"`, `"3"`, `"true"`. Equality compares the stored value as text, so a stored 5 matches `"5"`. An ISO date for `before` and `after`; a number for `gt`, `gte`, `lt` and `lte`; a whole number of days (1 to 3650) for `withinLastDays`, `moreThanDaysAgo` and `inNextDays`, and 0 to 365 for `anniversaryInNextDays`. Omit for `in`, `exists`, `notExists` and `anniversaryThisMonth`. Omit this field to leave it unspecified.</summary>
     [JsonPropertyName("value")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
-    public Optional<ContactFieldConditionValue> Value { get; init; }
+    public Optional<string> Value { get; init; }
 
-}
+    /// <summary>For `in` only: up to 100 values, each as text, any of which matches. Omit this field to leave it unspecified.</summary>
+    [JsonPropertyName("values")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+    public Optional<IReadOnlyList<string>> Values { get; init; }
 
-/// <summary>ContactFieldConditionValue Kirora API contract.</summary>
-[JsonConverter(typeof(ContactFieldConditionValueConverter))]
-public sealed class ContactFieldConditionValue
-{
-    /// <summary>Provides the documented configuration or response value.</summary>
-    public object Value { get; }
-    private ContactFieldConditionValue(object value) => Value = value;
-    /// <summary>Provides the documented operation.</summary>
-    public T As<T>() => Value is T value ? value : throw new InvalidOperationException("The union holds another variant.");
-    /// <summary>Provides the documented operation.</summary>
-    public static implicit operator ContactFieldConditionValue(ContactFieldConditionValueVariant1 value) => new(value ?? throw new ArgumentNullException(nameof(value)));
-    /// <summary>Provides the documented operation.</summary>
-    public static implicit operator ContactFieldConditionValue(ContactFieldConditionValueVariant2Item[] value) => new(value ?? throw new ArgumentNullException(nameof(value)));
-}
-
-/// <summary>ContactFieldConditionValueVariant1 Kirora API contract.</summary>
-[JsonConverter(typeof(ContactFieldConditionValueVariant1Converter))]
-public sealed class ContactFieldConditionValueVariant1
-{
-    /// <summary>Provides the documented configuration or response value.</summary>
-    public object Value { get; }
-    private ContactFieldConditionValueVariant1(object value) => Value = value;
-    /// <summary>Provides the documented operation.</summary>
-    public T As<T>() => Value is T value ? value : throw new InvalidOperationException("The union holds another variant.");
-    /// <summary>Provides the documented operation.</summary>
-    public static implicit operator ContactFieldConditionValueVariant1(string value) => new(value ?? throw new ArgumentNullException(nameof(value)));
-    /// <summary>Provides the documented operation.</summary>
-    public static implicit operator ContactFieldConditionValueVariant1(decimal value) => new(value);
-    /// <summary>Provides the documented operation.</summary>
-    public static implicit operator ContactFieldConditionValueVariant1(bool value) => new(value);
-}
-
-/// <summary>ContactFieldConditionValueVariant2Item Kirora API contract.</summary>
-[JsonConverter(typeof(ContactFieldConditionValueVariant2ItemConverter))]
-public sealed class ContactFieldConditionValueVariant2Item
-{
-    /// <summary>Provides the documented configuration or response value.</summary>
-    public object Value { get; }
-    private ContactFieldConditionValueVariant2Item(object value) => Value = value;
-    /// <summary>Provides the documented operation.</summary>
-    public T As<T>() => Value is T value ? value : throw new InvalidOperationException("The union holds another variant.");
-    /// <summary>Provides the documented operation.</summary>
-    public static implicit operator ContactFieldConditionValueVariant2Item(string value) => new(value ?? throw new ArgumentNullException(nameof(value)));
-    /// <summary>Provides the documented operation.</summary>
-    public static implicit operator ContactFieldConditionValueVariant2Item(decimal value) => new(value);
-    /// <summary>Provides the documented operation.</summary>
-    public static implicit operator ContactFieldConditionValueVariant2Item(bool value) => new(value);
 }
 
 /// <summary>EventCondition Kirora API contract.</summary>
@@ -3994,7 +3897,7 @@ public sealed partial class EventCondition
     [JsonPropertyName("name")]
     public required string Name { get; init; }
 
-    /// <summary>Only events in the last this many days. Omit this field to leave it unspecified.</summary>
+    /// <summary>Only events from the last `withinDays` days. Omit this field to leave it unspecified.</summary>
     [JsonPropertyName("withinDays")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
     public Optional<long> WithinDays { get; init; }
@@ -4040,27 +3943,10 @@ public sealed partial class EventConditionWhereItem
     [JsonPropertyName("operator")]
     public required string Operator { get; init; }
 
-    /// <summary>What to compare with: an ISO date for `before` and `after`; a whole number of days, 1 to 3650, for `withinLastDays`, `moreThanDaysAgo` and `inNextDays`.</summary>
+    /// <summary>What to compare with, as text: as for the other operators, an ISO date for `before` and `after`, and a whole number of days, `"1"` to `"3650"`, for `withinLastDays`, `moreThanDaysAgo` and `inNextDays`.</summary>
     [JsonPropertyName("value")]
-    public required EventConditionWhereItemValue Value { get; init; }
+    public required string Value { get; init; }
 
-}
-
-/// <summary>EventConditionWhereItemValue Kirora API contract.</summary>
-[JsonConverter(typeof(EventConditionWhereItemValueConverter))]
-public sealed class EventConditionWhereItemValue
-{
-    /// <summary>Provides the documented configuration or response value.</summary>
-    public object Value { get; }
-    private EventConditionWhereItemValue(object value) => Value = value;
-    /// <summary>Provides the documented operation.</summary>
-    public T As<T>() => Value is T value ? value : throw new InvalidOperationException("The union holds another variant.");
-    /// <summary>Provides the documented operation.</summary>
-    public static implicit operator EventConditionWhereItemValue(string value) => new(value ?? throw new ArgumentNullException(nameof(value)));
-    /// <summary>Provides the documented operation.</summary>
-    public static implicit operator EventConditionWhereItemValue(decimal value) => new(value);
-    /// <summary>Provides the documented operation.</summary>
-    public static implicit operator EventConditionWhereItemValue(bool value) => new(value);
 }
 
 /// <summary>ActivityCondition Kirora API contract.</summary>
@@ -4104,7 +3990,7 @@ public sealed partial class ActivityCondition
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
     public Optional<string> JourneyStepId { get; init; }
 
-    /// <summary>Only activity in the last this many days. For `notOpened` and `notClicked` it is a waiting time instead: only messages sent at least this many days ago count, so each has had that long to be opened or clicked. Omit this field to leave it unspecified.</summary>
+    /// <summary>Only activity from the last `withinDays` days. For `notOpened` and `notClicked` it is a waiting time instead: only messages sent at least this many days ago count, so each has had that long to be opened or clicked. Omit this field to leave it unspecified.</summary>
     [JsonPropertyName("withinDays")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
     public Optional<long> WithinDays { get; init; }
@@ -4445,60 +4331,16 @@ public sealed partial class AttributeConditionInput
     [JsonPropertyName("operator")]
     public required string Operator { get; init; }
 
-    /// <summary>What to compare with; its type depends on `operator`. Omit for `exists`, `notExists` and `anniversaryThisMonth`; an array of up to 100 for `in`; an ISO date for `before` and `after`; a number of days (up to 3650) for `withinLastDays`, `moreThanDaysAgo` and `inNextDays`, and 0 to 365 for `anniversaryInNextDays`. Omit this field to leave it unspecified.</summary>
+    /// <summary>What to compare with, always as text: `"pro"`, `"3"`, `"true"`. Equality compares the stored value as text, so a stored 5 matches `"5"`. An ISO date for `before` and `after`; a number for `gt`, `gte`, `lt` and `lte`; a whole number of days (1 to 3650) for `withinLastDays`, `moreThanDaysAgo` and `inNextDays`, and 0 to 365 for `anniversaryInNextDays`. Omit for `in`, `exists`, `notExists` and `anniversaryThisMonth`. Omit this field to leave it unspecified.</summary>
     [JsonPropertyName("value")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
-    public Optional<AttributeConditionInputValue> Value { get; init; }
+    public Optional<string> Value { get; init; }
 
-}
+    /// <summary>For `in` only: up to 100 values, each as text, any of which matches. Omit this field to leave it unspecified.</summary>
+    [JsonPropertyName("values")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+    public Optional<IReadOnlyList<string>> Values { get; init; }
 
-/// <summary>AttributeConditionInputValue Kirora API contract.</summary>
-[JsonConverter(typeof(AttributeConditionInputValueConverter))]
-public sealed class AttributeConditionInputValue
-{
-    /// <summary>Provides the documented configuration or response value.</summary>
-    public object Value { get; }
-    private AttributeConditionInputValue(object value) => Value = value;
-    /// <summary>Provides the documented operation.</summary>
-    public T As<T>() => Value is T value ? value : throw new InvalidOperationException("The union holds another variant.");
-    /// <summary>Provides the documented operation.</summary>
-    public static implicit operator AttributeConditionInputValue(AttributeConditionInputValueVariant1 value) => new(value ?? throw new ArgumentNullException(nameof(value)));
-    /// <summary>Provides the documented operation.</summary>
-    public static implicit operator AttributeConditionInputValue(AttributeConditionInputValueVariant2Item[] value) => new(value ?? throw new ArgumentNullException(nameof(value)));
-}
-
-/// <summary>AttributeConditionInputValueVariant1 Kirora API contract.</summary>
-[JsonConverter(typeof(AttributeConditionInputValueVariant1Converter))]
-public sealed class AttributeConditionInputValueVariant1
-{
-    /// <summary>Provides the documented configuration or response value.</summary>
-    public object Value { get; }
-    private AttributeConditionInputValueVariant1(object value) => Value = value;
-    /// <summary>Provides the documented operation.</summary>
-    public T As<T>() => Value is T value ? value : throw new InvalidOperationException("The union holds another variant.");
-    /// <summary>Provides the documented operation.</summary>
-    public static implicit operator AttributeConditionInputValueVariant1(string value) => new(value ?? throw new ArgumentNullException(nameof(value)));
-    /// <summary>Provides the documented operation.</summary>
-    public static implicit operator AttributeConditionInputValueVariant1(decimal value) => new(value);
-    /// <summary>Provides the documented operation.</summary>
-    public static implicit operator AttributeConditionInputValueVariant1(bool value) => new(value);
-}
-
-/// <summary>AttributeConditionInputValueVariant2Item Kirora API contract.</summary>
-[JsonConverter(typeof(AttributeConditionInputValueVariant2ItemConverter))]
-public sealed class AttributeConditionInputValueVariant2Item
-{
-    /// <summary>Provides the documented configuration or response value.</summary>
-    public object Value { get; }
-    private AttributeConditionInputValueVariant2Item(object value) => Value = value;
-    /// <summary>Provides the documented operation.</summary>
-    public T As<T>() => Value is T value ? value : throw new InvalidOperationException("The union holds another variant.");
-    /// <summary>Provides the documented operation.</summary>
-    public static implicit operator AttributeConditionInputValueVariant2Item(string value) => new(value ?? throw new ArgumentNullException(nameof(value)));
-    /// <summary>Provides the documented operation.</summary>
-    public static implicit operator AttributeConditionInputValueVariant2Item(decimal value) => new(value);
-    /// <summary>Provides the documented operation.</summary>
-    public static implicit operator AttributeConditionInputValueVariant2Item(bool value) => new(value);
 }
 
 /// <summary>ContactFieldConditionInput Kirora API contract.</summary>
@@ -4508,7 +4350,7 @@ public sealed partial class ContactFieldConditionInput
     [JsonPropertyName("type")]
     public required string Type { get; init; }
 
-    /// <summary>The contact column to test. Each takes these operators, and is refused with others: `email`: equals, notEquals, contains, startsWith, exists, notExists, in; `firstName`: equals, notEquals, contains, startsWith, exists, notExists, in; `lastName`: equals, notEquals, contains, startsWith, exists, notExists, in; `phone`: equals, notEquals, contains, startsWith, exists, notExists, in; `timezone`: equals, notEquals, contains, startsWith, exists, notExists, in; `externalId`: equals, notEquals, contains, startsWith, exists, notExists, in; `consent.email`: equals; `consent.push`: equals; `country`: equals, notEquals, in, exists, notExists; `locale`: equals, notEquals, startsWith, in, exists, notExists; `rfmGroup`: equals, notEquals, in, exists, notExists; `rfmRecency`: equals, notEquals, in, exists, notExists, gt, gte, lt, lte; `rfmFrequency`: equals, notEquals, in, exists, notExists, gt, gte, lt, lte; `rfmMonetary`: equals, notEquals, in, exists, notExists, gt, gte, lt, lte; `purchaseCount`: equals, gt, gte, lt, lte; `totalSpent`: equals, gt, gte, lt, lte; `lastPurchasedAt`: before, after, withinLastDays, moreThanDaysAgo, exists, notExists; `createdAt`: before, after, withinLastDays, moreThanDaysAgo. `phone` holds +country numbers: write `equals`, `notEquals` and `in` values with their country code. Consent takes `true` or `false`. Purchases: `purchaseCount`, `totalSpent` (in the main </summary>
+    /// <summary>The contact column to test. Each takes these operators, and is refused with others: `email`: equals, notEquals, contains, startsWith, exists, notExists, in; `firstName`: equals, notEquals, contains, startsWith, exists, notExists, in; `lastName`: equals, notEquals, contains, startsWith, exists, notExists, in; `phone`: equals, notEquals, contains, startsWith, exists, notExists, in; `timezone`: equals, notEquals, contains, startsWith, exists, notExists, in; `externalId`: equals, notEquals, contains, startsWith, exists, notExists, in; `consent.email`: equals; `consent.push`: equals; `country`: equals, notEquals, in, exists, notExists; `locale`: equals, notEquals, startsWith, in, exists, notExists; `rfmGroup`: equals, notEquals, in, exists, notExists; `rfmRecency`: equals, notEquals, in, exists, notExists, gt, gte, lt, lte; `rfmFrequency`: equals, notEquals, in, exists, notExists, gt, gte, lt, lte; `rfmMonetary`: equals, notEquals, in, exists, notExists, gt, gte, lt, lte; `purchaseCount`: equals, gt, gte, lt, lte; `totalSpent`: equals, gt, gte, lt, lte; `lastPurchasedAt`: before, after, withinLastDays, moreThanDaysAgo, exists, notExists; `createdAt`: before, after, withinLastDays, moreThanDaysAgo. `phone` holds +country numbers: write `equals`, `notEquals` and `in` values with their country code. Consent takes `"true"` or `"false"`. Purchases: `purchaseCount`, `totalSpent` (in the m</summary>
     [JsonPropertyName("field")]
     public required string Field { get; init; }
 
@@ -4516,60 +4358,16 @@ public sealed partial class ContactFieldConditionInput
     [JsonPropertyName("operator")]
     public required string Operator { get; init; }
 
-    /// <summary>What to compare with; its type depends on `operator`. Omit for `exists`, `notExists` and `anniversaryThisMonth`; an array of up to 100 for `in`; an ISO date for `before` and `after`; a number of days (up to 3650) for `withinLastDays`, `moreThanDaysAgo` and `inNextDays`, and 0 to 365 for `anniversaryInNextDays`. Omit this field to leave it unspecified.</summary>
+    /// <summary>What to compare with, always as text: `"pro"`, `"3"`, `"true"`. Equality compares the stored value as text, so a stored 5 matches `"5"`. An ISO date for `before` and `after`; a number for `gt`, `gte`, `lt` and `lte`; a whole number of days (1 to 3650) for `withinLastDays`, `moreThanDaysAgo` and `inNextDays`, and 0 to 365 for `anniversaryInNextDays`. Omit for `in`, `exists`, `notExists` and `anniversaryThisMonth`. Omit this field to leave it unspecified.</summary>
     [JsonPropertyName("value")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
-    public Optional<ContactFieldConditionInputValue> Value { get; init; }
+    public Optional<string> Value { get; init; }
 
-}
+    /// <summary>For `in` only: up to 100 values, each as text, any of which matches. Omit this field to leave it unspecified.</summary>
+    [JsonPropertyName("values")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+    public Optional<IReadOnlyList<string>> Values { get; init; }
 
-/// <summary>ContactFieldConditionInputValue Kirora API contract.</summary>
-[JsonConverter(typeof(ContactFieldConditionInputValueConverter))]
-public sealed class ContactFieldConditionInputValue
-{
-    /// <summary>Provides the documented configuration or response value.</summary>
-    public object Value { get; }
-    private ContactFieldConditionInputValue(object value) => Value = value;
-    /// <summary>Provides the documented operation.</summary>
-    public T As<T>() => Value is T value ? value : throw new InvalidOperationException("The union holds another variant.");
-    /// <summary>Provides the documented operation.</summary>
-    public static implicit operator ContactFieldConditionInputValue(ContactFieldConditionInputValueVariant1 value) => new(value ?? throw new ArgumentNullException(nameof(value)));
-    /// <summary>Provides the documented operation.</summary>
-    public static implicit operator ContactFieldConditionInputValue(ContactFieldConditionInputValueVariant2Item[] value) => new(value ?? throw new ArgumentNullException(nameof(value)));
-}
-
-/// <summary>ContactFieldConditionInputValueVariant1 Kirora API contract.</summary>
-[JsonConverter(typeof(ContactFieldConditionInputValueVariant1Converter))]
-public sealed class ContactFieldConditionInputValueVariant1
-{
-    /// <summary>Provides the documented configuration or response value.</summary>
-    public object Value { get; }
-    private ContactFieldConditionInputValueVariant1(object value) => Value = value;
-    /// <summary>Provides the documented operation.</summary>
-    public T As<T>() => Value is T value ? value : throw new InvalidOperationException("The union holds another variant.");
-    /// <summary>Provides the documented operation.</summary>
-    public static implicit operator ContactFieldConditionInputValueVariant1(string value) => new(value ?? throw new ArgumentNullException(nameof(value)));
-    /// <summary>Provides the documented operation.</summary>
-    public static implicit operator ContactFieldConditionInputValueVariant1(decimal value) => new(value);
-    /// <summary>Provides the documented operation.</summary>
-    public static implicit operator ContactFieldConditionInputValueVariant1(bool value) => new(value);
-}
-
-/// <summary>ContactFieldConditionInputValueVariant2Item Kirora API contract.</summary>
-[JsonConverter(typeof(ContactFieldConditionInputValueVariant2ItemConverter))]
-public sealed class ContactFieldConditionInputValueVariant2Item
-{
-    /// <summary>Provides the documented configuration or response value.</summary>
-    public object Value { get; }
-    private ContactFieldConditionInputValueVariant2Item(object value) => Value = value;
-    /// <summary>Provides the documented operation.</summary>
-    public T As<T>() => Value is T value ? value : throw new InvalidOperationException("The union holds another variant.");
-    /// <summary>Provides the documented operation.</summary>
-    public static implicit operator ContactFieldConditionInputValueVariant2Item(string value) => new(value ?? throw new ArgumentNullException(nameof(value)));
-    /// <summary>Provides the documented operation.</summary>
-    public static implicit operator ContactFieldConditionInputValueVariant2Item(decimal value) => new(value);
-    /// <summary>Provides the documented operation.</summary>
-    public static implicit operator ContactFieldConditionInputValueVariant2Item(bool value) => new(value);
 }
 
 /// <summary>EventConditionInput Kirora API contract.</summary>
@@ -4583,7 +4381,7 @@ public sealed partial class EventConditionInput
     [JsonPropertyName("name")]
     public required string Name { get; init; }
 
-    /// <summary>Only events in the last this many days. Omit this field to leave it unspecified.</summary>
+    /// <summary>Only events from the last `withinDays` days. Omit this field to leave it unspecified.</summary>
     [JsonPropertyName("withinDays")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
     public Optional<long> WithinDays { get; init; }
@@ -4629,27 +4427,10 @@ public sealed partial class EventConditionInputWhereItem
     [JsonPropertyName("operator")]
     public required string Operator { get; init; }
 
-    /// <summary>What to compare with: an ISO date for `before` and `after`; a whole number of days, 1 to 3650, for `withinLastDays`, `moreThanDaysAgo` and `inNextDays`.</summary>
+    /// <summary>What to compare with, as text: as for the other operators, an ISO date for `before` and `after`, and a whole number of days, `"1"` to `"3650"`, for `withinLastDays`, `moreThanDaysAgo` and `inNextDays`.</summary>
     [JsonPropertyName("value")]
-    public required EventConditionInputWhereItemValue Value { get; init; }
+    public required string Value { get; init; }
 
-}
-
-/// <summary>EventConditionInputWhereItemValue Kirora API contract.</summary>
-[JsonConverter(typeof(EventConditionInputWhereItemValueConverter))]
-public sealed class EventConditionInputWhereItemValue
-{
-    /// <summary>Provides the documented configuration or response value.</summary>
-    public object Value { get; }
-    private EventConditionInputWhereItemValue(object value) => Value = value;
-    /// <summary>Provides the documented operation.</summary>
-    public T As<T>() => Value is T value ? value : throw new InvalidOperationException("The union holds another variant.");
-    /// <summary>Provides the documented operation.</summary>
-    public static implicit operator EventConditionInputWhereItemValue(string value) => new(value ?? throw new ArgumentNullException(nameof(value)));
-    /// <summary>Provides the documented operation.</summary>
-    public static implicit operator EventConditionInputWhereItemValue(decimal value) => new(value);
-    /// <summary>Provides the documented operation.</summary>
-    public static implicit operator EventConditionInputWhereItemValue(bool value) => new(value);
 }
 
 /// <summary>ActivityConditionInput Kirora API contract.</summary>
@@ -4693,7 +4474,7 @@ public sealed partial class ActivityConditionInput
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
     public Optional<string> JourneyStepId { get; init; }
 
-    /// <summary>Only activity in the last this many days. For `notOpened` and `notClicked` it is a waiting time instead: only messages sent at least this many days ago count, so each has had that long to be opened or clicked. Omit this field to leave it unspecified.</summary>
+    /// <summary>Only activity from the last `withinDays` days. For `notOpened` and `notClicked` it is a waiting time instead: only messages sent at least this many days ago count, so each has had that long to be opened or clicked. Omit this field to leave it unspecified.</summary>
     [JsonPropertyName("withinDays")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
     public Optional<long> WithinDays { get; init; }
@@ -5759,15 +5540,15 @@ public sealed partial class SendTransactionalInput
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
     public Optional<TransactionalPushInput> Push { get; init; }
 
-    /// <summary>When to send, up to 90 days ahead, with its UTC offset. Suppression and push reachability are checked when the request is accepted and again when it goes. A `deliver.first` fallback keeps this time but goes only after the message before it fails, is skipped or bounces. Omit this field to leave it unspecified.</summary>
+    /// <summary>When to send, up to 90 days ahead, with its UTC offset. Suppression and push reachability are checked when the request is accepted and again when it goes. A `fallbackOrder` fallback keeps this time but goes only after the message before it fails, is skipped or bounces. Omit this field to leave it unspecified.</summary>
     [JsonPropertyName("sendAt")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
     public Optional<DateTimeOffset> SendAt { get; init; }
 
-    /// <summary>With both `push` and `email`: `all` (the default) sends each the contact can receive; `{ "first": ["email", "push"] }` sends the first in that order the contact can receive, and the next only if it fails, is skipped or bounces. Omit this field to leave it unspecified.</summary>
-    [JsonPropertyName("deliver")]
+    /// <summary>With both `push` and `email`, each once, in the order to try them: the first the contact can receive is sent, and the next only if it fails, is skipped or bounces. Left out, each channel the contact can receive is sent. Omit this field to leave it unspecified.</summary>
+    [JsonPropertyName("fallbackOrder")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
-    public Optional<TransactionalDeliverInput> Deliver { get; init; }
+    public Optional<IReadOnlyList<string>> FallbackOrder { get; init; }
 
 }
 
@@ -6336,30 +6117,6 @@ public sealed partial class TransactionalPushInputOverridesWebButtonsItem
 
 }
 
-/// <summary>TransactionalDeliverInput Kirora API contract.</summary>
-[JsonConverter(typeof(TransactionalDeliverInputConverter))]
-public sealed class TransactionalDeliverInput
-{
-    /// <summary>Provides the documented configuration or response value.</summary>
-    public object Value { get; }
-    private TransactionalDeliverInput(object value) => Value = value;
-    /// <summary>Provides the documented operation.</summary>
-    public T As<T>() => Value is T value ? value : throw new InvalidOperationException("The union holds another variant.");
-    /// <summary>Provides the documented operation.</summary>
-    public static implicit operator TransactionalDeliverInput(string value) => new(value ?? throw new ArgumentNullException(nameof(value)));
-    /// <summary>Provides the documented operation.</summary>
-    public static implicit operator TransactionalDeliverInput(TransactionalDeliverFirstInput value) => new(value ?? throw new ArgumentNullException(nameof(value)));
-}
-
-/// <summary>TransactionalDeliverFirstInput Kirora API contract.</summary>
-public sealed partial class TransactionalDeliverFirstInput
-{
-    /// <summary>Every channel given, each once, in the order to try them. The first the contact can receive is sent; when sending it fails, it is skipped or it bounces, the next is sent.</summary>
-    [JsonPropertyName("first")]
-    public required IReadOnlyList<string> First { get; init; }
-
-}
-
 /// <summary>SendTransactionalMessageResponse Kirora API contract.</summary>
 public sealed partial class SendTransactionalMessageResponse
 {
@@ -6409,7 +6166,7 @@ public sealed partial class TransactionalMessage
     [JsonPropertyName("sendAt")]
     public required DateTimeOffset? SendAt { get; init; }
 
-    /// <summary>With `deliver.first`: the message this one stands in for. It waits as `queued` until that one ends: sent when it failed, was skipped or bounced, else skipped with reason `fallback_not_needed`. Null otherwise.</summary>
+    /// <summary>With `fallbackOrder`: the message this one stands in for. It waits as `queued` until that one ends: sent when it failed, was skipped or bounced, else skipped with reason `fallback_not_needed`. Null otherwise.</summary>
     [JsonPropertyName("fallbackFor")]
     public required Guid? FallbackFor { get; init; }
 
@@ -6972,8 +6729,28 @@ public sealed partial class CreateCampaignInputContentEmail
 }
 
 /// <summary>TemplateSnapshotInput Kirora API contract.</summary>
-public sealed partial class TemplateSnapshotInput
+[JsonConverter(typeof(TemplateSnapshotInputConverter))]
+public sealed class TemplateSnapshotInput
 {
+    /// <summary>Provides the documented configuration or response value.</summary>
+    public object Value { get; }
+    private TemplateSnapshotInput(object value) => Value = value;
+    /// <summary>Provides the documented operation.</summary>
+    public T As<T>() => Value is T value ? value : throw new InvalidOperationException("The union holds another variant.");
+    /// <summary>Provides the documented operation.</summary>
+    public static implicit operator TemplateSnapshotInput(DesignSnapshotInput value) => new(value ?? throw new ArgumentNullException(nameof(value)));
+    /// <summary>Provides the documented operation.</summary>
+    public static implicit operator TemplateSnapshotInput(HtmlSnapshotInput value) => new(value ?? throw new ArgumentNullException(nameof(value)));
+}
+
+/// <summary>DesignSnapshotInput Kirora API contract.</summary>
+public sealed partial class DesignSnapshotInput
+{
+    /// <summary>`design`: built from blocks. Left out, `design`. Omit this field to leave it unspecified.</summary>
+    [JsonPropertyName("kind")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+    public Optional<string> Kind { get; init; }
+
     /// <summary>The block format version; use the current one, 1.</summary>
     [JsonPropertyName("schemaVersion")]
     public required long SchemaVersion { get; init; }
@@ -8529,6 +8306,24 @@ public sealed partial class EmailThemeInput
 
 }
 
+/// <summary>HtmlSnapshotInput Kirora API contract.</summary>
+public sealed partial class HtmlSnapshotInput
+{
+    /// <summary>`html`: the whole email written as HTML.</summary>
+    [JsonPropertyName("kind")]
+    public required string Kind { get; init; }
+
+    /// <summary>The whole email as HTML. Merge tags work as in a design; `{{unsubscribe_url}}` as a link's href places the unsubscribe link, which marketing sends otherwise get below the email, with the workspace postal address when the email does not show it.</summary>
+    [JsonPropertyName("html")]
+    public required string Html { get; init; }
+
+    /// <summary>Plain text sent instead of the version generated from the HTML. Omit this field to leave it unspecified.</summary>
+    [JsonPropertyName("plainTextOverride")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+    public Optional<string?> PlainTextOverride { get; init; }
+
+}
+
 /// <summary>CreateCampaignInputContentPush Kirora API contract.</summary>
 public sealed partial class CreateCampaignInputContentPush
 {
@@ -9209,7 +9004,7 @@ public sealed partial class CampaignContentEmail
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
     public Optional<string> ReplyTo { get; init; }
 
-    /// <summary>The email design, copied into the campaign so later template edits do not change it. Omit this field to leave it unspecified.</summary>
+    /// <summary>The email design or HTML, copied into the campaign so later template edits do not change it. Omit this field to leave it unspecified.</summary>
     [JsonPropertyName("templateSnapshot")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
     public Optional<CampaignContentEmailTemplateSnapshot> TemplateSnapshot { get; init; }
@@ -9217,8 +9012,28 @@ public sealed partial class CampaignContentEmail
 }
 
 /// <summary>CampaignContentEmailTemplateSnapshot Kirora API contract.</summary>
-public sealed partial class CampaignContentEmailTemplateSnapshot
+[JsonConverter(typeof(CampaignContentEmailTemplateSnapshotConverter))]
+public sealed class CampaignContentEmailTemplateSnapshot
 {
+    /// <summary>Provides the documented configuration or response value.</summary>
+    public object Value { get; }
+    private CampaignContentEmailTemplateSnapshot(object value) => Value = value;
+    /// <summary>Provides the documented operation.</summary>
+    public T As<T>() => Value is T value ? value : throw new InvalidOperationException("The union holds another variant.");
+    /// <summary>Provides the documented operation.</summary>
+    public static implicit operator CampaignContentEmailTemplateSnapshot(CampaignContentEmailTemplateSnapshotVariant1 value) => new(value ?? throw new ArgumentNullException(nameof(value)));
+    /// <summary>Provides the documented operation.</summary>
+    public static implicit operator CampaignContentEmailTemplateSnapshot(CampaignContentEmailTemplateSnapshotVariant2 value) => new(value ?? throw new ArgumentNullException(nameof(value)));
+}
+
+/// <summary>CampaignContentEmailTemplateSnapshotVariant1 Kirora API contract.</summary>
+public sealed partial class CampaignContentEmailTemplateSnapshotVariant1
+{
+    /// <summary>The documented kind value. Omit this field to leave it unspecified.</summary>
+    [JsonPropertyName("kind")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+    public Optional<string> Kind { get; init; }
+
     /// <summary>The documented schemaVersion value.</summary>
     [JsonPropertyName("schemaVersion")]
     public required long SchemaVersion { get; init; }
@@ -9236,7 +9051,7 @@ public sealed partial class CampaignContentEmailTemplateSnapshot
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
     public Optional<string> Language { get; init; }
 
-    /// <summary>Plain text sent instead of the version generated from the blocks. Omit this field to leave it unspecified.</summary>
+    /// <summary>Plain text sent instead of the version generated from the design or HTML. Omit this field to leave it unspecified.</summary>
     [JsonPropertyName("plainTextOverride")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
     public Optional<string?> PlainTextOverride { get; init; }
@@ -10774,6 +10589,24 @@ public sealed partial class EmailTheme
 
 }
 
+/// <summary>CampaignContentEmailTemplateSnapshotVariant2 Kirora API contract.</summary>
+public sealed partial class CampaignContentEmailTemplateSnapshotVariant2
+{
+    /// <summary>The documented kind value.</summary>
+    [JsonPropertyName("kind")]
+    public required string Kind { get; init; }
+
+    /// <summary>The documented html value.</summary>
+    [JsonPropertyName("html")]
+    public required string Html { get; init; }
+
+    /// <summary>Plain text sent instead of the version generated from the design or HTML. Omit this field to leave it unspecified.</summary>
+    [JsonPropertyName("plainTextOverride")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+    public Optional<string?> PlainTextOverride { get; init; }
+
+}
+
 /// <summary>CampaignContentPush Kirora API contract.</summary>
 public sealed partial class CampaignContentPush
 {
@@ -11229,7 +11062,7 @@ public sealed partial class CampaignAbTestVersionsItemEmail
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
     public Optional<string> ReplyTo { get; init; }
 
-    /// <summary>The email design, copied into the campaign so later template edits do not change it. Omit this field to leave it unspecified.</summary>
+    /// <summary>The email design or HTML, copied into the campaign so later template edits do not change it. Omit this field to leave it unspecified.</summary>
     [JsonPropertyName("templateSnapshot")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
     public Optional<CampaignAbTestVersionsItemEmailTemplateSnapshot> TemplateSnapshot { get; init; }
@@ -11237,8 +11070,28 @@ public sealed partial class CampaignAbTestVersionsItemEmail
 }
 
 /// <summary>CampaignAbTestVersionsItemEmailTemplateSnapshot Kirora API contract.</summary>
-public sealed partial class CampaignAbTestVersionsItemEmailTemplateSnapshot
+[JsonConverter(typeof(CampaignAbTestVersionsItemEmailTemplateSnapshotConverter))]
+public sealed class CampaignAbTestVersionsItemEmailTemplateSnapshot
 {
+    /// <summary>Provides the documented configuration or response value.</summary>
+    public object Value { get; }
+    private CampaignAbTestVersionsItemEmailTemplateSnapshot(object value) => Value = value;
+    /// <summary>Provides the documented operation.</summary>
+    public T As<T>() => Value is T value ? value : throw new InvalidOperationException("The union holds another variant.");
+    /// <summary>Provides the documented operation.</summary>
+    public static implicit operator CampaignAbTestVersionsItemEmailTemplateSnapshot(CampaignAbTestVersionsItemEmailTemplateSnapshotVariant1 value) => new(value ?? throw new ArgumentNullException(nameof(value)));
+    /// <summary>Provides the documented operation.</summary>
+    public static implicit operator CampaignAbTestVersionsItemEmailTemplateSnapshot(CampaignAbTestVersionsItemEmailTemplateSnapshotVariant2 value) => new(value ?? throw new ArgumentNullException(nameof(value)));
+}
+
+/// <summary>CampaignAbTestVersionsItemEmailTemplateSnapshotVariant1 Kirora API contract.</summary>
+public sealed partial class CampaignAbTestVersionsItemEmailTemplateSnapshotVariant1
+{
+    /// <summary>The documented kind value. Omit this field to leave it unspecified.</summary>
+    [JsonPropertyName("kind")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+    public Optional<string> Kind { get; init; }
+
     /// <summary>The documented schemaVersion value.</summary>
     [JsonPropertyName("schemaVersion")]
     public required long SchemaVersion { get; init; }
@@ -11256,7 +11109,25 @@ public sealed partial class CampaignAbTestVersionsItemEmailTemplateSnapshot
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
     public Optional<string> Language { get; init; }
 
-    /// <summary>Plain text sent instead of the version generated from the blocks. Omit this field to leave it unspecified.</summary>
+    /// <summary>Plain text sent instead of the version generated from the design or HTML. Omit this field to leave it unspecified.</summary>
+    [JsonPropertyName("plainTextOverride")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+    public Optional<string?> PlainTextOverride { get; init; }
+
+}
+
+/// <summary>CampaignAbTestVersionsItemEmailTemplateSnapshotVariant2 Kirora API contract.</summary>
+public sealed partial class CampaignAbTestVersionsItemEmailTemplateSnapshotVariant2
+{
+    /// <summary>The documented kind value.</summary>
+    [JsonPropertyName("kind")]
+    public required string Kind { get; init; }
+
+    /// <summary>The documented html value.</summary>
+    [JsonPropertyName("html")]
+    public required string Html { get; init; }
+
+    /// <summary>Plain text sent instead of the version generated from the design or HTML. Omit this field to leave it unspecified.</summary>
     [JsonPropertyName("plainTextOverride")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
     public Optional<string?> PlainTextOverride { get; init; }
@@ -13314,31 +13185,14 @@ public sealed partial class JourneyTriggerEventTriggerWhereItem
     [JsonPropertyName("property")]
     public required string Property { get; init; }
 
-    /// <summary>`notEquals` also matches an event without the property. `equals` and `notEquals` ignore case and accents in text.</summary>
+    /// <summary>`notEquals` also matches an event without the property. `equals` and `notEquals` compare the property as text, ignoring case and accents.</summary>
     [JsonPropertyName("operator")]
     public required string Operator { get; init; }
 
-    /// <summary>The documented value value.</summary>
+    /// <summary>What to compare with, as text (`"pro"`, `"true"`); a number (`"50"`) for `gt`, `gte`, `lt` and `lte`.</summary>
     [JsonPropertyName("value")]
-    public required JourneyTriggerEventTriggerWhereItemValue Value { get; init; }
+    public required string Value { get; init; }
 
-}
-
-/// <summary>JourneyTriggerEventTriggerWhereItemValue Kirora API contract.</summary>
-[JsonConverter(typeof(JourneyTriggerEventTriggerWhereItemValueConverter))]
-public sealed class JourneyTriggerEventTriggerWhereItemValue
-{
-    /// <summary>Provides the documented configuration or response value.</summary>
-    public object Value { get; }
-    private JourneyTriggerEventTriggerWhereItemValue(object value) => Value = value;
-    /// <summary>Provides the documented operation.</summary>
-    public T As<T>() => Value is T value ? value : throw new InvalidOperationException("The union holds another variant.");
-    /// <summary>Provides the documented operation.</summary>
-    public static implicit operator JourneyTriggerEventTriggerWhereItemValue(string value) => new(value ?? throw new ArgumentNullException(nameof(value)));
-    /// <summary>Provides the documented operation.</summary>
-    public static implicit operator JourneyTriggerEventTriggerWhereItemValue(decimal value) => new(value);
-    /// <summary>Provides the documented operation.</summary>
-    public static implicit operator JourneyTriggerEventTriggerWhereItemValue(bool value) => new(value);
 }
 
 /// <summary>JourneyTriggerEventTriggerReentry Kirora API contract.</summary>
@@ -13522,31 +13376,14 @@ public sealed partial class JourneyTriggerFormTriggerWhereItem
     [JsonPropertyName("property")]
     public required string Property { get; init; }
 
-    /// <summary>`notEquals` also matches an event without the property. `equals` and `notEquals` ignore case and accents in text.</summary>
+    /// <summary>`notEquals` also matches an event without the property. `equals` and `notEquals` compare the property as text, ignoring case and accents.</summary>
     [JsonPropertyName("operator")]
     public required string Operator { get; init; }
 
-    /// <summary>The documented value value.</summary>
+    /// <summary>What to compare with, as text (`"pro"`, `"true"`); a number (`"50"`) for `gt`, `gte`, `lt` and `lte`.</summary>
     [JsonPropertyName("value")]
-    public required JourneyTriggerFormTriggerWhereItemValue Value { get; init; }
+    public required string Value { get; init; }
 
-}
-
-/// <summary>JourneyTriggerFormTriggerWhereItemValue Kirora API contract.</summary>
-[JsonConverter(typeof(JourneyTriggerFormTriggerWhereItemValueConverter))]
-public sealed class JourneyTriggerFormTriggerWhereItemValue
-{
-    /// <summary>Provides the documented configuration or response value.</summary>
-    public object Value { get; }
-    private JourneyTriggerFormTriggerWhereItemValue(object value) => Value = value;
-    /// <summary>Provides the documented operation.</summary>
-    public T As<T>() => Value is T value ? value : throw new InvalidOperationException("The union holds another variant.");
-    /// <summary>Provides the documented operation.</summary>
-    public static implicit operator JourneyTriggerFormTriggerWhereItemValue(string value) => new(value ?? throw new ArgumentNullException(nameof(value)));
-    /// <summary>Provides the documented operation.</summary>
-    public static implicit operator JourneyTriggerFormTriggerWhereItemValue(decimal value) => new(value);
-    /// <summary>Provides the documented operation.</summary>
-    public static implicit operator JourneyTriggerFormTriggerWhereItemValue(bool value) => new(value);
 }
 
 /// <summary>JourneyTriggerFormTriggerReentry Kirora API contract.</summary>
@@ -13615,31 +13452,14 @@ public sealed partial class JourneyTriggerAttributeTriggerWhereItem
     [JsonPropertyName("property")]
     public required string Property { get; init; }
 
-    /// <summary>`notEquals` also matches an event without the property. `equals` and `notEquals` ignore case and accents in text.</summary>
+    /// <summary>`notEquals` also matches an event without the property. `equals` and `notEquals` compare the property as text, ignoring case and accents.</summary>
     [JsonPropertyName("operator")]
     public required string Operator { get; init; }
 
-    /// <summary>The documented value value.</summary>
+    /// <summary>What to compare with, as text (`"pro"`, `"true"`); a number (`"50"`) for `gt`, `gte`, `lt` and `lte`.</summary>
     [JsonPropertyName("value")]
-    public required JourneyTriggerAttributeTriggerWhereItemValue Value { get; init; }
+    public required string Value { get; init; }
 
-}
-
-/// <summary>JourneyTriggerAttributeTriggerWhereItemValue Kirora API contract.</summary>
-[JsonConverter(typeof(JourneyTriggerAttributeTriggerWhereItemValueConverter))]
-public sealed class JourneyTriggerAttributeTriggerWhereItemValue
-{
-    /// <summary>Provides the documented configuration or response value.</summary>
-    public object Value { get; }
-    private JourneyTriggerAttributeTriggerWhereItemValue(object value) => Value = value;
-    /// <summary>Provides the documented operation.</summary>
-    public T As<T>() => Value is T value ? value : throw new InvalidOperationException("The union holds another variant.");
-    /// <summary>Provides the documented operation.</summary>
-    public static implicit operator JourneyTriggerAttributeTriggerWhereItemValue(string value) => new(value ?? throw new ArgumentNullException(nameof(value)));
-    /// <summary>Provides the documented operation.</summary>
-    public static implicit operator JourneyTriggerAttributeTriggerWhereItemValue(decimal value) => new(value);
-    /// <summary>Provides the documented operation.</summary>
-    public static implicit operator JourneyTriggerAttributeTriggerWhereItemValue(bool value) => new(value);
 }
 
 /// <summary>JourneyTriggerAttributeTriggerReentry Kirora API contract.</summary>
@@ -13816,31 +13636,14 @@ public sealed partial class JourneyTriggerInputEventTriggerWhereItem
     [JsonPropertyName("property")]
     public required string Property { get; init; }
 
-    /// <summary>`notEquals` also matches an event without the property. `equals` and `notEquals` ignore case and accents in text.</summary>
+    /// <summary>`notEquals` also matches an event without the property. `equals` and `notEquals` compare the property as text, ignoring case and accents.</summary>
     [JsonPropertyName("operator")]
     public required string Operator { get; init; }
 
-    /// <summary>The documented value value.</summary>
+    /// <summary>What to compare with, as text (`"pro"`, `"true"`); a number (`"50"`) for `gt`, `gte`, `lt` and `lte`.</summary>
     [JsonPropertyName("value")]
-    public required JourneyTriggerInputEventTriggerWhereItemValue Value { get; init; }
+    public required string Value { get; init; }
 
-}
-
-/// <summary>JourneyTriggerInputEventTriggerWhereItemValue Kirora API contract.</summary>
-[JsonConverter(typeof(JourneyTriggerInputEventTriggerWhereItemValueConverter))]
-public sealed class JourneyTriggerInputEventTriggerWhereItemValue
-{
-    /// <summary>Provides the documented configuration or response value.</summary>
-    public object Value { get; }
-    private JourneyTriggerInputEventTriggerWhereItemValue(object value) => Value = value;
-    /// <summary>Provides the documented operation.</summary>
-    public T As<T>() => Value is T value ? value : throw new InvalidOperationException("The union holds another variant.");
-    /// <summary>Provides the documented operation.</summary>
-    public static implicit operator JourneyTriggerInputEventTriggerWhereItemValue(string value) => new(value ?? throw new ArgumentNullException(nameof(value)));
-    /// <summary>Provides the documented operation.</summary>
-    public static implicit operator JourneyTriggerInputEventTriggerWhereItemValue(decimal value) => new(value);
-    /// <summary>Provides the documented operation.</summary>
-    public static implicit operator JourneyTriggerInputEventTriggerWhereItemValue(bool value) => new(value);
 }
 
 /// <summary>JourneyTriggerInputEventTriggerReentry Kirora API contract.</summary>
@@ -14031,31 +13834,14 @@ public sealed partial class JourneyTriggerInputFormTriggerWhereItem
     [JsonPropertyName("property")]
     public required string Property { get; init; }
 
-    /// <summary>`notEquals` also matches an event without the property. `equals` and `notEquals` ignore case and accents in text.</summary>
+    /// <summary>`notEquals` also matches an event without the property. `equals` and `notEquals` compare the property as text, ignoring case and accents.</summary>
     [JsonPropertyName("operator")]
     public required string Operator { get; init; }
 
-    /// <summary>The documented value value.</summary>
+    /// <summary>What to compare with, as text (`"pro"`, `"true"`); a number (`"50"`) for `gt`, `gte`, `lt` and `lte`.</summary>
     [JsonPropertyName("value")]
-    public required JourneyTriggerInputFormTriggerWhereItemValue Value { get; init; }
+    public required string Value { get; init; }
 
-}
-
-/// <summary>JourneyTriggerInputFormTriggerWhereItemValue Kirora API contract.</summary>
-[JsonConverter(typeof(JourneyTriggerInputFormTriggerWhereItemValueConverter))]
-public sealed class JourneyTriggerInputFormTriggerWhereItemValue
-{
-    /// <summary>Provides the documented configuration or response value.</summary>
-    public object Value { get; }
-    private JourneyTriggerInputFormTriggerWhereItemValue(object value) => Value = value;
-    /// <summary>Provides the documented operation.</summary>
-    public T As<T>() => Value is T value ? value : throw new InvalidOperationException("The union holds another variant.");
-    /// <summary>Provides the documented operation.</summary>
-    public static implicit operator JourneyTriggerInputFormTriggerWhereItemValue(string value) => new(value ?? throw new ArgumentNullException(nameof(value)));
-    /// <summary>Provides the documented operation.</summary>
-    public static implicit operator JourneyTriggerInputFormTriggerWhereItemValue(decimal value) => new(value);
-    /// <summary>Provides the documented operation.</summary>
-    public static implicit operator JourneyTriggerInputFormTriggerWhereItemValue(bool value) => new(value);
 }
 
 /// <summary>JourneyTriggerInputFormTriggerReentry Kirora API contract.</summary>
@@ -14126,31 +13912,14 @@ public sealed partial class JourneyTriggerInputAttributeTriggerWhereItem
     [JsonPropertyName("property")]
     public required string Property { get; init; }
 
-    /// <summary>`notEquals` also matches an event without the property. `equals` and `notEquals` ignore case and accents in text.</summary>
+    /// <summary>`notEquals` also matches an event without the property. `equals` and `notEquals` compare the property as text, ignoring case and accents.</summary>
     [JsonPropertyName("operator")]
     public required string Operator { get; init; }
 
-    /// <summary>The documented value value.</summary>
+    /// <summary>What to compare with, as text (`"pro"`, `"true"`); a number (`"50"`) for `gt`, `gte`, `lt` and `lte`.</summary>
     [JsonPropertyName("value")]
-    public required JourneyTriggerInputAttributeTriggerWhereItemValue Value { get; init; }
+    public required string Value { get; init; }
 
-}
-
-/// <summary>JourneyTriggerInputAttributeTriggerWhereItemValue Kirora API contract.</summary>
-[JsonConverter(typeof(JourneyTriggerInputAttributeTriggerWhereItemValueConverter))]
-public sealed class JourneyTriggerInputAttributeTriggerWhereItemValue
-{
-    /// <summary>Provides the documented configuration or response value.</summary>
-    public object Value { get; }
-    private JourneyTriggerInputAttributeTriggerWhereItemValue(object value) => Value = value;
-    /// <summary>Provides the documented operation.</summary>
-    public T As<T>() => Value is T value ? value : throw new InvalidOperationException("The union holds another variant.");
-    /// <summary>Provides the documented operation.</summary>
-    public static implicit operator JourneyTriggerInputAttributeTriggerWhereItemValue(string value) => new(value ?? throw new ArgumentNullException(nameof(value)));
-    /// <summary>Provides the documented operation.</summary>
-    public static implicit operator JourneyTriggerInputAttributeTriggerWhereItemValue(decimal value) => new(value);
-    /// <summary>Provides the documented operation.</summary>
-    public static implicit operator JourneyTriggerInputAttributeTriggerWhereItemValue(bool value) => new(value);
 }
 
 /// <summary>JourneyTriggerInputAttributeTriggerReentry Kirora API contract.</summary>
@@ -14275,31 +14044,14 @@ public sealed partial class CreateJourneyInputExitConditionsItemEventExitWhereIt
     [JsonPropertyName("property")]
     public required string Property { get; init; }
 
-    /// <summary>`notEquals` also matches an event without the property. `equals` and `notEquals` ignore case and accents in text.</summary>
+    /// <summary>`notEquals` also matches an event without the property. `equals` and `notEquals` compare the property as text, ignoring case and accents.</summary>
     [JsonPropertyName("operator")]
     public required string Operator { get; init; }
 
-    /// <summary>The documented value value.</summary>
+    /// <summary>What to compare with, as text (`"pro"`, `"true"`); a number (`"50"`) for `gt`, `gte`, `lt` and `lte`.</summary>
     [JsonPropertyName("value")]
-    public required CreateJourneyInputExitConditionsItemEventExitWhereItemValue Value { get; init; }
+    public required string Value { get; init; }
 
-}
-
-/// <summary>CreateJourneyInputExitConditionsItemEventExitWhereItemValue Kirora API contract.</summary>
-[JsonConverter(typeof(CreateJourneyInputExitConditionsItemEventExitWhereItemValueConverter))]
-public sealed class CreateJourneyInputExitConditionsItemEventExitWhereItemValue
-{
-    /// <summary>Provides the documented configuration or response value.</summary>
-    public object Value { get; }
-    private CreateJourneyInputExitConditionsItemEventExitWhereItemValue(object value) => Value = value;
-    /// <summary>Provides the documented operation.</summary>
-    public T As<T>() => Value is T value ? value : throw new InvalidOperationException("The union holds another variant.");
-    /// <summary>Provides the documented operation.</summary>
-    public static implicit operator CreateJourneyInputExitConditionsItemEventExitWhereItemValue(string value) => new(value ?? throw new ArgumentNullException(nameof(value)));
-    /// <summary>Provides the documented operation.</summary>
-    public static implicit operator CreateJourneyInputExitConditionsItemEventExitWhereItemValue(decimal value) => new(value);
-    /// <summary>Provides the documented operation.</summary>
-    public static implicit operator CreateJourneyInputExitConditionsItemEventExitWhereItemValue(bool value) => new(value);
 }
 
 /// <summary>CreateJourneyInputExitConditionsItemConversionGoalExit Kirora API contract.</summary>
@@ -14474,31 +14226,14 @@ public sealed partial class CreateJourneyInputStepsItemWaitUntilStepEventWhereIt
     [JsonPropertyName("property")]
     public required string Property { get; init; }
 
-    /// <summary>`notEquals` also matches an event without the property. `equals` and `notEquals` ignore case and accents in text.</summary>
+    /// <summary>`notEquals` also matches an event without the property. `equals` and `notEquals` compare the property as text, ignoring case and accents.</summary>
     [JsonPropertyName("operator")]
     public required string Operator { get; init; }
 
-    /// <summary>The documented value value.</summary>
+    /// <summary>What to compare with, as text (`"pro"`, `"true"`); a number (`"50"`) for `gt`, `gte`, `lt` and `lte`.</summary>
     [JsonPropertyName("value")]
-    public required CreateJourneyInputStepsItemWaitUntilStepEventWhereItemValue Value { get; init; }
+    public required string Value { get; init; }
 
-}
-
-/// <summary>CreateJourneyInputStepsItemWaitUntilStepEventWhereItemValue Kirora API contract.</summary>
-[JsonConverter(typeof(CreateJourneyInputStepsItemWaitUntilStepEventWhereItemValueConverter))]
-public sealed class CreateJourneyInputStepsItemWaitUntilStepEventWhereItemValue
-{
-    /// <summary>Provides the documented configuration or response value.</summary>
-    public object Value { get; }
-    private CreateJourneyInputStepsItemWaitUntilStepEventWhereItemValue(object value) => Value = value;
-    /// <summary>Provides the documented operation.</summary>
-    public T As<T>() => Value is T value ? value : throw new InvalidOperationException("The union holds another variant.");
-    /// <summary>Provides the documented operation.</summary>
-    public static implicit operator CreateJourneyInputStepsItemWaitUntilStepEventWhereItemValue(string value) => new(value ?? throw new ArgumentNullException(nameof(value)));
-    /// <summary>Provides the documented operation.</summary>
-    public static implicit operator CreateJourneyInputStepsItemWaitUntilStepEventWhereItemValue(decimal value) => new(value);
-    /// <summary>Provides the documented operation.</summary>
-    public static implicit operator CreateJourneyInputStepsItemWaitUntilStepEventWhereItemValue(bool value) => new(value);
 }
 
 /// <summary>CreateJourneyInputStepsItemDigestStep Kirora API contract.</summary>
@@ -15084,31 +14819,14 @@ public sealed partial class CreateJourneyInputStepsItemBranchStepWhereItem
     [JsonPropertyName("property")]
     public required string Property { get; init; }
 
-    /// <summary>`notEquals` also matches an event without the property. `equals` and `notEquals` ignore case and accents in text.</summary>
+    /// <summary>`notEquals` also matches an event without the property. `equals` and `notEquals` compare the property as text, ignoring case and accents.</summary>
     [JsonPropertyName("operator")]
     public required string Operator { get; init; }
 
-    /// <summary>The documented value value.</summary>
+    /// <summary>What to compare with, as text (`"pro"`, `"true"`); a number (`"50"`) for `gt`, `gte`, `lt` and `lte`.</summary>
     [JsonPropertyName("value")]
-    public required CreateJourneyInputStepsItemBranchStepWhereItemValue Value { get; init; }
+    public required string Value { get; init; }
 
-}
-
-/// <summary>CreateJourneyInputStepsItemBranchStepWhereItemValue Kirora API contract.</summary>
-[JsonConverter(typeof(CreateJourneyInputStepsItemBranchStepWhereItemValueConverter))]
-public sealed class CreateJourneyInputStepsItemBranchStepWhereItemValue
-{
-    /// <summary>Provides the documented configuration or response value.</summary>
-    public object Value { get; }
-    private CreateJourneyInputStepsItemBranchStepWhereItemValue(object value) => Value = value;
-    /// <summary>Provides the documented operation.</summary>
-    public T As<T>() => Value is T value ? value : throw new InvalidOperationException("The union holds another variant.");
-    /// <summary>Provides the documented operation.</summary>
-    public static implicit operator CreateJourneyInputStepsItemBranchStepWhereItemValue(string value) => new(value ?? throw new ArgumentNullException(nameof(value)));
-    /// <summary>Provides the documented operation.</summary>
-    public static implicit operator CreateJourneyInputStepsItemBranchStepWhereItemValue(decimal value) => new(value);
-    /// <summary>Provides the documented operation.</summary>
-    public static implicit operator CreateJourneyInputStepsItemBranchStepWhereItemValue(bool value) => new(value);
 }
 
 /// <summary>CreateJourneyInputStepsItemFilterStep Kirora API contract.</summary>
@@ -15498,31 +15216,14 @@ public sealed partial class JourneyExitConditionsItemEventExitWhereItem
     [JsonPropertyName("property")]
     public required string Property { get; init; }
 
-    /// <summary>`notEquals` also matches an event without the property. `equals` and `notEquals` ignore case and accents in text.</summary>
+    /// <summary>`notEquals` also matches an event without the property. `equals` and `notEquals` compare the property as text, ignoring case and accents.</summary>
     [JsonPropertyName("operator")]
     public required string Operator { get; init; }
 
-    /// <summary>The documented value value.</summary>
+    /// <summary>What to compare with, as text (`"pro"`, `"true"`); a number (`"50"`) for `gt`, `gte`, `lt` and `lte`.</summary>
     [JsonPropertyName("value")]
-    public required JourneyExitConditionsItemEventExitWhereItemValue Value { get; init; }
+    public required string Value { get; init; }
 
-}
-
-/// <summary>JourneyExitConditionsItemEventExitWhereItemValue Kirora API contract.</summary>
-[JsonConverter(typeof(JourneyExitConditionsItemEventExitWhereItemValueConverter))]
-public sealed class JourneyExitConditionsItemEventExitWhereItemValue
-{
-    /// <summary>Provides the documented configuration or response value.</summary>
-    public object Value { get; }
-    private JourneyExitConditionsItemEventExitWhereItemValue(object value) => Value = value;
-    /// <summary>Provides the documented operation.</summary>
-    public T As<T>() => Value is T value ? value : throw new InvalidOperationException("The union holds another variant.");
-    /// <summary>Provides the documented operation.</summary>
-    public static implicit operator JourneyExitConditionsItemEventExitWhereItemValue(string value) => new(value ?? throw new ArgumentNullException(nameof(value)));
-    /// <summary>Provides the documented operation.</summary>
-    public static implicit operator JourneyExitConditionsItemEventExitWhereItemValue(decimal value) => new(value);
-    /// <summary>Provides the documented operation.</summary>
-    public static implicit operator JourneyExitConditionsItemEventExitWhereItemValue(bool value) => new(value);
 }
 
 /// <summary>JourneyExitConditionsItemConversionGoalExit Kirora API contract.</summary>
@@ -15699,31 +15400,14 @@ public sealed partial class JourneyStepWaitUntilStepEventWhereItem
     [JsonPropertyName("property")]
     public required string Property { get; init; }
 
-    /// <summary>`notEquals` also matches an event without the property. `equals` and `notEquals` ignore case and accents in text.</summary>
+    /// <summary>`notEquals` also matches an event without the property. `equals` and `notEquals` compare the property as text, ignoring case and accents.</summary>
     [JsonPropertyName("operator")]
     public required string Operator { get; init; }
 
-    /// <summary>The documented value value.</summary>
+    /// <summary>What to compare with, as text (`"pro"`, `"true"`); a number (`"50"`) for `gt`, `gte`, `lt` and `lte`.</summary>
     [JsonPropertyName("value")]
-    public required JourneyStepWaitUntilStepEventWhereItemValue Value { get; init; }
+    public required string Value { get; init; }
 
-}
-
-/// <summary>JourneyStepWaitUntilStepEventWhereItemValue Kirora API contract.</summary>
-[JsonConverter(typeof(JourneyStepWaitUntilStepEventWhereItemValueConverter))]
-public sealed class JourneyStepWaitUntilStepEventWhereItemValue
-{
-    /// <summary>Provides the documented configuration or response value.</summary>
-    public object Value { get; }
-    private JourneyStepWaitUntilStepEventWhereItemValue(object value) => Value = value;
-    /// <summary>Provides the documented operation.</summary>
-    public T As<T>() => Value is T value ? value : throw new InvalidOperationException("The union holds another variant.");
-    /// <summary>Provides the documented operation.</summary>
-    public static implicit operator JourneyStepWaitUntilStepEventWhereItemValue(string value) => new(value ?? throw new ArgumentNullException(nameof(value)));
-    /// <summary>Provides the documented operation.</summary>
-    public static implicit operator JourneyStepWaitUntilStepEventWhereItemValue(decimal value) => new(value);
-    /// <summary>Provides the documented operation.</summary>
-    public static implicit operator JourneyStepWaitUntilStepEventWhereItemValue(bool value) => new(value);
 }
 
 /// <summary>JourneyStepDigestStep Kirora API contract.</summary>
@@ -15845,8 +15529,28 @@ public sealed partial class JourneyStepEmailSendStepContent
 }
 
 /// <summary>TemplateSnapshot Kirora API contract.</summary>
-public sealed partial class TemplateSnapshot
+[JsonConverter(typeof(TemplateSnapshotConverter))]
+public sealed class TemplateSnapshot
 {
+    /// <summary>Provides the documented configuration or response value.</summary>
+    public object Value { get; }
+    private TemplateSnapshot(object value) => Value = value;
+    /// <summary>Provides the documented operation.</summary>
+    public T As<T>() => Value is T value ? value : throw new InvalidOperationException("The union holds another variant.");
+    /// <summary>Provides the documented operation.</summary>
+    public static implicit operator TemplateSnapshot(DesignSnapshot value) => new(value ?? throw new ArgumentNullException(nameof(value)));
+    /// <summary>Provides the documented operation.</summary>
+    public static implicit operator TemplateSnapshot(HtmlSnapshot value) => new(value ?? throw new ArgumentNullException(nameof(value)));
+}
+
+/// <summary>DesignSnapshot Kirora API contract.</summary>
+public sealed partial class DesignSnapshot
+{
+    /// <summary>`design`: built from blocks. Left out, `design`. Omit this field to leave it unspecified.</summary>
+    [JsonPropertyName("kind")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+    public Optional<string> Kind { get; init; }
+
     /// <summary>The block format version; use the current one, 1.</summary>
     [JsonPropertyName("schemaVersion")]
     public required long SchemaVersion { get; init; }
@@ -15865,6 +15569,24 @@ public sealed partial class TemplateSnapshot
     public Optional<string> Language { get; init; }
 
     /// <summary>Plain text sent instead of the version generated from the blocks. Omit this field to leave it unspecified.</summary>
+    [JsonPropertyName("plainTextOverride")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+    public Optional<string?> PlainTextOverride { get; init; }
+
+}
+
+/// <summary>HtmlSnapshot Kirora API contract.</summary>
+public sealed partial class HtmlSnapshot
+{
+    /// <summary>`html`: the whole email written as HTML.</summary>
+    [JsonPropertyName("kind")]
+    public required string Kind { get; init; }
+
+    /// <summary>The whole email as HTML. Merge tags work as in a design; `{{unsubscribe_url}}` as a link's href places the unsubscribe link, which marketing sends otherwise get below the email, with the workspace postal address when the email does not show it.</summary>
+    [JsonPropertyName("html")]
+    public required string Html { get; init; }
+
+    /// <summary>Plain text sent instead of the version generated from the HTML. Omit this field to leave it unspecified.</summary>
     [JsonPropertyName("plainTextOverride")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
     public Optional<string?> PlainTextOverride { get; init; }
@@ -16321,31 +16043,14 @@ public sealed partial class JourneyStepBranchStepWhereItem
     [JsonPropertyName("property")]
     public required string Property { get; init; }
 
-    /// <summary>`notEquals` also matches an event without the property. `equals` and `notEquals` ignore case and accents in text.</summary>
+    /// <summary>`notEquals` also matches an event without the property. `equals` and `notEquals` compare the property as text, ignoring case and accents.</summary>
     [JsonPropertyName("operator")]
     public required string Operator { get; init; }
 
-    /// <summary>The documented value value.</summary>
+    /// <summary>What to compare with, as text (`"pro"`, `"true"`); a number (`"50"`) for `gt`, `gte`, `lt` and `lte`.</summary>
     [JsonPropertyName("value")]
-    public required JourneyStepBranchStepWhereItemValue Value { get; init; }
+    public required string Value { get; init; }
 
-}
-
-/// <summary>JourneyStepBranchStepWhereItemValue Kirora API contract.</summary>
-[JsonConverter(typeof(JourneyStepBranchStepWhereItemValueConverter))]
-public sealed class JourneyStepBranchStepWhereItemValue
-{
-    /// <summary>Provides the documented configuration or response value.</summary>
-    public object Value { get; }
-    private JourneyStepBranchStepWhereItemValue(object value) => Value = value;
-    /// <summary>Provides the documented operation.</summary>
-    public T As<T>() => Value is T value ? value : throw new InvalidOperationException("The union holds another variant.");
-    /// <summary>Provides the documented operation.</summary>
-    public static implicit operator JourneyStepBranchStepWhereItemValue(string value) => new(value ?? throw new ArgumentNullException(nameof(value)));
-    /// <summary>Provides the documented operation.</summary>
-    public static implicit operator JourneyStepBranchStepWhereItemValue(decimal value) => new(value);
-    /// <summary>Provides the documented operation.</summary>
-    public static implicit operator JourneyStepBranchStepWhereItemValue(bool value) => new(value);
 }
 
 /// <summary>JourneyStepFilterStep Kirora API contract.</summary>
@@ -16714,31 +16419,14 @@ public sealed partial class UpdateJourneyInputExitConditionsItemEventExitWhereIt
     [JsonPropertyName("property")]
     public required string Property { get; init; }
 
-    /// <summary>`notEquals` also matches an event without the property. `equals` and `notEquals` ignore case and accents in text.</summary>
+    /// <summary>`notEquals` also matches an event without the property. `equals` and `notEquals` compare the property as text, ignoring case and accents.</summary>
     [JsonPropertyName("operator")]
     public required string Operator { get; init; }
 
-    /// <summary>The documented value value.</summary>
+    /// <summary>What to compare with, as text (`"pro"`, `"true"`); a number (`"50"`) for `gt`, `gte`, `lt` and `lte`.</summary>
     [JsonPropertyName("value")]
-    public required UpdateJourneyInputExitConditionsItemEventExitWhereItemValue Value { get; init; }
+    public required string Value { get; init; }
 
-}
-
-/// <summary>UpdateJourneyInputExitConditionsItemEventExitWhereItemValue Kirora API contract.</summary>
-[JsonConverter(typeof(UpdateJourneyInputExitConditionsItemEventExitWhereItemValueConverter))]
-public sealed class UpdateJourneyInputExitConditionsItemEventExitWhereItemValue
-{
-    /// <summary>Provides the documented configuration or response value.</summary>
-    public object Value { get; }
-    private UpdateJourneyInputExitConditionsItemEventExitWhereItemValue(object value) => Value = value;
-    /// <summary>Provides the documented operation.</summary>
-    public T As<T>() => Value is T value ? value : throw new InvalidOperationException("The union holds another variant.");
-    /// <summary>Provides the documented operation.</summary>
-    public static implicit operator UpdateJourneyInputExitConditionsItemEventExitWhereItemValue(string value) => new(value ?? throw new ArgumentNullException(nameof(value)));
-    /// <summary>Provides the documented operation.</summary>
-    public static implicit operator UpdateJourneyInputExitConditionsItemEventExitWhereItemValue(decimal value) => new(value);
-    /// <summary>Provides the documented operation.</summary>
-    public static implicit operator UpdateJourneyInputExitConditionsItemEventExitWhereItemValue(bool value) => new(value);
 }
 
 /// <summary>UpdateJourneyInputExitConditionsItemConversionGoalExit Kirora API contract.</summary>
@@ -16913,31 +16601,14 @@ public sealed partial class UpdateJourneyInputStepsItemWaitUntilStepEventWhereIt
     [JsonPropertyName("property")]
     public required string Property { get; init; }
 
-    /// <summary>`notEquals` also matches an event without the property. `equals` and `notEquals` ignore case and accents in text.</summary>
+    /// <summary>`notEquals` also matches an event without the property. `equals` and `notEquals` compare the property as text, ignoring case and accents.</summary>
     [JsonPropertyName("operator")]
     public required string Operator { get; init; }
 
-    /// <summary>The documented value value.</summary>
+    /// <summary>What to compare with, as text (`"pro"`, `"true"`); a number (`"50"`) for `gt`, `gte`, `lt` and `lte`.</summary>
     [JsonPropertyName("value")]
-    public required UpdateJourneyInputStepsItemWaitUntilStepEventWhereItemValue Value { get; init; }
+    public required string Value { get; init; }
 
-}
-
-/// <summary>UpdateJourneyInputStepsItemWaitUntilStepEventWhereItemValue Kirora API contract.</summary>
-[JsonConverter(typeof(UpdateJourneyInputStepsItemWaitUntilStepEventWhereItemValueConverter))]
-public sealed class UpdateJourneyInputStepsItemWaitUntilStepEventWhereItemValue
-{
-    /// <summary>Provides the documented configuration or response value.</summary>
-    public object Value { get; }
-    private UpdateJourneyInputStepsItemWaitUntilStepEventWhereItemValue(object value) => Value = value;
-    /// <summary>Provides the documented operation.</summary>
-    public T As<T>() => Value is T value ? value : throw new InvalidOperationException("The union holds another variant.");
-    /// <summary>Provides the documented operation.</summary>
-    public static implicit operator UpdateJourneyInputStepsItemWaitUntilStepEventWhereItemValue(string value) => new(value ?? throw new ArgumentNullException(nameof(value)));
-    /// <summary>Provides the documented operation.</summary>
-    public static implicit operator UpdateJourneyInputStepsItemWaitUntilStepEventWhereItemValue(decimal value) => new(value);
-    /// <summary>Provides the documented operation.</summary>
-    public static implicit operator UpdateJourneyInputStepsItemWaitUntilStepEventWhereItemValue(bool value) => new(value);
 }
 
 /// <summary>UpdateJourneyInputStepsItemDigestStep Kirora API contract.</summary>
@@ -17523,31 +17194,14 @@ public sealed partial class UpdateJourneyInputStepsItemBranchStepWhereItem
     [JsonPropertyName("property")]
     public required string Property { get; init; }
 
-    /// <summary>`notEquals` also matches an event without the property. `equals` and `notEquals` ignore case and accents in text.</summary>
+    /// <summary>`notEquals` also matches an event without the property. `equals` and `notEquals` compare the property as text, ignoring case and accents.</summary>
     [JsonPropertyName("operator")]
     public required string Operator { get; init; }
 
-    /// <summary>The documented value value.</summary>
+    /// <summary>What to compare with, as text (`"pro"`, `"true"`); a number (`"50"`) for `gt`, `gte`, `lt` and `lte`.</summary>
     [JsonPropertyName("value")]
-    public required UpdateJourneyInputStepsItemBranchStepWhereItemValue Value { get; init; }
+    public required string Value { get; init; }
 
-}
-
-/// <summary>UpdateJourneyInputStepsItemBranchStepWhereItemValue Kirora API contract.</summary>
-[JsonConverter(typeof(UpdateJourneyInputStepsItemBranchStepWhereItemValueConverter))]
-public sealed class UpdateJourneyInputStepsItemBranchStepWhereItemValue
-{
-    /// <summary>Provides the documented configuration or response value.</summary>
-    public object Value { get; }
-    private UpdateJourneyInputStepsItemBranchStepWhereItemValue(object value) => Value = value;
-    /// <summary>Provides the documented operation.</summary>
-    public T As<T>() => Value is T value ? value : throw new InvalidOperationException("The union holds another variant.");
-    /// <summary>Provides the documented operation.</summary>
-    public static implicit operator UpdateJourneyInputStepsItemBranchStepWhereItemValue(string value) => new(value ?? throw new ArgumentNullException(nameof(value)));
-    /// <summary>Provides the documented operation.</summary>
-    public static implicit operator UpdateJourneyInputStepsItemBranchStepWhereItemValue(decimal value) => new(value);
-    /// <summary>Provides the documented operation.</summary>
-    public static implicit operator UpdateJourneyInputStepsItemBranchStepWhereItemValue(bool value) => new(value);
 }
 
 /// <summary>UpdateJourneyInputStepsItemFilterStep Kirora API contract.</summary>
@@ -18080,31 +17734,14 @@ public sealed partial class EndedJourneyExitConditionsItemEventExitWhereItem
     [JsonPropertyName("property")]
     public required string Property { get; init; }
 
-    /// <summary>`notEquals` also matches an event without the property. `equals` and `notEquals` ignore case and accents in text.</summary>
+    /// <summary>`notEquals` also matches an event without the property. `equals` and `notEquals` compare the property as text, ignoring case and accents.</summary>
     [JsonPropertyName("operator")]
     public required string Operator { get; init; }
 
-    /// <summary>The documented value value.</summary>
+    /// <summary>What to compare with, as text (`"pro"`, `"true"`); a number (`"50"`) for `gt`, `gte`, `lt` and `lte`.</summary>
     [JsonPropertyName("value")]
-    public required EndedJourneyExitConditionsItemEventExitWhereItemValue Value { get; init; }
+    public required string Value { get; init; }
 
-}
-
-/// <summary>EndedJourneyExitConditionsItemEventExitWhereItemValue Kirora API contract.</summary>
-[JsonConverter(typeof(EndedJourneyExitConditionsItemEventExitWhereItemValueConverter))]
-public sealed class EndedJourneyExitConditionsItemEventExitWhereItemValue
-{
-    /// <summary>Provides the documented configuration or response value.</summary>
-    public object Value { get; }
-    private EndedJourneyExitConditionsItemEventExitWhereItemValue(object value) => Value = value;
-    /// <summary>Provides the documented operation.</summary>
-    public T As<T>() => Value is T value ? value : throw new InvalidOperationException("The union holds another variant.");
-    /// <summary>Provides the documented operation.</summary>
-    public static implicit operator EndedJourneyExitConditionsItemEventExitWhereItemValue(string value) => new(value ?? throw new ArgumentNullException(nameof(value)));
-    /// <summary>Provides the documented operation.</summary>
-    public static implicit operator EndedJourneyExitConditionsItemEventExitWhereItemValue(decimal value) => new(value);
-    /// <summary>Provides the documented operation.</summary>
-    public static implicit operator EndedJourneyExitConditionsItemEventExitWhereItemValue(bool value) => new(value);
 }
 
 /// <summary>EndedJourneyExitConditionsItemConversionGoalExit Kirora API contract.</summary>
@@ -18712,31 +18349,14 @@ public sealed partial class ConversionGoalWhereItem
     [JsonPropertyName("property")]
     public required string Property { get; init; }
 
-    /// <summary>`notEquals` also matches an event without the property. `equals` and `notEquals` ignore case and accents in text.</summary>
+    /// <summary>`notEquals` also matches an event without the property. `equals` and `notEquals` compare the property as text, ignoring case and accents.</summary>
     [JsonPropertyName("operator")]
     public required string Operator { get; init; }
 
-    /// <summary>The documented value value.</summary>
+    /// <summary>What to compare with, as text (`"pro"`, `"true"`); a number (`"50"`) for `gt`, `gte`, `lt` and `lte`.</summary>
     [JsonPropertyName("value")]
-    public required ConversionGoalWhereItemValue Value { get; init; }
+    public required string Value { get; init; }
 
-}
-
-/// <summary>ConversionGoalWhereItemValue Kirora API contract.</summary>
-[JsonConverter(typeof(ConversionGoalWhereItemValueConverter))]
-public sealed class ConversionGoalWhereItemValue
-{
-    /// <summary>Provides the documented configuration or response value.</summary>
-    public object Value { get; }
-    private ConversionGoalWhereItemValue(object value) => Value = value;
-    /// <summary>Provides the documented operation.</summary>
-    public T As<T>() => Value is T value ? value : throw new InvalidOperationException("The union holds another variant.");
-    /// <summary>Provides the documented operation.</summary>
-    public static implicit operator ConversionGoalWhereItemValue(string value) => new(value ?? throw new ArgumentNullException(nameof(value)));
-    /// <summary>Provides the documented operation.</summary>
-    public static implicit operator ConversionGoalWhereItemValue(decimal value) => new(value);
-    /// <summary>Provides the documented operation.</summary>
-    public static implicit operator ConversionGoalWhereItemValue(bool value) => new(value);
 }
 
 /// <summary>CreateConversionGoalInput Kirora API contract.</summary>
@@ -18790,31 +18410,14 @@ public sealed partial class CreateConversionGoalInputWhereItem
     [JsonPropertyName("property")]
     public required string Property { get; init; }
 
-    /// <summary>`notEquals` also matches an event without the property. `equals` and `notEquals` ignore case and accents in text.</summary>
+    /// <summary>`notEquals` also matches an event without the property. `equals` and `notEquals` compare the property as text, ignoring case and accents.</summary>
     [JsonPropertyName("operator")]
     public required string Operator { get; init; }
 
-    /// <summary>The documented value value.</summary>
+    /// <summary>What to compare with, as text (`"pro"`, `"true"`); a number (`"50"`) for `gt`, `gte`, `lt` and `lte`.</summary>
     [JsonPropertyName("value")]
-    public required CreateConversionGoalInputWhereItemValue Value { get; init; }
+    public required string Value { get; init; }
 
-}
-
-/// <summary>CreateConversionGoalInputWhereItemValue Kirora API contract.</summary>
-[JsonConverter(typeof(CreateConversionGoalInputWhereItemValueConverter))]
-public sealed class CreateConversionGoalInputWhereItemValue
-{
-    /// <summary>Provides the documented configuration or response value.</summary>
-    public object Value { get; }
-    private CreateConversionGoalInputWhereItemValue(object value) => Value = value;
-    /// <summary>Provides the documented operation.</summary>
-    public T As<T>() => Value is T value ? value : throw new InvalidOperationException("The union holds another variant.");
-    /// <summary>Provides the documented operation.</summary>
-    public static implicit operator CreateConversionGoalInputWhereItemValue(string value) => new(value ?? throw new ArgumentNullException(nameof(value)));
-    /// <summary>Provides the documented operation.</summary>
-    public static implicit operator CreateConversionGoalInputWhereItemValue(decimal value) => new(value);
-    /// <summary>Provides the documented operation.</summary>
-    public static implicit operator CreateConversionGoalInputWhereItemValue(bool value) => new(value);
 }
 
 /// <summary>CreateConversionGoalResponse Kirora API contract.</summary>
@@ -19011,7 +18614,11 @@ public sealed partial class TemplateListItem
     [JsonPropertyName("transactionalDefaults")]
     public required TransactionalDefaults TransactionalDefaults { get; init; }
 
-    /// <summary>Top-level blocks in the design; blocks inside columns, sections and repeats are not counted.</summary>
+    /// <summary>`design`: built from blocks; `html`: the whole email written as HTML.</summary>
+    [JsonPropertyName("kind")]
+    public required string Kind { get; init; }
+
+    /// <summary>Top-level blocks in the design; blocks inside columns, sections and repeats are not counted. 0 for an HTML template.</summary>
     [JsonPropertyName("blockCount")]
     public required long BlockCount { get; init; }
 
@@ -19063,11 +18670,27 @@ public sealed partial class TransactionalDefaults
 }
 
 /// <summary>CreateTemplateInput Kirora API contract.</summary>
-public sealed partial class CreateTemplateInput
+[JsonConverter(typeof(CreateTemplateInputConverter))]
+public sealed class CreateTemplateInput
 {
-    /// <summary>The documented name value.</summary>
-    [JsonPropertyName("name")]
-    public required string Name { get; init; }
+    /// <summary>Provides the documented configuration or response value.</summary>
+    public object Value { get; }
+    private CreateTemplateInput(object value) => Value = value;
+    /// <summary>Provides the documented operation.</summary>
+    public T As<T>() => Value is T value ? value : throw new InvalidOperationException("The union holds another variant.");
+    /// <summary>Provides the documented operation.</summary>
+    public static implicit operator CreateTemplateInput(CreateDesignTemplateInput value) => new(value ?? throw new ArgumentNullException(nameof(value)));
+    /// <summary>Provides the documented operation.</summary>
+    public static implicit operator CreateTemplateInput(CreateHtmlTemplateInput value) => new(value ?? throw new ArgumentNullException(nameof(value)));
+}
+
+/// <summary>CreateDesignTemplateInput Kirora API contract.</summary>
+public sealed partial class CreateDesignTemplateInput
+{
+    /// <summary>`design`: built from blocks in the designer. Left out, `design`. Omit this field to leave it unspecified.</summary>
+    [JsonPropertyName("kind")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+    public Optional<string> Kind { get; init; }
 
     /// <summary>The block format version. Defaults to the current one. Omit this field to leave it unspecified.</summary>
     [JsonPropertyName("schemaVersion")]
@@ -19088,7 +18711,11 @@ public sealed partial class CreateTemplateInput
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
     public Optional<string> Language { get; init; }
 
-    /// <summary>Plain text sent instead of the version generated from the blocks; `null` clears it. Omit this field to leave it unspecified.</summary>
+    /// <summary>The documented name value.</summary>
+    [JsonPropertyName("name")]
+    public required string Name { get; init; }
+
+    /// <summary>Plain text sent instead of the version generated from the design or HTML; `null` clears it. Omit this field to leave it unspecified.</summary>
     [JsonPropertyName("plainTextOverride")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
     public Optional<string?> PlainTextOverride { get; init; }
@@ -19096,7 +18723,7 @@ public sealed partial class CreateTemplateInput
     /// <summary>The subject, preview text and sender a transactional send of this template uses unless the send gives its own; campaigns and journeys set their own. A field left out stays as it is; `null` clears it. Omit this field to leave it unspecified.</summary>
     [JsonPropertyName("transactionalDefaults")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
-    public Optional<CreateTemplateInputTransactionalDefaults> TransactionalDefaults { get; init; }
+    public Optional<CreateDesignTemplateInputTransactionalDefaults> TransactionalDefaults { get; init; }
 
     /// <summary>Unique in the workspace; a transactional send may name the template by it in `email.template`. Null clears it. Omit this field to leave it unspecified.</summary>
     [JsonPropertyName("alias")]
@@ -19110,8 +18737,70 @@ public sealed partial class CreateTemplateInput
 
 }
 
-/// <summary>CreateTemplateInputTransactionalDefaults Kirora API contract.</summary>
-public sealed partial class CreateTemplateInputTransactionalDefaults
+/// <summary>CreateDesignTemplateInputTransactionalDefaults Kirora API contract.</summary>
+public sealed partial class CreateDesignTemplateInputTransactionalDefaults
+{
+    /// <summary>Merge tags may read `event.properties.*`. Omit this field to leave it unspecified.</summary>
+    [JsonPropertyName("subject")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+    public Optional<string?> Subject { get; init; }
+
+    /// <summary>Merge tags may read `event.properties.*`. Omit this field to leave it unspecified.</summary>
+    [JsonPropertyName("previewText")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+    public Optional<string?> PreviewText { get; init; }
+
+    /// <summary>One address, optionally with a display name; its domain must be verified when a send uses it. Omit this field to leave it unspecified.</summary>
+    [JsonPropertyName("from")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+    public Optional<string?> From { get; init; }
+
+    /// <summary>The documented replyTo value. Omit this field to leave it unspecified.</summary>
+    [JsonPropertyName("replyTo")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+    public Optional<string?> ReplyTo { get; init; }
+
+}
+
+/// <summary>CreateHtmlTemplateInput Kirora API contract.</summary>
+public sealed partial class CreateHtmlTemplateInput
+{
+    /// <summary>`html`: the whole email written as HTML, kept as code.</summary>
+    [JsonPropertyName("kind")]
+    public required string Kind { get; init; }
+
+    /// <summary>The whole email as HTML. Merge tags work as in a design; `{{unsubscribe_url}}` as a link's href places the unsubscribe link, which marketing sends otherwise get below the email, with the workspace postal address when the email does not show it.</summary>
+    [JsonPropertyName("html")]
+    public required string Html { get; init; }
+
+    /// <summary>The documented name value.</summary>
+    [JsonPropertyName("name")]
+    public required string Name { get; init; }
+
+    /// <summary>Plain text sent instead of the version generated from the design or HTML; `null` clears it. Omit this field to leave it unspecified.</summary>
+    [JsonPropertyName("plainTextOverride")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+    public Optional<string?> PlainTextOverride { get; init; }
+
+    /// <summary>The subject, preview text and sender a transactional send of this template uses unless the send gives its own; campaigns and journeys set their own. A field left out stays as it is; `null` clears it. Omit this field to leave it unspecified.</summary>
+    [JsonPropertyName("transactionalDefaults")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+    public Optional<CreateHtmlTemplateInputTransactionalDefaults> TransactionalDefaults { get; init; }
+
+    /// <summary>Unique in the workspace; a transactional send may name the template by it in `email.template`. Null clears it. Omit this field to leave it unspecified.</summary>
+    [JsonPropertyName("alias")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+    public Optional<string?> Alias { get; init; }
+
+    /// <summary>Tag names, up to 20, matched without case; a tag the workspace lacks is created. On update, replaces the tags whole: `[]` removes them all. Omit this field to leave it unspecified.</summary>
+    [JsonPropertyName("tags")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+    public Optional<IReadOnlyList<string>> Tags { get; init; }
+
+}
+
+/// <summary>CreateHtmlTemplateInputTransactionalDefaults Kirora API contract.</summary>
+public sealed partial class CreateHtmlTemplateInputTransactionalDefaults
 {
     /// <summary>Merge tags may read `event.properties.*`. Omit this field to leave it unspecified.</summary>
     [JsonPropertyName("subject")]
@@ -19145,7 +18834,22 @@ public sealed partial class CreateTemplateResponse
 }
 
 /// <summary>Template Kirora API contract.</summary>
-public sealed partial class Template
+[JsonConverter(typeof(TemplateConverter))]
+public sealed class Template
+{
+    /// <summary>Provides the documented configuration or response value.</summary>
+    public object Value { get; }
+    private Template(object value) => Value = value;
+    /// <summary>Provides the documented operation.</summary>
+    public T As<T>() => Value is T value ? value : throw new InvalidOperationException("The union holds another variant.");
+    /// <summary>Provides the documented operation.</summary>
+    public static implicit operator Template(DesignTemplate value) => new(value ?? throw new ArgumentNullException(nameof(value)));
+    /// <summary>Provides the documented operation.</summary>
+    public static implicit operator Template(HtmlTemplate value) => new(value ?? throw new ArgumentNullException(nameof(value)));
+}
+
+/// <summary>DesignTemplate Kirora API contract.</summary>
+public sealed partial class DesignTemplate
 {
     /// <summary>The documented id value.</summary>
     [JsonPropertyName("id")]
@@ -19155,23 +18859,7 @@ public sealed partial class Template
     [JsonPropertyName("name")]
     public required string Name { get; init; }
 
-    /// <summary>The block format version.</summary>
-    [JsonPropertyName("schemaVersion")]
-    public required long SchemaVersion { get; init; }
-
-    /// <summary>The blocks, rendered top to bottom: at most 200 across the whole tree and five levels including the root. The footer stays at the root.</summary>
-    [JsonPropertyName("blocks")]
-    public required IReadOnlyList<EmailBlock> Blocks { get; init; }
-
-    /// <summary>Theme values this email overrides.</summary>
-    [JsonPropertyName("theme")]
-    public required EmailTheme Theme { get; init; }
-
-    /// <summary>The language the email is written in, as a BCP 47 tag ("en", "fr-BE", "ar"). It sets the HTML `lang` and the reading direction: Arabic, Hebrew, Persian, Urdu and other right-to-left languages render right to left. Defaults to "en".</summary>
-    [JsonPropertyName("language")]
-    public required string Language { get; init; }
-
-    /// <summary>Plain text sent instead of the version generated from the blocks.</summary>
+    /// <summary>Plain text sent instead of the version generated from the design or HTML.</summary>
     [JsonPropertyName("plainTextOverride")]
     public required string? PlainTextOverride { get; init; }
 
@@ -19211,6 +18899,87 @@ public sealed partial class Template
     [JsonPropertyName("updatedAt")]
     public required DateTimeOffset UpdatedAt { get; init; }
 
+    /// <summary>Built from blocks in the designer.</summary>
+    [JsonPropertyName("kind")]
+    public required string Kind { get; init; }
+
+    /// <summary>The block format version.</summary>
+    [JsonPropertyName("schemaVersion")]
+    public required long SchemaVersion { get; init; }
+
+    /// <summary>The blocks, rendered top to bottom: at most 200 across the whole tree and five levels including the root. The footer stays at the root.</summary>
+    [JsonPropertyName("blocks")]
+    public required IReadOnlyList<EmailBlock> Blocks { get; init; }
+
+    /// <summary>Theme values this email overrides.</summary>
+    [JsonPropertyName("theme")]
+    public required EmailTheme Theme { get; init; }
+
+    /// <summary>The language the email is written in, as a BCP 47 tag ("en", "fr-BE", "ar"). It sets the HTML `lang` and the reading direction: Arabic, Hebrew, Persian, Urdu and other right-to-left languages render right to left. Defaults to "en".</summary>
+    [JsonPropertyName("language")]
+    public required string Language { get; init; }
+
+}
+
+/// <summary>HtmlTemplate Kirora API contract.</summary>
+public sealed partial class HtmlTemplate
+{
+    /// <summary>The documented id value.</summary>
+    [JsonPropertyName("id")]
+    public required Guid Id { get; init; }
+
+    /// <summary>The documented name value.</summary>
+    [JsonPropertyName("name")]
+    public required string Name { get; init; }
+
+    /// <summary>Plain text sent instead of the version generated from the design or HTML.</summary>
+    [JsonPropertyName("plainTextOverride")]
+    public required string? PlainTextOverride { get; init; }
+
+    /// <summary>The documented transactionalDefaults value.</summary>
+    [JsonPropertyName("transactionalDefaults")]
+    public required TransactionalDefaults TransactionalDefaults { get; init; }
+
+    /// <summary>The name a transactional send may use in `email.template`.</summary>
+    [JsonPropertyName("alias")]
+    public required string? Alias { get; init; }
+
+    /// <summary>The version API sends use; null until published. The template itself is the draft.</summary>
+    [JsonPropertyName("publishedVersion")]
+    public required long? PublishedVersion { get; init; }
+
+    /// <summary>The draft differs from the published version, the brand or a shared block it places has changed since it was published, or it was never published.</summary>
+    [JsonPropertyName("hasUnpublishedChanges")]
+    public required bool HasUnpublishedChanges { get; init; }
+
+    /// <summary>Raised by every edit. Send it back as `expectedRevision` on the update so a change made since you read it is refused instead of overwritten.</summary>
+    [JsonPropertyName("revision")]
+    public required long Revision { get; init; }
+
+    /// <summary>A small picture of the design (WebP, 640 × 853, shown at half size), redrawn a few seconds after each save, at a new address each time; null until the first is drawn.</summary>
+    [JsonPropertyName("thumbnailUrl")]
+    public required string? ThumbnailUrl { get; init; }
+
+    /// <summary>Tag names, sorted without case.</summary>
+    [JsonPropertyName("tags")]
+    public required IReadOnlyList<string> Tags { get; init; }
+
+    /// <summary>The documented createdAt value.</summary>
+    [JsonPropertyName("createdAt")]
+    public required DateTimeOffset CreatedAt { get; init; }
+
+    /// <summary>The documented updatedAt value.</summary>
+    [JsonPropertyName("updatedAt")]
+    public required DateTimeOffset UpdatedAt { get; init; }
+
+    /// <summary>The whole email written as HTML, kept as code.</summary>
+    [JsonPropertyName("kind")]
+    public required string Kind { get; init; }
+
+    /// <summary>The whole email, scripts and the like removed when it was saved.</summary>
+    [JsonPropertyName("html")]
+    public required string Html { get; init; }
+
 }
 
 /// <summary>GetTemplateResponse Kirora API contract.</summary>
@@ -19230,27 +18999,32 @@ public sealed partial class UpdateTemplateInput
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
     public Optional<string> Name { get; init; }
 
-    /// <summary>The block format version. Omit this field to leave it unspecified.</summary>
+    /// <summary>The block format version. A design only. Omit this field to leave it unspecified.</summary>
     [JsonPropertyName("schemaVersion")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
     public Optional<long> SchemaVersion { get; init; }
 
-    /// <summary>The blocks, rendered top to bottom: at most 200 across the whole tree and five levels including the root. The footer stays at the root. Omit this field to leave it unspecified.</summary>
+    /// <summary>The blocks. A design only. Omit this field to leave it unspecified.</summary>
     [JsonPropertyName("blocks")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
     public Optional<IReadOnlyList<EmailBlockInput>> Blocks { get; init; }
 
-    /// <summary>Theme values this email overrides. Omit this field to leave it unspecified.</summary>
+    /// <summary>Theme values this email overrides. A design only. Omit this field to leave it unspecified.</summary>
     [JsonPropertyName("theme")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
     public Optional<EmailThemeInput> Theme { get; init; }
 
-    /// <summary>The language the email is written in, as a BCP 47 tag ("en", "fr-BE", "ar"). It sets the HTML `lang` and the reading direction: Arabic, Hebrew, Persian, Urdu and other right-to-left languages render right to left. Defaults to "en". Omit this field to leave it unspecified.</summary>
+    /// <summary>The email's language. A design only: an HTML template's `&lt;html lang&gt;` says it. Omit this field to leave it unspecified.</summary>
     [JsonPropertyName("language")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
     public Optional<string> Language { get; init; }
 
-    /// <summary>Plain text sent instead of the version generated from the blocks; `null` clears it. Omit this field to leave it unspecified.</summary>
+    /// <summary>The whole email. An HTML template only: the kind never changes. Omit this field to leave it unspecified.</summary>
+    [JsonPropertyName("html")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+    public Optional<string> Html { get; init; }
+
+    /// <summary>Plain text sent instead of the version generated from the design or HTML; `null` clears it. Omit this field to leave it unspecified.</summary>
     [JsonPropertyName("plainTextOverride")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
     public Optional<string?> PlainTextOverride { get; init; }
@@ -19395,10 +19169,15 @@ public sealed partial class TemplateGallerySamplesItem
 /// <summary>RenderTemplateInput Kirora API contract.</summary>
 public sealed partial class RenderTemplateInput
 {
-    /// <summary>`published` (the default): what sends use, with the brand and shared blocks it was published with. `draft`: the template as it is now, in the current brand and shared blocks. A number: that published version. Omit this field to leave it unspecified.</summary>
+    /// <summary>`true`: the template as it is now, in the current brand and shared blocks. Left out, the published version: what sends use, with the brand and shared blocks it was published with. Omit this field to leave it unspecified.</summary>
+    [JsonPropertyName("draft")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+    public Optional<bool> Draft { get; init; }
+
+    /// <summary>A published version to render instead of the current one. Omit this field to leave it unspecified.</summary>
     [JsonPropertyName("version")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
-    public Optional<RenderTemplateInputVersion> Version { get; init; }
+    public Optional<long> Version { get; init; }
 
     /// <summary>A contact whose values fill the merge tags and decide each block's `visibleIf`. Without one, merge tags show their defaults. Omit this field to leave it unspecified.</summary>
     [JsonPropertyName("contact")]
@@ -19410,21 +19189,11 @@ public sealed partial class RenderTemplateInput
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
     public Optional<Dictionary<string, JsonElement>> Data { get; init; }
 
-}
+    /// <summary>HTML only. `marketing`: the email as a marketing send has it, with the postal address and an unsubscribe link (`{{unsubscribe_url}}`; `#` in a test send) added below when the HTML does not show them. `transactional` (the default): nothing is added, as a transactional send adds nothing, and the HTML is as saving keeps it. Omit this field to leave it unspecified.</summary>
+    [JsonPropertyName("context")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+    public Optional<string> Context { get; init; }
 
-/// <summary>RenderTemplateInputVersion Kirora API contract.</summary>
-[JsonConverter(typeof(RenderTemplateInputVersionConverter))]
-public sealed class RenderTemplateInputVersion
-{
-    /// <summary>Provides the documented configuration or response value.</summary>
-    public object Value { get; }
-    private RenderTemplateInputVersion(object value) => Value = value;
-    /// <summary>Provides the documented operation.</summary>
-    public T As<T>() => Value is T value ? value : throw new InvalidOperationException("The union holds another variant.");
-    /// <summary>Provides the documented operation.</summary>
-    public static implicit operator RenderTemplateInputVersion(string value) => new(value ?? throw new ArgumentNullException(nameof(value)));
-    /// <summary>Provides the documented operation.</summary>
-    public static implicit operator RenderTemplateInputVersion(long value) => new(value);
 }
 
 /// <summary>RenderTemplateResponse Kirora API contract.</summary>
@@ -19483,8 +19252,28 @@ public sealed partial class SavedTemplateRenderWarningsItem
 }
 
 /// <summary>RenderTemplateContentInput Kirora API contract.</summary>
-public sealed partial class RenderTemplateContentInput
+[JsonConverter(typeof(RenderTemplateContentInputConverter))]
+public sealed class RenderTemplateContentInput
 {
+    /// <summary>Provides the documented configuration or response value.</summary>
+    public object Value { get; }
+    private RenderTemplateContentInput(object value) => Value = value;
+    /// <summary>Provides the documented operation.</summary>
+    public T As<T>() => Value is T value ? value : throw new InvalidOperationException("The union holds another variant.");
+    /// <summary>Provides the documented operation.</summary>
+    public static implicit operator RenderTemplateContentInput(RenderDesignContentInput value) => new(value ?? throw new ArgumentNullException(nameof(value)));
+    /// <summary>Provides the documented operation.</summary>
+    public static implicit operator RenderTemplateContentInput(RenderHtmlContentInput value) => new(value ?? throw new ArgumentNullException(nameof(value)));
+}
+
+/// <summary>RenderDesignContentInput Kirora API contract.</summary>
+public sealed partial class RenderDesignContentInput
+{
+    /// <summary>`design`: built from blocks in the designer. Left out, `design`. Omit this field to leave it unspecified.</summary>
+    [JsonPropertyName("kind")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+    public Optional<string> Kind { get; init; }
+
     /// <summary>The block format version. Omit this field to leave it unspecified.</summary>
     [JsonPropertyName("schemaVersion")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
@@ -19504,7 +19293,45 @@ public sealed partial class RenderTemplateContentInput
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
     public Optional<string> Language { get; init; }
 
-    /// <summary>Plain text used instead of the version generated from the blocks. Omit this field to leave it unspecified.</summary>
+    /// <summary>Plain text used instead of the version generated from the design or HTML. Omit this field to leave it unspecified.</summary>
+    [JsonPropertyName("plainTextOverride")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+    public Optional<string?> PlainTextOverride { get; init; }
+
+    /// <summary>A contact whose values fill the merge tags and decide each block's `visibleIf`. Without one, merge tags show their defaults. Omit this field to leave it unspecified.</summary>
+    [JsonPropertyName("contact")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+    public Optional<ContactIdentifierInput> Contact { get; init; }
+
+    /// <summary>The subject line, returned rendered. Omit this field to leave it unspecified.</summary>
+    [JsonPropertyName("subject")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+    public Optional<string> Subject { get; init; }
+
+    /// <summary>Sample data for `{{ event.properties.* }}` tags and repeat lists: what a transactional send's `data` or a journey's event would carry. Without it, a repeat shows once with its item tags as written. Omit this field to leave it unspecified.</summary>
+    [JsonPropertyName("data")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+    public Optional<Dictionary<string, JsonElement>> Data { get; init; }
+
+}
+
+/// <summary>RenderHtmlContentInput Kirora API contract.</summary>
+public sealed partial class RenderHtmlContentInput
+{
+    /// <summary>`html`: the whole email written as HTML, kept as code.</summary>
+    [JsonPropertyName("kind")]
+    public required string Kind { get; init; }
+
+    /// <summary>The whole email as HTML. Merge tags work as in a design; `{{unsubscribe_url}}` as a link's href places the unsubscribe link, which marketing sends otherwise get below the email, with the workspace postal address when the email does not show it.</summary>
+    [JsonPropertyName("html")]
+    public required string Html { get; init; }
+
+    /// <summary>HTML only. `marketing`: the email as a marketing send has it, with the postal address and an unsubscribe link (`{{unsubscribe_url}}`; `#` in a test send) added below when the HTML does not show them. `transactional` (the default): nothing is added, as a transactional send adds nothing, and the HTML is as saving keeps it. Omit this field to leave it unspecified.</summary>
+    [JsonPropertyName("context")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+    public Optional<string> Context { get; init; }
+
+    /// <summary>Plain text used instead of the version generated from the design or HTML. Omit this field to leave it unspecified.</summary>
     [JsonPropertyName("plainTextOverride")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
     public Optional<string?> PlainTextOverride { get; init; }
@@ -19579,8 +19406,28 @@ public sealed partial class TemplateRenderWarningsItem
 }
 
 /// <summary>SendTemplateTestInput Kirora API contract.</summary>
-public sealed partial class SendTemplateTestInput
+[JsonConverter(typeof(SendTemplateTestInputConverter))]
+public sealed class SendTemplateTestInput
 {
+    /// <summary>Provides the documented configuration or response value.</summary>
+    public object Value { get; }
+    private SendTemplateTestInput(object value) => Value = value;
+    /// <summary>Provides the documented operation.</summary>
+    public T As<T>() => Value is T value ? value : throw new InvalidOperationException("The union holds another variant.");
+    /// <summary>Provides the documented operation.</summary>
+    public static implicit operator SendTemplateTestInput(SendDesignTemplateTestInput value) => new(value ?? throw new ArgumentNullException(nameof(value)));
+    /// <summary>Provides the documented operation.</summary>
+    public static implicit operator SendTemplateTestInput(SendHtmlTemplateTestInput value) => new(value ?? throw new ArgumentNullException(nameof(value)));
+}
+
+/// <summary>SendDesignTemplateTestInput Kirora API contract.</summary>
+public sealed partial class SendDesignTemplateTestInput
+{
+    /// <summary>`design`: built from blocks in the designer. Left out, `design`. Omit this field to leave it unspecified.</summary>
+    [JsonPropertyName("kind")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+    public Optional<string> Kind { get; init; }
+
     /// <summary>The block format version. Omit this field to leave it unspecified.</summary>
     [JsonPropertyName("schemaVersion")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
@@ -19600,7 +19447,53 @@ public sealed partial class SendTemplateTestInput
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
     public Optional<string> Language { get; init; }
 
-    /// <summary>Plain text used instead of the version generated from the blocks. Omit this field to leave it unspecified.</summary>
+    /// <summary>Plain text used instead of the version generated from the design or HTML. Omit this field to leave it unspecified.</summary>
+    [JsonPropertyName("plainTextOverride")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+    public Optional<string?> PlainTextOverride { get; init; }
+
+    /// <summary>A contact whose values fill the merge tags and decide each block's `visibleIf`. Without one, merge tags show their defaults. Omit this field to leave it unspecified.</summary>
+    [JsonPropertyName("contact")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+    public Optional<ContactIdentifierInput> Contact { get; init; }
+
+    /// <summary>The subject line.</summary>
+    [JsonPropertyName("subject")]
+    public required string Subject { get; init; }
+
+    /// <summary>Sample data for `{{ event.properties.* }}` tags and repeat lists: what a transactional send's `data` or a journey's event would carry. Without it, a repeat shows once with its item tags as written. Omit this field to leave it unspecified.</summary>
+    [JsonPropertyName("data")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+    public Optional<Dictionary<string, JsonElement>> Data { get; init; }
+
+    /// <summary>The address the test comes from, on one of the workspace's verified domains; the workspace's default sender when omitted. Omit this field to leave it unspecified.</summary>
+    [JsonPropertyName("from")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+    public Optional<string> From { get; init; }
+
+    /// <summary>Where to send the test: any member of the workspace who has accepted their invitation.</summary>
+    [JsonPropertyName("to")]
+    public required string To { get; init; }
+
+}
+
+/// <summary>SendHtmlTemplateTestInput Kirora API contract.</summary>
+public sealed partial class SendHtmlTemplateTestInput
+{
+    /// <summary>`html`: the whole email written as HTML, kept as code.</summary>
+    [JsonPropertyName("kind")]
+    public required string Kind { get; init; }
+
+    /// <summary>The whole email as HTML. Merge tags work as in a design; `{{unsubscribe_url}}` as a link's href places the unsubscribe link, which marketing sends otherwise get below the email, with the workspace postal address when the email does not show it.</summary>
+    [JsonPropertyName("html")]
+    public required string Html { get; init; }
+
+    /// <summary>HTML only. `marketing`: the email as a marketing send has it, with the postal address and an unsubscribe link (`{{unsubscribe_url}}`; `#` in a test send) added below when the HTML does not show them. `transactional` (the default): nothing is added, as a transactional send adds nothing, and the HTML is as saving keeps it. Omit this field to leave it unspecified.</summary>
+    [JsonPropertyName("context")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+    public Optional<string> Context { get; init; }
+
+    /// <summary>Plain text used instead of the version generated from the design or HTML. Omit this field to leave it unspecified.</summary>
     [JsonPropertyName("plainTextOverride")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
     public Optional<string?> PlainTextOverride { get; init; }
@@ -19716,7 +19609,22 @@ public sealed partial class GetTemplateVersionResponse
 }
 
 /// <summary>TemplateVersion Kirora API contract.</summary>
-public sealed partial class TemplateVersion
+[JsonConverter(typeof(TemplateVersionConverter))]
+public sealed class TemplateVersion
+{
+    /// <summary>Provides the documented configuration or response value.</summary>
+    public object Value { get; }
+    private TemplateVersion(object value) => Value = value;
+    /// <summary>Provides the documented operation.</summary>
+    public T As<T>() => Value is T value ? value : throw new InvalidOperationException("The union holds another variant.");
+    /// <summary>Provides the documented operation.</summary>
+    public static implicit operator TemplateVersion(DesignTemplateVersion value) => new(value ?? throw new ArgumentNullException(nameof(value)));
+    /// <summary>Provides the documented operation.</summary>
+    public static implicit operator TemplateVersion(HtmlTemplateVersion value) => new(value ?? throw new ArgumentNullException(nameof(value)));
+}
+
+/// <summary>DesignTemplateVersion Kirora API contract.</summary>
+public sealed partial class DesignTemplateVersion
 {
     /// <summary>The version number, from 1.</summary>
     [JsonPropertyName("version")]
@@ -19729,6 +19637,18 @@ public sealed partial class TemplateVersion
     /// <summary>When this version was published.</summary>
     [JsonPropertyName("publishedAt")]
     public required DateTimeOffset PublishedAt { get; init; }
+
+    /// <summary>Plain text sent instead of the version generated from the design or HTML.</summary>
+    [JsonPropertyName("plainTextOverride")]
+    public required string? PlainTextOverride { get; init; }
+
+    /// <summary>The documented transactionalDefaults value.</summary>
+    [JsonPropertyName("transactionalDefaults")]
+    public required TransactionalDefaults TransactionalDefaults { get; init; }
+
+    /// <summary>Built from blocks in the designer.</summary>
+    [JsonPropertyName("kind")]
+    public required string Kind { get; init; }
 
     /// <summary>The block format version.</summary>
     [JsonPropertyName("schemaVersion")]
@@ -19746,26 +19666,18 @@ public sealed partial class TemplateVersion
     [JsonPropertyName("language")]
     public required string Language { get; init; }
 
-    /// <summary>Plain text sent instead of the version generated from the blocks.</summary>
-    [JsonPropertyName("plainTextOverride")]
-    public required string? PlainTextOverride { get; init; }
-
-    /// <summary>The documented transactionalDefaults value.</summary>
-    [JsonPropertyName("transactionalDefaults")]
-    public required TransactionalDefaults TransactionalDefaults { get; init; }
-
     /// <summary>The content of each shared block this version places, by shared block id, as it stood when published: what sends of this version show.</summary>
     [JsonPropertyName("sharedBlocks")]
     public required Dictionary<string, IReadOnlyList<EmailBlock>> SharedBlocks { get; init; }
 
     /// <summary>The workspace brand kit as it stood when published, under this version's `theme`: the look, logo and social links sends of this version are drawn with.</summary>
     [JsonPropertyName("brandKit")]
-    public required TemplateVersionBrandKit BrandKit { get; init; }
+    public required DesignTemplateVersionBrandKit BrandKit { get; init; }
 
 }
 
-/// <summary>TemplateVersionBrandKit Kirora API contract.</summary>
-public sealed partial class TemplateVersionBrandKit
+/// <summary>DesignTemplateVersionBrandKit Kirora API contract.</summary>
+public sealed partial class DesignTemplateVersionBrandKit
 {
     /// <summary>The documented name value.</summary>
     [JsonPropertyName("name")]
@@ -19777,16 +19689,16 @@ public sealed partial class TemplateVersionBrandKit
 
     /// <summary>The documented logo value.</summary>
     [JsonPropertyName("logo")]
-    public required TemplateVersionBrandKitLogo? Logo { get; init; }
+    public required DesignTemplateVersionBrandKitLogo? Logo { get; init; }
 
     /// <summary>The documented socialLinks value.</summary>
     [JsonPropertyName("socialLinks")]
-    public required IReadOnlyList<TemplateVersionBrandKitSocialLinksItem> SocialLinks { get; init; }
+    public required IReadOnlyList<DesignTemplateVersionBrandKitSocialLinksItem> SocialLinks { get; init; }
 
 }
 
-/// <summary>TemplateVersionBrandKitLogo Kirora API contract.</summary>
-public sealed partial class TemplateVersionBrandKitLogo
+/// <summary>DesignTemplateVersionBrandKitLogo Kirora API contract.</summary>
+public sealed partial class DesignTemplateVersionBrandKitLogo
 {
     /// <summary>The documented assetId value.</summary>
     [JsonPropertyName("assetId")]
@@ -19806,8 +19718,8 @@ public sealed partial class TemplateVersionBrandKitLogo
 
 }
 
-/// <summary>TemplateVersionBrandKitSocialLinksItem Kirora API contract.</summary>
-public sealed partial class TemplateVersionBrandKitSocialLinksItem
+/// <summary>DesignTemplateVersionBrandKitSocialLinksItem Kirora API contract.</summary>
+public sealed partial class DesignTemplateVersionBrandKitSocialLinksItem
 {
     /// <summary>The documented label value.</summary>
     [JsonPropertyName("label")]
@@ -19816,6 +19728,39 @@ public sealed partial class TemplateVersionBrandKitSocialLinksItem
     /// <summary>The documented href value.</summary>
     [JsonPropertyName("href")]
     public required string Href { get; init; }
+
+}
+
+/// <summary>HtmlTemplateVersion Kirora API contract.</summary>
+public sealed partial class HtmlTemplateVersion
+{
+    /// <summary>The version number, from 1.</summary>
+    [JsonPropertyName("version")]
+    public required long Version { get; init; }
+
+    /// <summary>Who published it; `null` when published through an API key, or by a member since removed.</summary>
+    [JsonPropertyName("publishedByUserId")]
+    public required Guid? PublishedByUserId { get; init; }
+
+    /// <summary>When this version was published.</summary>
+    [JsonPropertyName("publishedAt")]
+    public required DateTimeOffset PublishedAt { get; init; }
+
+    /// <summary>Plain text sent instead of the version generated from the design or HTML.</summary>
+    [JsonPropertyName("plainTextOverride")]
+    public required string? PlainTextOverride { get; init; }
+
+    /// <summary>The documented transactionalDefaults value.</summary>
+    [JsonPropertyName("transactionalDefaults")]
+    public required TransactionalDefaults TransactionalDefaults { get; init; }
+
+    /// <summary>The whole email written as HTML, kept as code.</summary>
+    [JsonPropertyName("kind")]
+    public required string Kind { get; init; }
+
+    /// <summary>The whole email, scripts and the like removed when it was saved.</summary>
+    [JsonPropertyName("html")]
+    public required string Html { get; init; }
 
 }
 
@@ -20693,10 +20638,10 @@ public sealed partial class CreateFormInput
     [JsonPropertyName("fields")]
     public required IReadOnlyList<FormFieldInput> Fields { get; init; }
 
-    /// <summary>Values saved on each submitter with no field shown, each a contact attribute: fixed (`"spring"`), or taken from the link (`{ "fromParam": "utm_campaign" }`). Omit this field to leave it unspecified.</summary>
+    /// <summary>Values saved on each submitter with no field shown, each a contact attribute: fixed (`{ "source": "fixed", "value": "spring" }`), or taken from the link (`{ "source": "link", "param": "utm_campaign" }`). Omit this field to leave it unspecified.</summary>
     [JsonPropertyName("hiddenFields")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
-    public Optional<Dictionary<string, CreateFormInputHiddenFieldsValue>> HiddenFields { get; init; }
+    public Optional<Dictionary<string, FormHiddenValueInput>> HiddenFields { get; init; }
 
     /// <summary>Site origins (scheme and host, no path) the embed may load from, such as `https://example.com`. Omit this field to leave it unspecified.</summary>
     [JsonPropertyName("allowedOrigins")]
@@ -20804,27 +20749,44 @@ public sealed partial class FormFieldInputOptionsItem
 
 }
 
-/// <summary>CreateFormInputHiddenFieldsValue Kirora API contract.</summary>
-[JsonConverter(typeof(CreateFormInputHiddenFieldsValueConverter))]
-public sealed class CreateFormInputHiddenFieldsValue
+/// <summary>FormHiddenValueInput Kirora API contract.</summary>
+[JsonConverter(typeof(FormHiddenValueInputConverter))]
+public sealed class FormHiddenValueInput
 {
     /// <summary>Provides the documented configuration or response value.</summary>
     public object Value { get; }
-    private CreateFormInputHiddenFieldsValue(object value) => Value = value;
+    private FormHiddenValueInput(object value) => Value = value;
     /// <summary>Provides the documented operation.</summary>
     public T As<T>() => Value is T value ? value : throw new InvalidOperationException("The union holds another variant.");
     /// <summary>Provides the documented operation.</summary>
-    public static implicit operator CreateFormInputHiddenFieldsValue(string value) => new(value ?? throw new ArgumentNullException(nameof(value)));
+    public static implicit operator FormHiddenValueInput(FormHiddenValueInputVariant1 value) => new(value ?? throw new ArgumentNullException(nameof(value)));
     /// <summary>Provides the documented operation.</summary>
-    public static implicit operator CreateFormInputHiddenFieldsValue(CreateFormInputHiddenFieldsValueVariant2 value) => new(value ?? throw new ArgumentNullException(nameof(value)));
+    public static implicit operator FormHiddenValueInput(FormHiddenValueInputVariant2 value) => new(value ?? throw new ArgumentNullException(nameof(value)));
 }
 
-/// <summary>CreateFormInputHiddenFieldsValueVariant2 Kirora API contract.</summary>
-public sealed partial class CreateFormInputHiddenFieldsValueVariant2
+/// <summary>FormHiddenValueInputVariant1 Kirora API contract.</summary>
+public sealed partial class FormHiddenValueInputVariant1
 {
+    /// <summary>The documented source value.</summary>
+    [JsonPropertyName("source")]
+    public required string Source { get; init; }
+
+    /// <summary>Saved as it is on every submitter.</summary>
+    [JsonPropertyName("value")]
+    public required string Value { get; init; }
+
+}
+
+/// <summary>FormHiddenValueInputVariant2 Kirora API contract.</summary>
+public sealed partial class FormHiddenValueInputVariant2
+{
+    /// <summary>The documented source value.</summary>
+    [JsonPropertyName("source")]
+    public required string Source { get; init; }
+
     /// <summary>The link parameter it takes its value from, such as `utm_campaign`; left unset when the link has none.</summary>
-    [JsonPropertyName("fromParam")]
-    public required string FromParam { get; init; }
+    [JsonPropertyName("param")]
+    public required string Param { get; init; }
 
 }
 
@@ -20896,10 +20858,15 @@ public sealed partial class FormThemeInput
 /// <summary>FormThemeInputInputs Kirora API contract.</summary>
 public sealed partial class FormThemeInputInputs
 {
-    /// <summary>`full` for the form width, or a width in px. Omit this field to leave it unspecified.</summary>
+    /// <summary>`fit` (unset): a short answer's field is 320px and a long one fills the form; `full`: every field fills the form; `fixed`: every field `widthPx` wide at most. Omit this field to leave it unspecified.</summary>
     [JsonPropertyName("width")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
-    public Optional<FormThemeInputInputsWidth> Width { get; init; }
+    public Optional<string> Width { get; init; }
+
+    /// <summary>With `width` `fixed`: the width, in px. Omit this field to leave it unspecified.</summary>
+    [JsonPropertyName("widthPx")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+    public Optional<long> WidthPx { get; init; }
 
     /// <summary>In px. Omit this field to leave it unspecified.</summary>
     [JsonPropertyName("height")]
@@ -20936,21 +20903,6 @@ public sealed partial class FormThemeInputInputs
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
     public Optional<long> Spacing { get; init; }
 
-}
-
-/// <summary>FormThemeInputInputsWidth Kirora API contract.</summary>
-[JsonConverter(typeof(FormThemeInputInputsWidthConverter))]
-public sealed class FormThemeInputInputsWidth
-{
-    /// <summary>Provides the documented configuration or response value.</summary>
-    public object Value { get; }
-    private FormThemeInputInputsWidth(object value) => Value = value;
-    /// <summary>Provides the documented operation.</summary>
-    public T As<T>() => Value is T value ? value : throw new InvalidOperationException("The union holds another variant.");
-    /// <summary>Provides the documented operation.</summary>
-    public static implicit operator FormThemeInputInputsWidth(string value) => new(value ?? throw new ArgumentNullException(nameof(value)));
-    /// <summary>Provides the documented operation.</summary>
-    public static implicit operator FormThemeInputInputsWidth(long value) => new(value);
 }
 
 /// <summary>FormThemeInputButton Kirora API contract.</summary>
@@ -21230,7 +21182,7 @@ public sealed partial class Form
 
     /// <summary>Values saved on each submitter with no field shown: fixed, or taken from the link.</summary>
     [JsonPropertyName("hiddenFields")]
-    public required Dictionary<string, FormHiddenFieldsValue> HiddenFields { get; init; }
+    public required Dictionary<string, FormHiddenValue> HiddenFields { get; init; }
 
     /// <summary>How the form's link previews, as set; `null` falls back entirely.</summary>
     [JsonPropertyName("share")]
@@ -21350,27 +21302,44 @@ public sealed partial class FormFieldsItemOptionsItem
 
 }
 
-/// <summary>FormHiddenFieldsValue Kirora API contract.</summary>
-[JsonConverter(typeof(FormHiddenFieldsValueConverter))]
-public sealed class FormHiddenFieldsValue
+/// <summary>FormHiddenValue Kirora API contract.</summary>
+[JsonConverter(typeof(FormHiddenValueConverter))]
+public sealed class FormHiddenValue
 {
     /// <summary>Provides the documented configuration or response value.</summary>
     public object Value { get; }
-    private FormHiddenFieldsValue(object value) => Value = value;
+    private FormHiddenValue(object value) => Value = value;
     /// <summary>Provides the documented operation.</summary>
     public T As<T>() => Value is T value ? value : throw new InvalidOperationException("The union holds another variant.");
     /// <summary>Provides the documented operation.</summary>
-    public static implicit operator FormHiddenFieldsValue(string value) => new(value ?? throw new ArgumentNullException(nameof(value)));
+    public static implicit operator FormHiddenValue(FormHiddenValueVariant1 value) => new(value ?? throw new ArgumentNullException(nameof(value)));
     /// <summary>Provides the documented operation.</summary>
-    public static implicit operator FormHiddenFieldsValue(FormHiddenFieldsValueVariant2 value) => new(value ?? throw new ArgumentNullException(nameof(value)));
+    public static implicit operator FormHiddenValue(FormHiddenValueVariant2 value) => new(value ?? throw new ArgumentNullException(nameof(value)));
 }
 
-/// <summary>FormHiddenFieldsValueVariant2 Kirora API contract.</summary>
-public sealed partial class FormHiddenFieldsValueVariant2
+/// <summary>FormHiddenValueVariant1 Kirora API contract.</summary>
+public sealed partial class FormHiddenValueVariant1
 {
+    /// <summary>The documented source value.</summary>
+    [JsonPropertyName("source")]
+    public required string Source { get; init; }
+
+    /// <summary>Saved as it is on every submitter.</summary>
+    [JsonPropertyName("value")]
+    public required string Value { get; init; }
+
+}
+
+/// <summary>FormHiddenValueVariant2 Kirora API contract.</summary>
+public sealed partial class FormHiddenValueVariant2
+{
+    /// <summary>The documented source value.</summary>
+    [JsonPropertyName("source")]
+    public required string Source { get; init; }
+
     /// <summary>The link parameter it takes its value from, such as `utm_campaign`; left unset when the link has none.</summary>
-    [JsonPropertyName("fromParam")]
-    public required string FromParam { get; init; }
+    [JsonPropertyName("param")]
+    public required string Param { get; init; }
 
 }
 
@@ -21475,10 +21444,15 @@ public sealed partial class FormTheme
 /// <summary>FormThemeInputs Kirora API contract.</summary>
 public sealed partial class FormThemeInputs
 {
-    /// <summary>`full` for the form width, or a width in px. Omit this field to leave it unspecified.</summary>
+    /// <summary>`fit` (unset): a short answer's field is 320px and a long one fills the form; `full`: every field fills the form; `fixed`: every field `widthPx` wide at most. Omit this field to leave it unspecified.</summary>
     [JsonPropertyName("width")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
-    public Optional<FormThemeInputsWidth> Width { get; init; }
+    public Optional<string> Width { get; init; }
+
+    /// <summary>With `width` `fixed`: the width, in px. Omit this field to leave it unspecified.</summary>
+    [JsonPropertyName("widthPx")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+    public Optional<long> WidthPx { get; init; }
 
     /// <summary>In px. Omit this field to leave it unspecified.</summary>
     [JsonPropertyName("height")]
@@ -21515,21 +21489,6 @@ public sealed partial class FormThemeInputs
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
     public Optional<long> Spacing { get; init; }
 
-}
-
-/// <summary>FormThemeInputsWidth Kirora API contract.</summary>
-[JsonConverter(typeof(FormThemeInputsWidthConverter))]
-public sealed class FormThemeInputsWidth
-{
-    /// <summary>Provides the documented configuration or response value.</summary>
-    public object Value { get; }
-    private FormThemeInputsWidth(object value) => Value = value;
-    /// <summary>Provides the documented operation.</summary>
-    public T As<T>() => Value is T value ? value : throw new InvalidOperationException("The union holds another variant.");
-    /// <summary>Provides the documented operation.</summary>
-    public static implicit operator FormThemeInputsWidth(string value) => new(value ?? throw new ArgumentNullException(nameof(value)));
-    /// <summary>Provides the documented operation.</summary>
-    public static implicit operator FormThemeInputsWidth(long value) => new(value);
 }
 
 /// <summary>FormThemeButton Kirora API contract.</summary>
@@ -21799,7 +21758,7 @@ public sealed partial class UpdateFormInput
     /// <summary>Values saved on each submitter with no field shown: fixed, or taken from the link. Omit this field to leave it unspecified.</summary>
     [JsonPropertyName("hiddenFields")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
-    public Optional<Dictionary<string, UpdateFormInputHiddenFieldsValue>> HiddenFields { get; init; }
+    public Optional<Dictionary<string, FormHiddenValueInput>> HiddenFields { get; init; }
 
     /// <summary>Site origins (scheme and host, no path) the embed may load from. Omit this field to leave it unspecified.</summary>
     [JsonPropertyName("allowedOrigins")]
@@ -21860,30 +21819,6 @@ public sealed partial class UpdateFormInputShare
     [JsonPropertyName("imageUrl")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
     public Optional<string> ImageUrl { get; init; }
-
-}
-
-/// <summary>UpdateFormInputHiddenFieldsValue Kirora API contract.</summary>
-[JsonConverter(typeof(UpdateFormInputHiddenFieldsValueConverter))]
-public sealed class UpdateFormInputHiddenFieldsValue
-{
-    /// <summary>Provides the documented configuration or response value.</summary>
-    public object Value { get; }
-    private UpdateFormInputHiddenFieldsValue(object value) => Value = value;
-    /// <summary>Provides the documented operation.</summary>
-    public T As<T>() => Value is T value ? value : throw new InvalidOperationException("The union holds another variant.");
-    /// <summary>Provides the documented operation.</summary>
-    public static implicit operator UpdateFormInputHiddenFieldsValue(string value) => new(value ?? throw new ArgumentNullException(nameof(value)));
-    /// <summary>Provides the documented operation.</summary>
-    public static implicit operator UpdateFormInputHiddenFieldsValue(UpdateFormInputHiddenFieldsValueVariant2 value) => new(value ?? throw new ArgumentNullException(nameof(value)));
-}
-
-/// <summary>UpdateFormInputHiddenFieldsValueVariant2 Kirora API contract.</summary>
-public sealed partial class UpdateFormInputHiddenFieldsValueVariant2
-{
-    /// <summary>The link parameter it takes its value from, such as `utm_campaign`; left unset when the link has none.</summary>
-    [JsonPropertyName("fromParam")]
-    public required string FromParam { get; init; }
 
 }
 
@@ -21968,25 +21903,15 @@ public sealed partial class UpdateFormResponse
 /// <summary>SubmitFormInput Kirora API contract.</summary>
 public sealed partial class SubmitFormInput
 {
-    /// <summary>Answers by field `key`. A checkbox field sends the list of ticked option values; every other field a string.</summary>
+    /// <summary>Answers by field `key`. A checkbox field's ticks go in `choices`; a plain HTML form may send one tick here.</summary>
     [JsonPropertyName("fields")]
-    public required Dictionary<string, SubmitFormInputFieldsValue> Fields { get; init; }
+    public required Dictionary<string, string> Fields { get; init; }
 
-}
+    /// <summary>Each checkbox field's ticked option values, by field `key`. Omit this field to leave it unspecified.</summary>
+    [JsonPropertyName("choices")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+    public Optional<Dictionary<string, IReadOnlyList<string>>> Choices { get; init; }
 
-/// <summary>SubmitFormInputFieldsValue Kirora API contract.</summary>
-[JsonConverter(typeof(SubmitFormInputFieldsValueConverter))]
-public sealed class SubmitFormInputFieldsValue
-{
-    /// <summary>Provides the documented configuration or response value.</summary>
-    public object Value { get; }
-    private SubmitFormInputFieldsValue(object value) => Value = value;
-    /// <summary>Provides the documented operation.</summary>
-    public T As<T>() => Value is T value ? value : throw new InvalidOperationException("The union holds another variant.");
-    /// <summary>Provides the documented operation.</summary>
-    public static implicit operator SubmitFormInputFieldsValue(string value) => new(value ?? throw new ArgumentNullException(nameof(value)));
-    /// <summary>Provides the documented operation.</summary>
-    public static implicit operator SubmitFormInputFieldsValue(string[] value) => new(value ?? throw new ArgumentNullException(nameof(value)));
 }
 
 /// <summary>ListFormSubmissionsQuery Kirora API contract.</summary>
@@ -24822,31 +24747,14 @@ public sealed partial class FunnelDefinitionInputStepsItemWhereItem
     [JsonPropertyName("property")]
     public required string Property { get; init; }
 
-    /// <summary>`notEquals` also matches an event without the property. `equals` and `notEquals` ignore case and accents in text.</summary>
+    /// <summary>`notEquals` also matches an event without the property. `equals` and `notEquals` compare the property as text, ignoring case and accents.</summary>
     [JsonPropertyName("operator")]
     public required string Operator { get; init; }
 
-    /// <summary>The documented value value.</summary>
+    /// <summary>What to compare with, as text (`"pro"`, `"true"`); a number (`"50"`) for `gt`, `gte`, `lt` and `lte`.</summary>
     [JsonPropertyName("value")]
-    public required FunnelDefinitionInputStepsItemWhereItemValue Value { get; init; }
+    public required string Value { get; init; }
 
-}
-
-/// <summary>FunnelDefinitionInputStepsItemWhereItemValue Kirora API contract.</summary>
-[JsonConverter(typeof(FunnelDefinitionInputStepsItemWhereItemValueConverter))]
-public sealed class FunnelDefinitionInputStepsItemWhereItemValue
-{
-    /// <summary>Provides the documented configuration or response value.</summary>
-    public object Value { get; }
-    private FunnelDefinitionInputStepsItemWhereItemValue(object value) => Value = value;
-    /// <summary>Provides the documented operation.</summary>
-    public T As<T>() => Value is T value ? value : throw new InvalidOperationException("The union holds another variant.");
-    /// <summary>Provides the documented operation.</summary>
-    public static implicit operator FunnelDefinitionInputStepsItemWhereItemValue(string value) => new(value ?? throw new ArgumentNullException(nameof(value)));
-    /// <summary>Provides the documented operation.</summary>
-    public static implicit operator FunnelDefinitionInputStepsItemWhereItemValue(decimal value) => new(value);
-    /// <summary>Provides the documented operation.</summary>
-    public static implicit operator FunnelDefinitionInputStepsItemWhereItemValue(bool value) => new(value);
 }
 
 /// <summary>GetFunnelReportResponse Kirora API contract.</summary>
@@ -25182,41 +25090,6 @@ public sealed partial class EmbedSession
 
 }
 
-internal sealed class IdentifyContactInputTopicsValueConverter : JsonConverter<IdentifyContactInputTopicsValue>
-{
-    /// <summary>Provides the documented operation.</summary>
-    public override IdentifyContactInputTopicsValue? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-    {
-        using var document = JsonDocument.ParseValue(ref reader);
-        var element = document.RootElement;
-        if (!Kirora.Serialization.ContractValidator.MatchesUnionVariant("IdentifyContactInputTopicsValue", 0, element)) goto next0;
-        try
-        {
-            return (IdentifyContactInputTopicsValue)JsonSerializer.Deserialize(element, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<bool>)options.GetTypeInfo(typeof(bool)))!;
-        }
-        catch (JsonException) { }
-        next0:;
-        if (!Kirora.Serialization.ContractValidator.MatchesUnionVariant("IdentifyContactInputTopicsValue", 1, element)) goto next1;
-        try
-        {
-            return (IdentifyContactInputTopicsValue)JsonSerializer.Deserialize(element, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<Dictionary<string, bool>>)options.GetTypeInfo(typeof(Dictionary<string, bool>)))!;
-        }
-        catch (JsonException) { }
-        next1:;
-        throw new JsonException("No documented union variant matched.");
-    }
-    /// <summary>Provides the documented operation.</summary>
-    public override void Write(Utf8JsonWriter writer, IdentifyContactInputTopicsValue value, JsonSerializerOptions options)
-    {
-        switch (value.Value)
-        {
-            case bool typed: JsonSerializer.Serialize(writer, typed, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<bool>)options.GetTypeInfo(typeof(bool))); break;
-            case Dictionary<string, bool> typed: JsonSerializer.Serialize(writer, typed, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<Dictionary<string, bool>>)options.GetTypeInfo(typeof(Dictionary<string, bool>))); break;
-            default: throw new JsonException("Unsupported union value.");
-        }
-    }
-}
-
 internal sealed class IdentifyContactsBatchResultResultsItemConverter : JsonConverter<IdentifyContactsBatchResultResultsItem>
 {
     /// <summary>Provides the documented operation.</summary>
@@ -25333,41 +25206,6 @@ internal sealed class ContactIdentifierConverter : JsonConverter<ContactIdentifi
             case ContactIdentifierByContactId typed: JsonSerializer.Serialize(writer, typed, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<ContactIdentifierByContactId>)options.GetTypeInfo(typeof(ContactIdentifierByContactId))); break;
             case ContactIdentifierByExternalId typed: JsonSerializer.Serialize(writer, typed, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<ContactIdentifierByExternalId>)options.GetTypeInfo(typeof(ContactIdentifierByExternalId))); break;
             case ContactIdentifierByEmail typed: JsonSerializer.Serialize(writer, typed, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<ContactIdentifierByEmail>)options.GetTypeInfo(typeof(ContactIdentifierByEmail))); break;
-            default: throw new JsonException("Unsupported union value.");
-        }
-    }
-}
-
-internal sealed class SetContactTopicInputSubscribedConverter : JsonConverter<SetContactTopicInputSubscribed>
-{
-    /// <summary>Provides the documented operation.</summary>
-    public override SetContactTopicInputSubscribed? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-    {
-        using var document = JsonDocument.ParseValue(ref reader);
-        var element = document.RootElement;
-        if (!Kirora.Serialization.ContractValidator.MatchesUnionVariant("SetContactTopicInputSubscribed", 0, element)) goto next0;
-        try
-        {
-            return (SetContactTopicInputSubscribed)JsonSerializer.Deserialize(element, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<bool>)options.GetTypeInfo(typeof(bool)))!;
-        }
-        catch (JsonException) { }
-        next0:;
-        if (!Kirora.Serialization.ContractValidator.MatchesUnionVariant("SetContactTopicInputSubscribed", 1, element)) goto next1;
-        try
-        {
-            return (SetContactTopicInputSubscribed)JsonSerializer.Deserialize(element, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<Dictionary<string, bool>>)options.GetTypeInfo(typeof(Dictionary<string, bool>)))!;
-        }
-        catch (JsonException) { }
-        next1:;
-        throw new JsonException("No documented union variant matched.");
-    }
-    /// <summary>Provides the documented operation.</summary>
-    public override void Write(Utf8JsonWriter writer, SetContactTopicInputSubscribed value, JsonSerializerOptions options)
-    {
-        switch (value.Value)
-        {
-            case bool typed: JsonSerializer.Serialize(writer, typed, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<bool>)options.GetTypeInfo(typeof(bool))); break;
-            case Dictionary<string, bool> typed: JsonSerializer.Serialize(writer, typed, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<Dictionary<string, bool>>)options.GetTypeInfo(typeof(Dictionary<string, bool>))); break;
             default: throw new JsonException("Unsupported union value.");
         }
     }
@@ -25637,291 +25475,6 @@ internal sealed class ListContactsInputConverter : JsonConverter<ListContactsInp
             case ListContactsInputByContactIds typed: JsonSerializer.Serialize(writer, typed, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<ListContactsInputByContactIds>)options.GetTypeInfo(typeof(ListContactsInputByContactIds))); break;
             case ListContactsInputByExternalIds typed: JsonSerializer.Serialize(writer, typed, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<ListContactsInputByExternalIds>)options.GetTypeInfo(typeof(ListContactsInputByExternalIds))); break;
             case ListContactsInputByEmails typed: JsonSerializer.Serialize(writer, typed, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<ListContactsInputByEmails>)options.GetTypeInfo(typeof(ListContactsInputByEmails))); break;
-            default: throw new JsonException("Unsupported union value.");
-        }
-    }
-}
-
-internal sealed class AttributeConditionValueVariant1Converter : JsonConverter<AttributeConditionValueVariant1>
-{
-    /// <summary>Provides the documented operation.</summary>
-    public override AttributeConditionValueVariant1? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-    {
-        using var document = JsonDocument.ParseValue(ref reader);
-        var element = document.RootElement;
-        if (!Kirora.Serialization.ContractValidator.MatchesUnionVariant("AttributeConditionValueVariant1", 0, element)) goto next0;
-        try
-        {
-            return (AttributeConditionValueVariant1)JsonSerializer.Deserialize(element, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<string>)options.GetTypeInfo(typeof(string)))!;
-        }
-        catch (JsonException) { }
-        next0:;
-        if (!Kirora.Serialization.ContractValidator.MatchesUnionVariant("AttributeConditionValueVariant1", 1, element)) goto next1;
-        try
-        {
-            return (AttributeConditionValueVariant1)JsonSerializer.Deserialize(element, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<decimal>)options.GetTypeInfo(typeof(decimal)))!;
-        }
-        catch (JsonException) { }
-        next1:;
-        if (!Kirora.Serialization.ContractValidator.MatchesUnionVariant("AttributeConditionValueVariant1", 2, element)) goto next2;
-        try
-        {
-            return (AttributeConditionValueVariant1)JsonSerializer.Deserialize(element, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<bool>)options.GetTypeInfo(typeof(bool)))!;
-        }
-        catch (JsonException) { }
-        next2:;
-        throw new JsonException("No documented union variant matched.");
-    }
-    /// <summary>Provides the documented operation.</summary>
-    public override void Write(Utf8JsonWriter writer, AttributeConditionValueVariant1 value, JsonSerializerOptions options)
-    {
-        switch (value.Value)
-        {
-            case string typed: JsonSerializer.Serialize(writer, typed, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<string>)options.GetTypeInfo(typeof(string))); break;
-            case decimal typed: JsonSerializer.Serialize(writer, typed, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<decimal>)options.GetTypeInfo(typeof(decimal))); break;
-            case bool typed: JsonSerializer.Serialize(writer, typed, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<bool>)options.GetTypeInfo(typeof(bool))); break;
-            default: throw new JsonException("Unsupported union value.");
-        }
-    }
-}
-
-internal sealed class AttributeConditionValueVariant2ItemConverter : JsonConverter<AttributeConditionValueVariant2Item>
-{
-    /// <summary>Provides the documented operation.</summary>
-    public override AttributeConditionValueVariant2Item? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-    {
-        using var document = JsonDocument.ParseValue(ref reader);
-        var element = document.RootElement;
-        if (!Kirora.Serialization.ContractValidator.MatchesUnionVariant("AttributeConditionValueVariant2Item", 0, element)) goto next0;
-        try
-        {
-            return (AttributeConditionValueVariant2Item)JsonSerializer.Deserialize(element, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<string>)options.GetTypeInfo(typeof(string)))!;
-        }
-        catch (JsonException) { }
-        next0:;
-        if (!Kirora.Serialization.ContractValidator.MatchesUnionVariant("AttributeConditionValueVariant2Item", 1, element)) goto next1;
-        try
-        {
-            return (AttributeConditionValueVariant2Item)JsonSerializer.Deserialize(element, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<decimal>)options.GetTypeInfo(typeof(decimal)))!;
-        }
-        catch (JsonException) { }
-        next1:;
-        if (!Kirora.Serialization.ContractValidator.MatchesUnionVariant("AttributeConditionValueVariant2Item", 2, element)) goto next2;
-        try
-        {
-            return (AttributeConditionValueVariant2Item)JsonSerializer.Deserialize(element, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<bool>)options.GetTypeInfo(typeof(bool)))!;
-        }
-        catch (JsonException) { }
-        next2:;
-        throw new JsonException("No documented union variant matched.");
-    }
-    /// <summary>Provides the documented operation.</summary>
-    public override void Write(Utf8JsonWriter writer, AttributeConditionValueVariant2Item value, JsonSerializerOptions options)
-    {
-        switch (value.Value)
-        {
-            case string typed: JsonSerializer.Serialize(writer, typed, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<string>)options.GetTypeInfo(typeof(string))); break;
-            case decimal typed: JsonSerializer.Serialize(writer, typed, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<decimal>)options.GetTypeInfo(typeof(decimal))); break;
-            case bool typed: JsonSerializer.Serialize(writer, typed, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<bool>)options.GetTypeInfo(typeof(bool))); break;
-            default: throw new JsonException("Unsupported union value.");
-        }
-    }
-}
-
-internal sealed class AttributeConditionValueConverter : JsonConverter<AttributeConditionValue>
-{
-    /// <summary>Provides the documented operation.</summary>
-    public override AttributeConditionValue? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-    {
-        using var document = JsonDocument.ParseValue(ref reader);
-        var element = document.RootElement;
-        if (!Kirora.Serialization.ContractValidator.MatchesUnionVariant("AttributeConditionValue", 0, element)) goto next0;
-        try
-        {
-            return (AttributeConditionValue)JsonSerializer.Deserialize(element, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<AttributeConditionValueVariant1>)options.GetTypeInfo(typeof(AttributeConditionValueVariant1)))!;
-        }
-        catch (JsonException) { }
-        next0:;
-        if (!Kirora.Serialization.ContractValidator.MatchesUnionVariant("AttributeConditionValue", 1, element)) goto next1;
-        try
-        {
-            return (AttributeConditionValue)JsonSerializer.Deserialize(element, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<AttributeConditionValueVariant2Item[]>)options.GetTypeInfo(typeof(AttributeConditionValueVariant2Item[])))!;
-        }
-        catch (JsonException) { }
-        next1:;
-        throw new JsonException("No documented union variant matched.");
-    }
-    /// <summary>Provides the documented operation.</summary>
-    public override void Write(Utf8JsonWriter writer, AttributeConditionValue value, JsonSerializerOptions options)
-    {
-        switch (value.Value)
-        {
-            case AttributeConditionValueVariant1 typed: JsonSerializer.Serialize(writer, typed, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<AttributeConditionValueVariant1>)options.GetTypeInfo(typeof(AttributeConditionValueVariant1))); break;
-            case AttributeConditionValueVariant2Item[] typed: JsonSerializer.Serialize(writer, typed, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<AttributeConditionValueVariant2Item[]>)options.GetTypeInfo(typeof(AttributeConditionValueVariant2Item[]))); break;
-            default: throw new JsonException("Unsupported union value.");
-        }
-    }
-}
-
-internal sealed class ContactFieldConditionValueVariant1Converter : JsonConverter<ContactFieldConditionValueVariant1>
-{
-    /// <summary>Provides the documented operation.</summary>
-    public override ContactFieldConditionValueVariant1? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-    {
-        using var document = JsonDocument.ParseValue(ref reader);
-        var element = document.RootElement;
-        if (!Kirora.Serialization.ContractValidator.MatchesUnionVariant("ContactFieldConditionValueVariant1", 0, element)) goto next0;
-        try
-        {
-            return (ContactFieldConditionValueVariant1)JsonSerializer.Deserialize(element, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<string>)options.GetTypeInfo(typeof(string)))!;
-        }
-        catch (JsonException) { }
-        next0:;
-        if (!Kirora.Serialization.ContractValidator.MatchesUnionVariant("ContactFieldConditionValueVariant1", 1, element)) goto next1;
-        try
-        {
-            return (ContactFieldConditionValueVariant1)JsonSerializer.Deserialize(element, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<decimal>)options.GetTypeInfo(typeof(decimal)))!;
-        }
-        catch (JsonException) { }
-        next1:;
-        if (!Kirora.Serialization.ContractValidator.MatchesUnionVariant("ContactFieldConditionValueVariant1", 2, element)) goto next2;
-        try
-        {
-            return (ContactFieldConditionValueVariant1)JsonSerializer.Deserialize(element, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<bool>)options.GetTypeInfo(typeof(bool)))!;
-        }
-        catch (JsonException) { }
-        next2:;
-        throw new JsonException("No documented union variant matched.");
-    }
-    /// <summary>Provides the documented operation.</summary>
-    public override void Write(Utf8JsonWriter writer, ContactFieldConditionValueVariant1 value, JsonSerializerOptions options)
-    {
-        switch (value.Value)
-        {
-            case string typed: JsonSerializer.Serialize(writer, typed, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<string>)options.GetTypeInfo(typeof(string))); break;
-            case decimal typed: JsonSerializer.Serialize(writer, typed, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<decimal>)options.GetTypeInfo(typeof(decimal))); break;
-            case bool typed: JsonSerializer.Serialize(writer, typed, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<bool>)options.GetTypeInfo(typeof(bool))); break;
-            default: throw new JsonException("Unsupported union value.");
-        }
-    }
-}
-
-internal sealed class ContactFieldConditionValueVariant2ItemConverter : JsonConverter<ContactFieldConditionValueVariant2Item>
-{
-    /// <summary>Provides the documented operation.</summary>
-    public override ContactFieldConditionValueVariant2Item? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-    {
-        using var document = JsonDocument.ParseValue(ref reader);
-        var element = document.RootElement;
-        if (!Kirora.Serialization.ContractValidator.MatchesUnionVariant("ContactFieldConditionValueVariant2Item", 0, element)) goto next0;
-        try
-        {
-            return (ContactFieldConditionValueVariant2Item)JsonSerializer.Deserialize(element, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<string>)options.GetTypeInfo(typeof(string)))!;
-        }
-        catch (JsonException) { }
-        next0:;
-        if (!Kirora.Serialization.ContractValidator.MatchesUnionVariant("ContactFieldConditionValueVariant2Item", 1, element)) goto next1;
-        try
-        {
-            return (ContactFieldConditionValueVariant2Item)JsonSerializer.Deserialize(element, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<decimal>)options.GetTypeInfo(typeof(decimal)))!;
-        }
-        catch (JsonException) { }
-        next1:;
-        if (!Kirora.Serialization.ContractValidator.MatchesUnionVariant("ContactFieldConditionValueVariant2Item", 2, element)) goto next2;
-        try
-        {
-            return (ContactFieldConditionValueVariant2Item)JsonSerializer.Deserialize(element, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<bool>)options.GetTypeInfo(typeof(bool)))!;
-        }
-        catch (JsonException) { }
-        next2:;
-        throw new JsonException("No documented union variant matched.");
-    }
-    /// <summary>Provides the documented operation.</summary>
-    public override void Write(Utf8JsonWriter writer, ContactFieldConditionValueVariant2Item value, JsonSerializerOptions options)
-    {
-        switch (value.Value)
-        {
-            case string typed: JsonSerializer.Serialize(writer, typed, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<string>)options.GetTypeInfo(typeof(string))); break;
-            case decimal typed: JsonSerializer.Serialize(writer, typed, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<decimal>)options.GetTypeInfo(typeof(decimal))); break;
-            case bool typed: JsonSerializer.Serialize(writer, typed, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<bool>)options.GetTypeInfo(typeof(bool))); break;
-            default: throw new JsonException("Unsupported union value.");
-        }
-    }
-}
-
-internal sealed class ContactFieldConditionValueConverter : JsonConverter<ContactFieldConditionValue>
-{
-    /// <summary>Provides the documented operation.</summary>
-    public override ContactFieldConditionValue? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-    {
-        using var document = JsonDocument.ParseValue(ref reader);
-        var element = document.RootElement;
-        if (!Kirora.Serialization.ContractValidator.MatchesUnionVariant("ContactFieldConditionValue", 0, element)) goto next0;
-        try
-        {
-            return (ContactFieldConditionValue)JsonSerializer.Deserialize(element, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<ContactFieldConditionValueVariant1>)options.GetTypeInfo(typeof(ContactFieldConditionValueVariant1)))!;
-        }
-        catch (JsonException) { }
-        next0:;
-        if (!Kirora.Serialization.ContractValidator.MatchesUnionVariant("ContactFieldConditionValue", 1, element)) goto next1;
-        try
-        {
-            return (ContactFieldConditionValue)JsonSerializer.Deserialize(element, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<ContactFieldConditionValueVariant2Item[]>)options.GetTypeInfo(typeof(ContactFieldConditionValueVariant2Item[])))!;
-        }
-        catch (JsonException) { }
-        next1:;
-        throw new JsonException("No documented union variant matched.");
-    }
-    /// <summary>Provides the documented operation.</summary>
-    public override void Write(Utf8JsonWriter writer, ContactFieldConditionValue value, JsonSerializerOptions options)
-    {
-        switch (value.Value)
-        {
-            case ContactFieldConditionValueVariant1 typed: JsonSerializer.Serialize(writer, typed, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<ContactFieldConditionValueVariant1>)options.GetTypeInfo(typeof(ContactFieldConditionValueVariant1))); break;
-            case ContactFieldConditionValueVariant2Item[] typed: JsonSerializer.Serialize(writer, typed, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<ContactFieldConditionValueVariant2Item[]>)options.GetTypeInfo(typeof(ContactFieldConditionValueVariant2Item[]))); break;
-            default: throw new JsonException("Unsupported union value.");
-        }
-    }
-}
-
-internal sealed class EventConditionWhereItemValueConverter : JsonConverter<EventConditionWhereItemValue>
-{
-    /// <summary>Provides the documented operation.</summary>
-    public override EventConditionWhereItemValue? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-    {
-        using var document = JsonDocument.ParseValue(ref reader);
-        var element = document.RootElement;
-        if (!Kirora.Serialization.ContractValidator.MatchesUnionVariant("EventConditionWhereItemValue", 0, element)) goto next0;
-        try
-        {
-            return (EventConditionWhereItemValue)JsonSerializer.Deserialize(element, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<string>)options.GetTypeInfo(typeof(string)))!;
-        }
-        catch (JsonException) { }
-        next0:;
-        if (!Kirora.Serialization.ContractValidator.MatchesUnionVariant("EventConditionWhereItemValue", 1, element)) goto next1;
-        try
-        {
-            return (EventConditionWhereItemValue)JsonSerializer.Deserialize(element, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<decimal>)options.GetTypeInfo(typeof(decimal)))!;
-        }
-        catch (JsonException) { }
-        next1:;
-        if (!Kirora.Serialization.ContractValidator.MatchesUnionVariant("EventConditionWhereItemValue", 2, element)) goto next2;
-        try
-        {
-            return (EventConditionWhereItemValue)JsonSerializer.Deserialize(element, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<bool>)options.GetTypeInfo(typeof(bool)))!;
-        }
-        catch (JsonException) { }
-        next2:;
-        throw new JsonException("No documented union variant matched.");
-    }
-    /// <summary>Provides the documented operation.</summary>
-    public override void Write(Utf8JsonWriter writer, EventConditionWhereItemValue value, JsonSerializerOptions options)
-    {
-        switch (value.Value)
-        {
-            case string typed: JsonSerializer.Serialize(writer, typed, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<string>)options.GetTypeInfo(typeof(string))); break;
-            case decimal typed: JsonSerializer.Serialize(writer, typed, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<decimal>)options.GetTypeInfo(typeof(decimal))); break;
-            case bool typed: JsonSerializer.Serialize(writer, typed, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<bool>)options.GetTypeInfo(typeof(bool))); break;
             default: throw new JsonException("Unsupported union value.");
         }
     }
@@ -26394,291 +25947,6 @@ internal sealed class SegmentRulesConverter : JsonConverter<SegmentRules>
         {
             case SegmentRulesMatchAll typed: JsonSerializer.Serialize(writer, typed, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<SegmentRulesMatchAll>)options.GetTypeInfo(typeof(SegmentRulesMatchAll))); break;
             case SegmentRulesMatchAny typed: JsonSerializer.Serialize(writer, typed, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<SegmentRulesMatchAny>)options.GetTypeInfo(typeof(SegmentRulesMatchAny))); break;
-            default: throw new JsonException("Unsupported union value.");
-        }
-    }
-}
-
-internal sealed class AttributeConditionInputValueVariant1Converter : JsonConverter<AttributeConditionInputValueVariant1>
-{
-    /// <summary>Provides the documented operation.</summary>
-    public override AttributeConditionInputValueVariant1? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-    {
-        using var document = JsonDocument.ParseValue(ref reader);
-        var element = document.RootElement;
-        if (!Kirora.Serialization.ContractValidator.MatchesUnionVariant("AttributeConditionInputValueVariant1", 0, element)) goto next0;
-        try
-        {
-            return (AttributeConditionInputValueVariant1)JsonSerializer.Deserialize(element, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<string>)options.GetTypeInfo(typeof(string)))!;
-        }
-        catch (JsonException) { }
-        next0:;
-        if (!Kirora.Serialization.ContractValidator.MatchesUnionVariant("AttributeConditionInputValueVariant1", 1, element)) goto next1;
-        try
-        {
-            return (AttributeConditionInputValueVariant1)JsonSerializer.Deserialize(element, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<decimal>)options.GetTypeInfo(typeof(decimal)))!;
-        }
-        catch (JsonException) { }
-        next1:;
-        if (!Kirora.Serialization.ContractValidator.MatchesUnionVariant("AttributeConditionInputValueVariant1", 2, element)) goto next2;
-        try
-        {
-            return (AttributeConditionInputValueVariant1)JsonSerializer.Deserialize(element, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<bool>)options.GetTypeInfo(typeof(bool)))!;
-        }
-        catch (JsonException) { }
-        next2:;
-        throw new JsonException("No documented union variant matched.");
-    }
-    /// <summary>Provides the documented operation.</summary>
-    public override void Write(Utf8JsonWriter writer, AttributeConditionInputValueVariant1 value, JsonSerializerOptions options)
-    {
-        switch (value.Value)
-        {
-            case string typed: JsonSerializer.Serialize(writer, typed, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<string>)options.GetTypeInfo(typeof(string))); break;
-            case decimal typed: JsonSerializer.Serialize(writer, typed, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<decimal>)options.GetTypeInfo(typeof(decimal))); break;
-            case bool typed: JsonSerializer.Serialize(writer, typed, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<bool>)options.GetTypeInfo(typeof(bool))); break;
-            default: throw new JsonException("Unsupported union value.");
-        }
-    }
-}
-
-internal sealed class AttributeConditionInputValueVariant2ItemConverter : JsonConverter<AttributeConditionInputValueVariant2Item>
-{
-    /// <summary>Provides the documented operation.</summary>
-    public override AttributeConditionInputValueVariant2Item? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-    {
-        using var document = JsonDocument.ParseValue(ref reader);
-        var element = document.RootElement;
-        if (!Kirora.Serialization.ContractValidator.MatchesUnionVariant("AttributeConditionInputValueVariant2Item", 0, element)) goto next0;
-        try
-        {
-            return (AttributeConditionInputValueVariant2Item)JsonSerializer.Deserialize(element, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<string>)options.GetTypeInfo(typeof(string)))!;
-        }
-        catch (JsonException) { }
-        next0:;
-        if (!Kirora.Serialization.ContractValidator.MatchesUnionVariant("AttributeConditionInputValueVariant2Item", 1, element)) goto next1;
-        try
-        {
-            return (AttributeConditionInputValueVariant2Item)JsonSerializer.Deserialize(element, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<decimal>)options.GetTypeInfo(typeof(decimal)))!;
-        }
-        catch (JsonException) { }
-        next1:;
-        if (!Kirora.Serialization.ContractValidator.MatchesUnionVariant("AttributeConditionInputValueVariant2Item", 2, element)) goto next2;
-        try
-        {
-            return (AttributeConditionInputValueVariant2Item)JsonSerializer.Deserialize(element, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<bool>)options.GetTypeInfo(typeof(bool)))!;
-        }
-        catch (JsonException) { }
-        next2:;
-        throw new JsonException("No documented union variant matched.");
-    }
-    /// <summary>Provides the documented operation.</summary>
-    public override void Write(Utf8JsonWriter writer, AttributeConditionInputValueVariant2Item value, JsonSerializerOptions options)
-    {
-        switch (value.Value)
-        {
-            case string typed: JsonSerializer.Serialize(writer, typed, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<string>)options.GetTypeInfo(typeof(string))); break;
-            case decimal typed: JsonSerializer.Serialize(writer, typed, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<decimal>)options.GetTypeInfo(typeof(decimal))); break;
-            case bool typed: JsonSerializer.Serialize(writer, typed, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<bool>)options.GetTypeInfo(typeof(bool))); break;
-            default: throw new JsonException("Unsupported union value.");
-        }
-    }
-}
-
-internal sealed class AttributeConditionInputValueConverter : JsonConverter<AttributeConditionInputValue>
-{
-    /// <summary>Provides the documented operation.</summary>
-    public override AttributeConditionInputValue? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-    {
-        using var document = JsonDocument.ParseValue(ref reader);
-        var element = document.RootElement;
-        if (!Kirora.Serialization.ContractValidator.MatchesUnionVariant("AttributeConditionInputValue", 0, element)) goto next0;
-        try
-        {
-            return (AttributeConditionInputValue)JsonSerializer.Deserialize(element, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<AttributeConditionInputValueVariant1>)options.GetTypeInfo(typeof(AttributeConditionInputValueVariant1)))!;
-        }
-        catch (JsonException) { }
-        next0:;
-        if (!Kirora.Serialization.ContractValidator.MatchesUnionVariant("AttributeConditionInputValue", 1, element)) goto next1;
-        try
-        {
-            return (AttributeConditionInputValue)JsonSerializer.Deserialize(element, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<AttributeConditionInputValueVariant2Item[]>)options.GetTypeInfo(typeof(AttributeConditionInputValueVariant2Item[])))!;
-        }
-        catch (JsonException) { }
-        next1:;
-        throw new JsonException("No documented union variant matched.");
-    }
-    /// <summary>Provides the documented operation.</summary>
-    public override void Write(Utf8JsonWriter writer, AttributeConditionInputValue value, JsonSerializerOptions options)
-    {
-        switch (value.Value)
-        {
-            case AttributeConditionInputValueVariant1 typed: JsonSerializer.Serialize(writer, typed, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<AttributeConditionInputValueVariant1>)options.GetTypeInfo(typeof(AttributeConditionInputValueVariant1))); break;
-            case AttributeConditionInputValueVariant2Item[] typed: JsonSerializer.Serialize(writer, typed, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<AttributeConditionInputValueVariant2Item[]>)options.GetTypeInfo(typeof(AttributeConditionInputValueVariant2Item[]))); break;
-            default: throw new JsonException("Unsupported union value.");
-        }
-    }
-}
-
-internal sealed class ContactFieldConditionInputValueVariant1Converter : JsonConverter<ContactFieldConditionInputValueVariant1>
-{
-    /// <summary>Provides the documented operation.</summary>
-    public override ContactFieldConditionInputValueVariant1? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-    {
-        using var document = JsonDocument.ParseValue(ref reader);
-        var element = document.RootElement;
-        if (!Kirora.Serialization.ContractValidator.MatchesUnionVariant("ContactFieldConditionInputValueVariant1", 0, element)) goto next0;
-        try
-        {
-            return (ContactFieldConditionInputValueVariant1)JsonSerializer.Deserialize(element, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<string>)options.GetTypeInfo(typeof(string)))!;
-        }
-        catch (JsonException) { }
-        next0:;
-        if (!Kirora.Serialization.ContractValidator.MatchesUnionVariant("ContactFieldConditionInputValueVariant1", 1, element)) goto next1;
-        try
-        {
-            return (ContactFieldConditionInputValueVariant1)JsonSerializer.Deserialize(element, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<decimal>)options.GetTypeInfo(typeof(decimal)))!;
-        }
-        catch (JsonException) { }
-        next1:;
-        if (!Kirora.Serialization.ContractValidator.MatchesUnionVariant("ContactFieldConditionInputValueVariant1", 2, element)) goto next2;
-        try
-        {
-            return (ContactFieldConditionInputValueVariant1)JsonSerializer.Deserialize(element, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<bool>)options.GetTypeInfo(typeof(bool)))!;
-        }
-        catch (JsonException) { }
-        next2:;
-        throw new JsonException("No documented union variant matched.");
-    }
-    /// <summary>Provides the documented operation.</summary>
-    public override void Write(Utf8JsonWriter writer, ContactFieldConditionInputValueVariant1 value, JsonSerializerOptions options)
-    {
-        switch (value.Value)
-        {
-            case string typed: JsonSerializer.Serialize(writer, typed, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<string>)options.GetTypeInfo(typeof(string))); break;
-            case decimal typed: JsonSerializer.Serialize(writer, typed, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<decimal>)options.GetTypeInfo(typeof(decimal))); break;
-            case bool typed: JsonSerializer.Serialize(writer, typed, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<bool>)options.GetTypeInfo(typeof(bool))); break;
-            default: throw new JsonException("Unsupported union value.");
-        }
-    }
-}
-
-internal sealed class ContactFieldConditionInputValueVariant2ItemConverter : JsonConverter<ContactFieldConditionInputValueVariant2Item>
-{
-    /// <summary>Provides the documented operation.</summary>
-    public override ContactFieldConditionInputValueVariant2Item? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-    {
-        using var document = JsonDocument.ParseValue(ref reader);
-        var element = document.RootElement;
-        if (!Kirora.Serialization.ContractValidator.MatchesUnionVariant("ContactFieldConditionInputValueVariant2Item", 0, element)) goto next0;
-        try
-        {
-            return (ContactFieldConditionInputValueVariant2Item)JsonSerializer.Deserialize(element, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<string>)options.GetTypeInfo(typeof(string)))!;
-        }
-        catch (JsonException) { }
-        next0:;
-        if (!Kirora.Serialization.ContractValidator.MatchesUnionVariant("ContactFieldConditionInputValueVariant2Item", 1, element)) goto next1;
-        try
-        {
-            return (ContactFieldConditionInputValueVariant2Item)JsonSerializer.Deserialize(element, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<decimal>)options.GetTypeInfo(typeof(decimal)))!;
-        }
-        catch (JsonException) { }
-        next1:;
-        if (!Kirora.Serialization.ContractValidator.MatchesUnionVariant("ContactFieldConditionInputValueVariant2Item", 2, element)) goto next2;
-        try
-        {
-            return (ContactFieldConditionInputValueVariant2Item)JsonSerializer.Deserialize(element, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<bool>)options.GetTypeInfo(typeof(bool)))!;
-        }
-        catch (JsonException) { }
-        next2:;
-        throw new JsonException("No documented union variant matched.");
-    }
-    /// <summary>Provides the documented operation.</summary>
-    public override void Write(Utf8JsonWriter writer, ContactFieldConditionInputValueVariant2Item value, JsonSerializerOptions options)
-    {
-        switch (value.Value)
-        {
-            case string typed: JsonSerializer.Serialize(writer, typed, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<string>)options.GetTypeInfo(typeof(string))); break;
-            case decimal typed: JsonSerializer.Serialize(writer, typed, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<decimal>)options.GetTypeInfo(typeof(decimal))); break;
-            case bool typed: JsonSerializer.Serialize(writer, typed, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<bool>)options.GetTypeInfo(typeof(bool))); break;
-            default: throw new JsonException("Unsupported union value.");
-        }
-    }
-}
-
-internal sealed class ContactFieldConditionInputValueConverter : JsonConverter<ContactFieldConditionInputValue>
-{
-    /// <summary>Provides the documented operation.</summary>
-    public override ContactFieldConditionInputValue? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-    {
-        using var document = JsonDocument.ParseValue(ref reader);
-        var element = document.RootElement;
-        if (!Kirora.Serialization.ContractValidator.MatchesUnionVariant("ContactFieldConditionInputValue", 0, element)) goto next0;
-        try
-        {
-            return (ContactFieldConditionInputValue)JsonSerializer.Deserialize(element, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<ContactFieldConditionInputValueVariant1>)options.GetTypeInfo(typeof(ContactFieldConditionInputValueVariant1)))!;
-        }
-        catch (JsonException) { }
-        next0:;
-        if (!Kirora.Serialization.ContractValidator.MatchesUnionVariant("ContactFieldConditionInputValue", 1, element)) goto next1;
-        try
-        {
-            return (ContactFieldConditionInputValue)JsonSerializer.Deserialize(element, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<ContactFieldConditionInputValueVariant2Item[]>)options.GetTypeInfo(typeof(ContactFieldConditionInputValueVariant2Item[])))!;
-        }
-        catch (JsonException) { }
-        next1:;
-        throw new JsonException("No documented union variant matched.");
-    }
-    /// <summary>Provides the documented operation.</summary>
-    public override void Write(Utf8JsonWriter writer, ContactFieldConditionInputValue value, JsonSerializerOptions options)
-    {
-        switch (value.Value)
-        {
-            case ContactFieldConditionInputValueVariant1 typed: JsonSerializer.Serialize(writer, typed, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<ContactFieldConditionInputValueVariant1>)options.GetTypeInfo(typeof(ContactFieldConditionInputValueVariant1))); break;
-            case ContactFieldConditionInputValueVariant2Item[] typed: JsonSerializer.Serialize(writer, typed, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<ContactFieldConditionInputValueVariant2Item[]>)options.GetTypeInfo(typeof(ContactFieldConditionInputValueVariant2Item[]))); break;
-            default: throw new JsonException("Unsupported union value.");
-        }
-    }
-}
-
-internal sealed class EventConditionInputWhereItemValueConverter : JsonConverter<EventConditionInputWhereItemValue>
-{
-    /// <summary>Provides the documented operation.</summary>
-    public override EventConditionInputWhereItemValue? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-    {
-        using var document = JsonDocument.ParseValue(ref reader);
-        var element = document.RootElement;
-        if (!Kirora.Serialization.ContractValidator.MatchesUnionVariant("EventConditionInputWhereItemValue", 0, element)) goto next0;
-        try
-        {
-            return (EventConditionInputWhereItemValue)JsonSerializer.Deserialize(element, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<string>)options.GetTypeInfo(typeof(string)))!;
-        }
-        catch (JsonException) { }
-        next0:;
-        if (!Kirora.Serialization.ContractValidator.MatchesUnionVariant("EventConditionInputWhereItemValue", 1, element)) goto next1;
-        try
-        {
-            return (EventConditionInputWhereItemValue)JsonSerializer.Deserialize(element, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<decimal>)options.GetTypeInfo(typeof(decimal)))!;
-        }
-        catch (JsonException) { }
-        next1:;
-        if (!Kirora.Serialization.ContractValidator.MatchesUnionVariant("EventConditionInputWhereItemValue", 2, element)) goto next2;
-        try
-        {
-            return (EventConditionInputWhereItemValue)JsonSerializer.Deserialize(element, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<bool>)options.GetTypeInfo(typeof(bool)))!;
-        }
-        catch (JsonException) { }
-        next2:;
-        throw new JsonException("No documented union variant matched.");
-    }
-    /// <summary>Provides the documented operation.</summary>
-    public override void Write(Utf8JsonWriter writer, EventConditionInputWhereItemValue value, JsonSerializerOptions options)
-    {
-        switch (value.Value)
-        {
-            case string typed: JsonSerializer.Serialize(writer, typed, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<string>)options.GetTypeInfo(typeof(string))); break;
-            case decimal typed: JsonSerializer.Serialize(writer, typed, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<decimal>)options.GetTypeInfo(typeof(decimal))); break;
-            case bool typed: JsonSerializer.Serialize(writer, typed, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<bool>)options.GetTypeInfo(typeof(bool))); break;
             default: throw new JsonException("Unsupported union value.");
         }
     }
@@ -27277,41 +26545,6 @@ internal sealed class SendTransactionalInputEmailConverter : JsonConverter<SendT
     }
 }
 
-internal sealed class TransactionalDeliverInputConverter : JsonConverter<TransactionalDeliverInput>
-{
-    /// <summary>Provides the documented operation.</summary>
-    public override TransactionalDeliverInput? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-    {
-        using var document = JsonDocument.ParseValue(ref reader);
-        var element = document.RootElement;
-        if (!Kirora.Serialization.ContractValidator.MatchesUnionVariant("TransactionalDeliverInput", 0, element)) goto next0;
-        try
-        {
-            return (TransactionalDeliverInput)JsonSerializer.Deserialize(element, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<string>)options.GetTypeInfo(typeof(string)))!;
-        }
-        catch (JsonException) { }
-        next0:;
-        if (!Kirora.Serialization.ContractValidator.MatchesUnionVariant("TransactionalDeliverInput", 1, element)) goto next1;
-        try
-        {
-            return (TransactionalDeliverInput)JsonSerializer.Deserialize(element, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<TransactionalDeliverFirstInput>)options.GetTypeInfo(typeof(TransactionalDeliverFirstInput)))!;
-        }
-        catch (JsonException) { }
-        next1:;
-        throw new JsonException("No documented union variant matched.");
-    }
-    /// <summary>Provides the documented operation.</summary>
-    public override void Write(Utf8JsonWriter writer, TransactionalDeliverInput value, JsonSerializerOptions options)
-    {
-        switch (value.Value)
-        {
-            case string typed: JsonSerializer.Serialize(writer, typed, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<string>)options.GetTypeInfo(typeof(string))); break;
-            case TransactionalDeliverFirstInput typed: JsonSerializer.Serialize(writer, typed, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<TransactionalDeliverFirstInput>)options.GetTypeInfo(typeof(TransactionalDeliverFirstInput))); break;
-            default: throw new JsonException("Unsupported union value.");
-        }
-    }
-}
-
 internal sealed class SendTransactionalMessagesBatchResultResultsItemConverter : JsonConverter<SendTransactionalMessagesBatchResultResultsItem>
 {
     /// <summary>Provides the documented operation.</summary>
@@ -27612,6 +26845,41 @@ internal sealed class EmailBlockInputConverter : JsonConverter<EmailBlockInput>
     }
 }
 
+internal sealed class TemplateSnapshotInputConverter : JsonConverter<TemplateSnapshotInput>
+{
+    /// <summary>Provides the documented operation.</summary>
+    public override TemplateSnapshotInput? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+    {
+        using var document = JsonDocument.ParseValue(ref reader);
+        var element = document.RootElement;
+        if (!Kirora.Serialization.ContractValidator.MatchesUnionVariant("TemplateSnapshotInput", 0, element)) goto next0;
+        try
+        {
+            return (TemplateSnapshotInput)JsonSerializer.Deserialize(element, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<DesignSnapshotInput>)options.GetTypeInfo(typeof(DesignSnapshotInput)))!;
+        }
+        catch (JsonException) { }
+        next0:;
+        if (!Kirora.Serialization.ContractValidator.MatchesUnionVariant("TemplateSnapshotInput", 1, element)) goto next1;
+        try
+        {
+            return (TemplateSnapshotInput)JsonSerializer.Deserialize(element, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<HtmlSnapshotInput>)options.GetTypeInfo(typeof(HtmlSnapshotInput)))!;
+        }
+        catch (JsonException) { }
+        next1:;
+        throw new JsonException("No documented union variant matched.");
+    }
+    /// <summary>Provides the documented operation.</summary>
+    public override void Write(Utf8JsonWriter writer, TemplateSnapshotInput value, JsonSerializerOptions options)
+    {
+        switch (value.Value)
+        {
+            case DesignSnapshotInput typed: JsonSerializer.Serialize(writer, typed, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<DesignSnapshotInput>)options.GetTypeInfo(typeof(DesignSnapshotInput))); break;
+            case HtmlSnapshotInput typed: JsonSerializer.Serialize(writer, typed, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<HtmlSnapshotInput>)options.GetTypeInfo(typeof(HtmlSnapshotInput))); break;
+            default: throw new JsonException("Unsupported union value.");
+        }
+    }
+}
+
 internal sealed class ImageGroupBlockCountConverter : JsonConverter<ImageGroupBlockCount>
 {
     /// <summary>Provides the documented operation.</summary>
@@ -27842,6 +27110,76 @@ internal sealed class EmailBlockConverter : JsonConverter<EmailBlock>
     }
 }
 
+internal sealed class CampaignContentEmailTemplateSnapshotConverter : JsonConverter<CampaignContentEmailTemplateSnapshot>
+{
+    /// <summary>Provides the documented operation.</summary>
+    public override CampaignContentEmailTemplateSnapshot? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+    {
+        using var document = JsonDocument.ParseValue(ref reader);
+        var element = document.RootElement;
+        if (!Kirora.Serialization.ContractValidator.MatchesUnionVariant("CampaignContentEmailTemplateSnapshot", 0, element)) goto next0;
+        try
+        {
+            return (CampaignContentEmailTemplateSnapshot)JsonSerializer.Deserialize(element, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<CampaignContentEmailTemplateSnapshotVariant1>)options.GetTypeInfo(typeof(CampaignContentEmailTemplateSnapshotVariant1)))!;
+        }
+        catch (JsonException) { }
+        next0:;
+        if (!Kirora.Serialization.ContractValidator.MatchesUnionVariant("CampaignContentEmailTemplateSnapshot", 1, element)) goto next1;
+        try
+        {
+            return (CampaignContentEmailTemplateSnapshot)JsonSerializer.Deserialize(element, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<CampaignContentEmailTemplateSnapshotVariant2>)options.GetTypeInfo(typeof(CampaignContentEmailTemplateSnapshotVariant2)))!;
+        }
+        catch (JsonException) { }
+        next1:;
+        throw new JsonException("No documented union variant matched.");
+    }
+    /// <summary>Provides the documented operation.</summary>
+    public override void Write(Utf8JsonWriter writer, CampaignContentEmailTemplateSnapshot value, JsonSerializerOptions options)
+    {
+        switch (value.Value)
+        {
+            case CampaignContentEmailTemplateSnapshotVariant1 typed: JsonSerializer.Serialize(writer, typed, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<CampaignContentEmailTemplateSnapshotVariant1>)options.GetTypeInfo(typeof(CampaignContentEmailTemplateSnapshotVariant1))); break;
+            case CampaignContentEmailTemplateSnapshotVariant2 typed: JsonSerializer.Serialize(writer, typed, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<CampaignContentEmailTemplateSnapshotVariant2>)options.GetTypeInfo(typeof(CampaignContentEmailTemplateSnapshotVariant2))); break;
+            default: throw new JsonException("Unsupported union value.");
+        }
+    }
+}
+
+internal sealed class CampaignAbTestVersionsItemEmailTemplateSnapshotConverter : JsonConverter<CampaignAbTestVersionsItemEmailTemplateSnapshot>
+{
+    /// <summary>Provides the documented operation.</summary>
+    public override CampaignAbTestVersionsItemEmailTemplateSnapshot? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+    {
+        using var document = JsonDocument.ParseValue(ref reader);
+        var element = document.RootElement;
+        if (!Kirora.Serialization.ContractValidator.MatchesUnionVariant("CampaignAbTestVersionsItemEmailTemplateSnapshot", 0, element)) goto next0;
+        try
+        {
+            return (CampaignAbTestVersionsItemEmailTemplateSnapshot)JsonSerializer.Deserialize(element, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<CampaignAbTestVersionsItemEmailTemplateSnapshotVariant1>)options.GetTypeInfo(typeof(CampaignAbTestVersionsItemEmailTemplateSnapshotVariant1)))!;
+        }
+        catch (JsonException) { }
+        next0:;
+        if (!Kirora.Serialization.ContractValidator.MatchesUnionVariant("CampaignAbTestVersionsItemEmailTemplateSnapshot", 1, element)) goto next1;
+        try
+        {
+            return (CampaignAbTestVersionsItemEmailTemplateSnapshot)JsonSerializer.Deserialize(element, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<CampaignAbTestVersionsItemEmailTemplateSnapshotVariant2>)options.GetTypeInfo(typeof(CampaignAbTestVersionsItemEmailTemplateSnapshotVariant2)))!;
+        }
+        catch (JsonException) { }
+        next1:;
+        throw new JsonException("No documented union variant matched.");
+    }
+    /// <summary>Provides the documented operation.</summary>
+    public override void Write(Utf8JsonWriter writer, CampaignAbTestVersionsItemEmailTemplateSnapshot value, JsonSerializerOptions options)
+    {
+        switch (value.Value)
+        {
+            case CampaignAbTestVersionsItemEmailTemplateSnapshotVariant1 typed: JsonSerializer.Serialize(writer, typed, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<CampaignAbTestVersionsItemEmailTemplateSnapshotVariant1>)options.GetTypeInfo(typeof(CampaignAbTestVersionsItemEmailTemplateSnapshotVariant1))); break;
+            case CampaignAbTestVersionsItemEmailTemplateSnapshotVariant2 typed: JsonSerializer.Serialize(writer, typed, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<CampaignAbTestVersionsItemEmailTemplateSnapshotVariant2>)options.GetTypeInfo(typeof(CampaignAbTestVersionsItemEmailTemplateSnapshotVariant2))); break;
+            default: throw new JsonException("Unsupported union value.");
+        }
+    }
+}
+
 internal sealed class CampaignEligibilityChannelsItemConverter : JsonConverter<CampaignEligibilityChannelsItem>
 {
     /// <summary>Provides the documented operation.</summary>
@@ -27955,49 +27293,6 @@ internal sealed class CampaignRecipientInputConverter : JsonConverter<CampaignRe
     }
 }
 
-internal sealed class JourneyTriggerEventTriggerWhereItemValueConverter : JsonConverter<JourneyTriggerEventTriggerWhereItemValue>
-{
-    /// <summary>Provides the documented operation.</summary>
-    public override JourneyTriggerEventTriggerWhereItemValue? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-    {
-        using var document = JsonDocument.ParseValue(ref reader);
-        var element = document.RootElement;
-        if (!Kirora.Serialization.ContractValidator.MatchesUnionVariant("JourneyTriggerEventTriggerWhereItemValue", 0, element)) goto next0;
-        try
-        {
-            return (JourneyTriggerEventTriggerWhereItemValue)JsonSerializer.Deserialize(element, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<string>)options.GetTypeInfo(typeof(string)))!;
-        }
-        catch (JsonException) { }
-        next0:;
-        if (!Kirora.Serialization.ContractValidator.MatchesUnionVariant("JourneyTriggerEventTriggerWhereItemValue", 1, element)) goto next1;
-        try
-        {
-            return (JourneyTriggerEventTriggerWhereItemValue)JsonSerializer.Deserialize(element, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<decimal>)options.GetTypeInfo(typeof(decimal)))!;
-        }
-        catch (JsonException) { }
-        next1:;
-        if (!Kirora.Serialization.ContractValidator.MatchesUnionVariant("JourneyTriggerEventTriggerWhereItemValue", 2, element)) goto next2;
-        try
-        {
-            return (JourneyTriggerEventTriggerWhereItemValue)JsonSerializer.Deserialize(element, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<bool>)options.GetTypeInfo(typeof(bool)))!;
-        }
-        catch (JsonException) { }
-        next2:;
-        throw new JsonException("No documented union variant matched.");
-    }
-    /// <summary>Provides the documented operation.</summary>
-    public override void Write(Utf8JsonWriter writer, JourneyTriggerEventTriggerWhereItemValue value, JsonSerializerOptions options)
-    {
-        switch (value.Value)
-        {
-            case string typed: JsonSerializer.Serialize(writer, typed, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<string>)options.GetTypeInfo(typeof(string))); break;
-            case decimal typed: JsonSerializer.Serialize(writer, typed, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<decimal>)options.GetTypeInfo(typeof(decimal))); break;
-            case bool typed: JsonSerializer.Serialize(writer, typed, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<bool>)options.GetTypeInfo(typeof(bool))); break;
-            default: throw new JsonException("Unsupported union value.");
-        }
-    }
-}
-
 internal sealed class JourneyTriggerEventTriggerReentryConverter : JsonConverter<JourneyTriggerEventTriggerReentry>
 {
     /// <summary>Provides the documented operation.</summary>
@@ -28103,49 +27398,6 @@ internal sealed class JourneyTriggerSegmentTriggerReentryConverter : JsonConvert
     }
 }
 
-internal sealed class JourneyTriggerFormTriggerWhereItemValueConverter : JsonConverter<JourneyTriggerFormTriggerWhereItemValue>
-{
-    /// <summary>Provides the documented operation.</summary>
-    public override JourneyTriggerFormTriggerWhereItemValue? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-    {
-        using var document = JsonDocument.ParseValue(ref reader);
-        var element = document.RootElement;
-        if (!Kirora.Serialization.ContractValidator.MatchesUnionVariant("JourneyTriggerFormTriggerWhereItemValue", 0, element)) goto next0;
-        try
-        {
-            return (JourneyTriggerFormTriggerWhereItemValue)JsonSerializer.Deserialize(element, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<string>)options.GetTypeInfo(typeof(string)))!;
-        }
-        catch (JsonException) { }
-        next0:;
-        if (!Kirora.Serialization.ContractValidator.MatchesUnionVariant("JourneyTriggerFormTriggerWhereItemValue", 1, element)) goto next1;
-        try
-        {
-            return (JourneyTriggerFormTriggerWhereItemValue)JsonSerializer.Deserialize(element, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<decimal>)options.GetTypeInfo(typeof(decimal)))!;
-        }
-        catch (JsonException) { }
-        next1:;
-        if (!Kirora.Serialization.ContractValidator.MatchesUnionVariant("JourneyTriggerFormTriggerWhereItemValue", 2, element)) goto next2;
-        try
-        {
-            return (JourneyTriggerFormTriggerWhereItemValue)JsonSerializer.Deserialize(element, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<bool>)options.GetTypeInfo(typeof(bool)))!;
-        }
-        catch (JsonException) { }
-        next2:;
-        throw new JsonException("No documented union variant matched.");
-    }
-    /// <summary>Provides the documented operation.</summary>
-    public override void Write(Utf8JsonWriter writer, JourneyTriggerFormTriggerWhereItemValue value, JsonSerializerOptions options)
-    {
-        switch (value.Value)
-        {
-            case string typed: JsonSerializer.Serialize(writer, typed, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<string>)options.GetTypeInfo(typeof(string))); break;
-            case decimal typed: JsonSerializer.Serialize(writer, typed, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<decimal>)options.GetTypeInfo(typeof(decimal))); break;
-            case bool typed: JsonSerializer.Serialize(writer, typed, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<bool>)options.GetTypeInfo(typeof(bool))); break;
-            default: throw new JsonException("Unsupported union value.");
-        }
-    }
-}
-
 internal sealed class JourneyTriggerFormTriggerReentryConverter : JsonConverter<JourneyTriggerFormTriggerReentry>
 {
     /// <summary>Provides the documented operation.</summary>
@@ -28176,49 +27428,6 @@ internal sealed class JourneyTriggerFormTriggerReentryConverter : JsonConverter<
         {
             case JourneyTriggerFormTriggerReentryOnce typed: JsonSerializer.Serialize(writer, typed, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<JourneyTriggerFormTriggerReentryOnce>)options.GetTypeInfo(typeof(JourneyTriggerFormTriggerReentryOnce))); break;
             case JourneyTriggerFormTriggerReentryRepeatable typed: JsonSerializer.Serialize(writer, typed, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<JourneyTriggerFormTriggerReentryRepeatable>)options.GetTypeInfo(typeof(JourneyTriggerFormTriggerReentryRepeatable))); break;
-            default: throw new JsonException("Unsupported union value.");
-        }
-    }
-}
-
-internal sealed class JourneyTriggerAttributeTriggerWhereItemValueConverter : JsonConverter<JourneyTriggerAttributeTriggerWhereItemValue>
-{
-    /// <summary>Provides the documented operation.</summary>
-    public override JourneyTriggerAttributeTriggerWhereItemValue? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-    {
-        using var document = JsonDocument.ParseValue(ref reader);
-        var element = document.RootElement;
-        if (!Kirora.Serialization.ContractValidator.MatchesUnionVariant("JourneyTriggerAttributeTriggerWhereItemValue", 0, element)) goto next0;
-        try
-        {
-            return (JourneyTriggerAttributeTriggerWhereItemValue)JsonSerializer.Deserialize(element, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<string>)options.GetTypeInfo(typeof(string)))!;
-        }
-        catch (JsonException) { }
-        next0:;
-        if (!Kirora.Serialization.ContractValidator.MatchesUnionVariant("JourneyTriggerAttributeTriggerWhereItemValue", 1, element)) goto next1;
-        try
-        {
-            return (JourneyTriggerAttributeTriggerWhereItemValue)JsonSerializer.Deserialize(element, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<decimal>)options.GetTypeInfo(typeof(decimal)))!;
-        }
-        catch (JsonException) { }
-        next1:;
-        if (!Kirora.Serialization.ContractValidator.MatchesUnionVariant("JourneyTriggerAttributeTriggerWhereItemValue", 2, element)) goto next2;
-        try
-        {
-            return (JourneyTriggerAttributeTriggerWhereItemValue)JsonSerializer.Deserialize(element, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<bool>)options.GetTypeInfo(typeof(bool)))!;
-        }
-        catch (JsonException) { }
-        next2:;
-        throw new JsonException("No documented union variant matched.");
-    }
-    /// <summary>Provides the documented operation.</summary>
-    public override void Write(Utf8JsonWriter writer, JourneyTriggerAttributeTriggerWhereItemValue value, JsonSerializerOptions options)
-    {
-        switch (value.Value)
-        {
-            case string typed: JsonSerializer.Serialize(writer, typed, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<string>)options.GetTypeInfo(typeof(string))); break;
-            case decimal typed: JsonSerializer.Serialize(writer, typed, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<decimal>)options.GetTypeInfo(typeof(decimal))); break;
-            case bool typed: JsonSerializer.Serialize(writer, typed, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<bool>)options.GetTypeInfo(typeof(bool))); break;
             default: throw new JsonException("Unsupported union value.");
         }
     }
@@ -28321,49 +27530,6 @@ internal sealed class JourneyTriggerConverter : JsonConverter<JourneyTrigger>
             case JourneyTriggerFormTrigger typed: JsonSerializer.Serialize(writer, typed, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<JourneyTriggerFormTrigger>)options.GetTypeInfo(typeof(JourneyTriggerFormTrigger))); break;
             case JourneyTriggerAttributeTrigger typed: JsonSerializer.Serialize(writer, typed, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<JourneyTriggerAttributeTrigger>)options.GetTypeInfo(typeof(JourneyTriggerAttributeTrigger))); break;
             case JourneyTriggerDateTrigger typed: JsonSerializer.Serialize(writer, typed, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<JourneyTriggerDateTrigger>)options.GetTypeInfo(typeof(JourneyTriggerDateTrigger))); break;
-            default: throw new JsonException("Unsupported union value.");
-        }
-    }
-}
-
-internal sealed class JourneyTriggerInputEventTriggerWhereItemValueConverter : JsonConverter<JourneyTriggerInputEventTriggerWhereItemValue>
-{
-    /// <summary>Provides the documented operation.</summary>
-    public override JourneyTriggerInputEventTriggerWhereItemValue? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-    {
-        using var document = JsonDocument.ParseValue(ref reader);
-        var element = document.RootElement;
-        if (!Kirora.Serialization.ContractValidator.MatchesUnionVariant("JourneyTriggerInputEventTriggerWhereItemValue", 0, element)) goto next0;
-        try
-        {
-            return (JourneyTriggerInputEventTriggerWhereItemValue)JsonSerializer.Deserialize(element, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<string>)options.GetTypeInfo(typeof(string)))!;
-        }
-        catch (JsonException) { }
-        next0:;
-        if (!Kirora.Serialization.ContractValidator.MatchesUnionVariant("JourneyTriggerInputEventTriggerWhereItemValue", 1, element)) goto next1;
-        try
-        {
-            return (JourneyTriggerInputEventTriggerWhereItemValue)JsonSerializer.Deserialize(element, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<decimal>)options.GetTypeInfo(typeof(decimal)))!;
-        }
-        catch (JsonException) { }
-        next1:;
-        if (!Kirora.Serialization.ContractValidator.MatchesUnionVariant("JourneyTriggerInputEventTriggerWhereItemValue", 2, element)) goto next2;
-        try
-        {
-            return (JourneyTriggerInputEventTriggerWhereItemValue)JsonSerializer.Deserialize(element, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<bool>)options.GetTypeInfo(typeof(bool)))!;
-        }
-        catch (JsonException) { }
-        next2:;
-        throw new JsonException("No documented union variant matched.");
-    }
-    /// <summary>Provides the documented operation.</summary>
-    public override void Write(Utf8JsonWriter writer, JourneyTriggerInputEventTriggerWhereItemValue value, JsonSerializerOptions options)
-    {
-        switch (value.Value)
-        {
-            case string typed: JsonSerializer.Serialize(writer, typed, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<string>)options.GetTypeInfo(typeof(string))); break;
-            case decimal typed: JsonSerializer.Serialize(writer, typed, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<decimal>)options.GetTypeInfo(typeof(decimal))); break;
-            case bool typed: JsonSerializer.Serialize(writer, typed, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<bool>)options.GetTypeInfo(typeof(bool))); break;
             default: throw new JsonException("Unsupported union value.");
         }
     }
@@ -28474,49 +27640,6 @@ internal sealed class JourneyTriggerInputSegmentTriggerReentryConverter : JsonCo
     }
 }
 
-internal sealed class JourneyTriggerInputFormTriggerWhereItemValueConverter : JsonConverter<JourneyTriggerInputFormTriggerWhereItemValue>
-{
-    /// <summary>Provides the documented operation.</summary>
-    public override JourneyTriggerInputFormTriggerWhereItemValue? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-    {
-        using var document = JsonDocument.ParseValue(ref reader);
-        var element = document.RootElement;
-        if (!Kirora.Serialization.ContractValidator.MatchesUnionVariant("JourneyTriggerInputFormTriggerWhereItemValue", 0, element)) goto next0;
-        try
-        {
-            return (JourneyTriggerInputFormTriggerWhereItemValue)JsonSerializer.Deserialize(element, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<string>)options.GetTypeInfo(typeof(string)))!;
-        }
-        catch (JsonException) { }
-        next0:;
-        if (!Kirora.Serialization.ContractValidator.MatchesUnionVariant("JourneyTriggerInputFormTriggerWhereItemValue", 1, element)) goto next1;
-        try
-        {
-            return (JourneyTriggerInputFormTriggerWhereItemValue)JsonSerializer.Deserialize(element, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<decimal>)options.GetTypeInfo(typeof(decimal)))!;
-        }
-        catch (JsonException) { }
-        next1:;
-        if (!Kirora.Serialization.ContractValidator.MatchesUnionVariant("JourneyTriggerInputFormTriggerWhereItemValue", 2, element)) goto next2;
-        try
-        {
-            return (JourneyTriggerInputFormTriggerWhereItemValue)JsonSerializer.Deserialize(element, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<bool>)options.GetTypeInfo(typeof(bool)))!;
-        }
-        catch (JsonException) { }
-        next2:;
-        throw new JsonException("No documented union variant matched.");
-    }
-    /// <summary>Provides the documented operation.</summary>
-    public override void Write(Utf8JsonWriter writer, JourneyTriggerInputFormTriggerWhereItemValue value, JsonSerializerOptions options)
-    {
-        switch (value.Value)
-        {
-            case string typed: JsonSerializer.Serialize(writer, typed, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<string>)options.GetTypeInfo(typeof(string))); break;
-            case decimal typed: JsonSerializer.Serialize(writer, typed, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<decimal>)options.GetTypeInfo(typeof(decimal))); break;
-            case bool typed: JsonSerializer.Serialize(writer, typed, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<bool>)options.GetTypeInfo(typeof(bool))); break;
-            default: throw new JsonException("Unsupported union value.");
-        }
-    }
-}
-
 internal sealed class JourneyTriggerInputFormTriggerReentryConverter : JsonConverter<JourneyTriggerInputFormTriggerReentry>
 {
     /// <summary>Provides the documented operation.</summary>
@@ -28547,49 +27670,6 @@ internal sealed class JourneyTriggerInputFormTriggerReentryConverter : JsonConve
         {
             case JourneyTriggerInputFormTriggerReentryOnce typed: JsonSerializer.Serialize(writer, typed, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<JourneyTriggerInputFormTriggerReentryOnce>)options.GetTypeInfo(typeof(JourneyTriggerInputFormTriggerReentryOnce))); break;
             case JourneyTriggerInputFormTriggerReentryRepeatable typed: JsonSerializer.Serialize(writer, typed, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<JourneyTriggerInputFormTriggerReentryRepeatable>)options.GetTypeInfo(typeof(JourneyTriggerInputFormTriggerReentryRepeatable))); break;
-            default: throw new JsonException("Unsupported union value.");
-        }
-    }
-}
-
-internal sealed class JourneyTriggerInputAttributeTriggerWhereItemValueConverter : JsonConverter<JourneyTriggerInputAttributeTriggerWhereItemValue>
-{
-    /// <summary>Provides the documented operation.</summary>
-    public override JourneyTriggerInputAttributeTriggerWhereItemValue? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-    {
-        using var document = JsonDocument.ParseValue(ref reader);
-        var element = document.RootElement;
-        if (!Kirora.Serialization.ContractValidator.MatchesUnionVariant("JourneyTriggerInputAttributeTriggerWhereItemValue", 0, element)) goto next0;
-        try
-        {
-            return (JourneyTriggerInputAttributeTriggerWhereItemValue)JsonSerializer.Deserialize(element, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<string>)options.GetTypeInfo(typeof(string)))!;
-        }
-        catch (JsonException) { }
-        next0:;
-        if (!Kirora.Serialization.ContractValidator.MatchesUnionVariant("JourneyTriggerInputAttributeTriggerWhereItemValue", 1, element)) goto next1;
-        try
-        {
-            return (JourneyTriggerInputAttributeTriggerWhereItemValue)JsonSerializer.Deserialize(element, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<decimal>)options.GetTypeInfo(typeof(decimal)))!;
-        }
-        catch (JsonException) { }
-        next1:;
-        if (!Kirora.Serialization.ContractValidator.MatchesUnionVariant("JourneyTriggerInputAttributeTriggerWhereItemValue", 2, element)) goto next2;
-        try
-        {
-            return (JourneyTriggerInputAttributeTriggerWhereItemValue)JsonSerializer.Deserialize(element, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<bool>)options.GetTypeInfo(typeof(bool)))!;
-        }
-        catch (JsonException) { }
-        next2:;
-        throw new JsonException("No documented union variant matched.");
-    }
-    /// <summary>Provides the documented operation.</summary>
-    public override void Write(Utf8JsonWriter writer, JourneyTriggerInputAttributeTriggerWhereItemValue value, JsonSerializerOptions options)
-    {
-        switch (value.Value)
-        {
-            case string typed: JsonSerializer.Serialize(writer, typed, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<string>)options.GetTypeInfo(typeof(string))); break;
-            case decimal typed: JsonSerializer.Serialize(writer, typed, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<decimal>)options.GetTypeInfo(typeof(decimal))); break;
-            case bool typed: JsonSerializer.Serialize(writer, typed, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<bool>)options.GetTypeInfo(typeof(bool))); break;
             default: throw new JsonException("Unsupported union value.");
         }
     }
@@ -28697,49 +27777,6 @@ internal sealed class JourneyTriggerInputConverter : JsonConverter<JourneyTrigge
     }
 }
 
-internal sealed class CreateJourneyInputExitConditionsItemEventExitWhereItemValueConverter : JsonConverter<CreateJourneyInputExitConditionsItemEventExitWhereItemValue>
-{
-    /// <summary>Provides the documented operation.</summary>
-    public override CreateJourneyInputExitConditionsItemEventExitWhereItemValue? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-    {
-        using var document = JsonDocument.ParseValue(ref reader);
-        var element = document.RootElement;
-        if (!Kirora.Serialization.ContractValidator.MatchesUnionVariant("CreateJourneyInputExitConditionsItemEventExitWhereItemValue", 0, element)) goto next0;
-        try
-        {
-            return (CreateJourneyInputExitConditionsItemEventExitWhereItemValue)JsonSerializer.Deserialize(element, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<string>)options.GetTypeInfo(typeof(string)))!;
-        }
-        catch (JsonException) { }
-        next0:;
-        if (!Kirora.Serialization.ContractValidator.MatchesUnionVariant("CreateJourneyInputExitConditionsItemEventExitWhereItemValue", 1, element)) goto next1;
-        try
-        {
-            return (CreateJourneyInputExitConditionsItemEventExitWhereItemValue)JsonSerializer.Deserialize(element, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<decimal>)options.GetTypeInfo(typeof(decimal)))!;
-        }
-        catch (JsonException) { }
-        next1:;
-        if (!Kirora.Serialization.ContractValidator.MatchesUnionVariant("CreateJourneyInputExitConditionsItemEventExitWhereItemValue", 2, element)) goto next2;
-        try
-        {
-            return (CreateJourneyInputExitConditionsItemEventExitWhereItemValue)JsonSerializer.Deserialize(element, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<bool>)options.GetTypeInfo(typeof(bool)))!;
-        }
-        catch (JsonException) { }
-        next2:;
-        throw new JsonException("No documented union variant matched.");
-    }
-    /// <summary>Provides the documented operation.</summary>
-    public override void Write(Utf8JsonWriter writer, CreateJourneyInputExitConditionsItemEventExitWhereItemValue value, JsonSerializerOptions options)
-    {
-        switch (value.Value)
-        {
-            case string typed: JsonSerializer.Serialize(writer, typed, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<string>)options.GetTypeInfo(typeof(string))); break;
-            case decimal typed: JsonSerializer.Serialize(writer, typed, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<decimal>)options.GetTypeInfo(typeof(decimal))); break;
-            case bool typed: JsonSerializer.Serialize(writer, typed, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<bool>)options.GetTypeInfo(typeof(bool))); break;
-            default: throw new JsonException("Unsupported union value.");
-        }
-    }
-}
-
 internal sealed class CreateJourneyInputExitConditionsItemConverter : JsonConverter<CreateJourneyInputExitConditionsItem>
 {
     /// <summary>Provides the documented operation.</summary>
@@ -28775,49 +27812,6 @@ internal sealed class CreateJourneyInputExitConditionsItemConverter : JsonConver
     }
 }
 
-internal sealed class CreateJourneyInputStepsItemWaitUntilStepEventWhereItemValueConverter : JsonConverter<CreateJourneyInputStepsItemWaitUntilStepEventWhereItemValue>
-{
-    /// <summary>Provides the documented operation.</summary>
-    public override CreateJourneyInputStepsItemWaitUntilStepEventWhereItemValue? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-    {
-        using var document = JsonDocument.ParseValue(ref reader);
-        var element = document.RootElement;
-        if (!Kirora.Serialization.ContractValidator.MatchesUnionVariant("CreateJourneyInputStepsItemWaitUntilStepEventWhereItemValue", 0, element)) goto next0;
-        try
-        {
-            return (CreateJourneyInputStepsItemWaitUntilStepEventWhereItemValue)JsonSerializer.Deserialize(element, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<string>)options.GetTypeInfo(typeof(string)))!;
-        }
-        catch (JsonException) { }
-        next0:;
-        if (!Kirora.Serialization.ContractValidator.MatchesUnionVariant("CreateJourneyInputStepsItemWaitUntilStepEventWhereItemValue", 1, element)) goto next1;
-        try
-        {
-            return (CreateJourneyInputStepsItemWaitUntilStepEventWhereItemValue)JsonSerializer.Deserialize(element, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<decimal>)options.GetTypeInfo(typeof(decimal)))!;
-        }
-        catch (JsonException) { }
-        next1:;
-        if (!Kirora.Serialization.ContractValidator.MatchesUnionVariant("CreateJourneyInputStepsItemWaitUntilStepEventWhereItemValue", 2, element)) goto next2;
-        try
-        {
-            return (CreateJourneyInputStepsItemWaitUntilStepEventWhereItemValue)JsonSerializer.Deserialize(element, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<bool>)options.GetTypeInfo(typeof(bool)))!;
-        }
-        catch (JsonException) { }
-        next2:;
-        throw new JsonException("No documented union variant matched.");
-    }
-    /// <summary>Provides the documented operation.</summary>
-    public override void Write(Utf8JsonWriter writer, CreateJourneyInputStepsItemWaitUntilStepEventWhereItemValue value, JsonSerializerOptions options)
-    {
-        switch (value.Value)
-        {
-            case string typed: JsonSerializer.Serialize(writer, typed, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<string>)options.GetTypeInfo(typeof(string))); break;
-            case decimal typed: JsonSerializer.Serialize(writer, typed, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<decimal>)options.GetTypeInfo(typeof(decimal))); break;
-            case bool typed: JsonSerializer.Serialize(writer, typed, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<bool>)options.GetTypeInfo(typeof(bool))); break;
-            default: throw new JsonException("Unsupported union value.");
-        }
-    }
-}
-
 internal sealed class CreateJourneyInputStepsItemVariant4Converter : JsonConverter<CreateJourneyInputStepsItemVariant4>
 {
     /// <summary>Provides the documented operation.</summary>
@@ -28848,49 +27842,6 @@ internal sealed class CreateJourneyInputStepsItemVariant4Converter : JsonConvert
         {
             case CreateJourneyInputStepsItemVariant4EmailSendStep typed: JsonSerializer.Serialize(writer, typed, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<CreateJourneyInputStepsItemVariant4EmailSendStep>)options.GetTypeInfo(typeof(CreateJourneyInputStepsItemVariant4EmailSendStep))); break;
             case CreateJourneyInputStepsItemVariant4PushSendStep typed: JsonSerializer.Serialize(writer, typed, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<CreateJourneyInputStepsItemVariant4PushSendStep>)options.GetTypeInfo(typeof(CreateJourneyInputStepsItemVariant4PushSendStep))); break;
-            default: throw new JsonException("Unsupported union value.");
-        }
-    }
-}
-
-internal sealed class CreateJourneyInputStepsItemBranchStepWhereItemValueConverter : JsonConverter<CreateJourneyInputStepsItemBranchStepWhereItemValue>
-{
-    /// <summary>Provides the documented operation.</summary>
-    public override CreateJourneyInputStepsItemBranchStepWhereItemValue? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-    {
-        using var document = JsonDocument.ParseValue(ref reader);
-        var element = document.RootElement;
-        if (!Kirora.Serialization.ContractValidator.MatchesUnionVariant("CreateJourneyInputStepsItemBranchStepWhereItemValue", 0, element)) goto next0;
-        try
-        {
-            return (CreateJourneyInputStepsItemBranchStepWhereItemValue)JsonSerializer.Deserialize(element, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<string>)options.GetTypeInfo(typeof(string)))!;
-        }
-        catch (JsonException) { }
-        next0:;
-        if (!Kirora.Serialization.ContractValidator.MatchesUnionVariant("CreateJourneyInputStepsItemBranchStepWhereItemValue", 1, element)) goto next1;
-        try
-        {
-            return (CreateJourneyInputStepsItemBranchStepWhereItemValue)JsonSerializer.Deserialize(element, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<decimal>)options.GetTypeInfo(typeof(decimal)))!;
-        }
-        catch (JsonException) { }
-        next1:;
-        if (!Kirora.Serialization.ContractValidator.MatchesUnionVariant("CreateJourneyInputStepsItemBranchStepWhereItemValue", 2, element)) goto next2;
-        try
-        {
-            return (CreateJourneyInputStepsItemBranchStepWhereItemValue)JsonSerializer.Deserialize(element, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<bool>)options.GetTypeInfo(typeof(bool)))!;
-        }
-        catch (JsonException) { }
-        next2:;
-        throw new JsonException("No documented union variant matched.");
-    }
-    /// <summary>Provides the documented operation.</summary>
-    public override void Write(Utf8JsonWriter writer, CreateJourneyInputStepsItemBranchStepWhereItemValue value, JsonSerializerOptions options)
-    {
-        switch (value.Value)
-        {
-            case string typed: JsonSerializer.Serialize(writer, typed, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<string>)options.GetTypeInfo(typeof(string))); break;
-            case decimal typed: JsonSerializer.Serialize(writer, typed, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<decimal>)options.GetTypeInfo(typeof(decimal))); break;
-            case bool typed: JsonSerializer.Serialize(writer, typed, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<bool>)options.GetTypeInfo(typeof(bool))); break;
             default: throw new JsonException("Unsupported union value.");
         }
     }
@@ -29132,49 +28083,6 @@ internal sealed class CreateJourneyInputStepsItemConverter : JsonConverter<Creat
     }
 }
 
-internal sealed class JourneyExitConditionsItemEventExitWhereItemValueConverter : JsonConverter<JourneyExitConditionsItemEventExitWhereItemValue>
-{
-    /// <summary>Provides the documented operation.</summary>
-    public override JourneyExitConditionsItemEventExitWhereItemValue? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-    {
-        using var document = JsonDocument.ParseValue(ref reader);
-        var element = document.RootElement;
-        if (!Kirora.Serialization.ContractValidator.MatchesUnionVariant("JourneyExitConditionsItemEventExitWhereItemValue", 0, element)) goto next0;
-        try
-        {
-            return (JourneyExitConditionsItemEventExitWhereItemValue)JsonSerializer.Deserialize(element, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<string>)options.GetTypeInfo(typeof(string)))!;
-        }
-        catch (JsonException) { }
-        next0:;
-        if (!Kirora.Serialization.ContractValidator.MatchesUnionVariant("JourneyExitConditionsItemEventExitWhereItemValue", 1, element)) goto next1;
-        try
-        {
-            return (JourneyExitConditionsItemEventExitWhereItemValue)JsonSerializer.Deserialize(element, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<decimal>)options.GetTypeInfo(typeof(decimal)))!;
-        }
-        catch (JsonException) { }
-        next1:;
-        if (!Kirora.Serialization.ContractValidator.MatchesUnionVariant("JourneyExitConditionsItemEventExitWhereItemValue", 2, element)) goto next2;
-        try
-        {
-            return (JourneyExitConditionsItemEventExitWhereItemValue)JsonSerializer.Deserialize(element, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<bool>)options.GetTypeInfo(typeof(bool)))!;
-        }
-        catch (JsonException) { }
-        next2:;
-        throw new JsonException("No documented union variant matched.");
-    }
-    /// <summary>Provides the documented operation.</summary>
-    public override void Write(Utf8JsonWriter writer, JourneyExitConditionsItemEventExitWhereItemValue value, JsonSerializerOptions options)
-    {
-        switch (value.Value)
-        {
-            case string typed: JsonSerializer.Serialize(writer, typed, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<string>)options.GetTypeInfo(typeof(string))); break;
-            case decimal typed: JsonSerializer.Serialize(writer, typed, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<decimal>)options.GetTypeInfo(typeof(decimal))); break;
-            case bool typed: JsonSerializer.Serialize(writer, typed, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<bool>)options.GetTypeInfo(typeof(bool))); break;
-            default: throw new JsonException("Unsupported union value.");
-        }
-    }
-}
-
 internal sealed class JourneyExitConditionsItemConverter : JsonConverter<JourneyExitConditionsItem>
 {
     /// <summary>Provides the documented operation.</summary>
@@ -29210,87 +28118,36 @@ internal sealed class JourneyExitConditionsItemConverter : JsonConverter<Journey
     }
 }
 
-internal sealed class JourneyStepWaitUntilStepEventWhereItemValueConverter : JsonConverter<JourneyStepWaitUntilStepEventWhereItemValue>
+internal sealed class TemplateSnapshotConverter : JsonConverter<TemplateSnapshot>
 {
     /// <summary>Provides the documented operation.</summary>
-    public override JourneyStepWaitUntilStepEventWhereItemValue? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+    public override TemplateSnapshot? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {
         using var document = JsonDocument.ParseValue(ref reader);
         var element = document.RootElement;
-        if (!Kirora.Serialization.ContractValidator.MatchesUnionVariant("JourneyStepWaitUntilStepEventWhereItemValue", 0, element)) goto next0;
+        if (!Kirora.Serialization.ContractValidator.MatchesUnionVariant("TemplateSnapshot", 0, element)) goto next0;
         try
         {
-            return (JourneyStepWaitUntilStepEventWhereItemValue)JsonSerializer.Deserialize(element, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<string>)options.GetTypeInfo(typeof(string)))!;
+            return (TemplateSnapshot)JsonSerializer.Deserialize(element, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<DesignSnapshot>)options.GetTypeInfo(typeof(DesignSnapshot)))!;
         }
         catch (JsonException) { }
         next0:;
-        if (!Kirora.Serialization.ContractValidator.MatchesUnionVariant("JourneyStepWaitUntilStepEventWhereItemValue", 1, element)) goto next1;
+        if (!Kirora.Serialization.ContractValidator.MatchesUnionVariant("TemplateSnapshot", 1, element)) goto next1;
         try
         {
-            return (JourneyStepWaitUntilStepEventWhereItemValue)JsonSerializer.Deserialize(element, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<decimal>)options.GetTypeInfo(typeof(decimal)))!;
+            return (TemplateSnapshot)JsonSerializer.Deserialize(element, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<HtmlSnapshot>)options.GetTypeInfo(typeof(HtmlSnapshot)))!;
         }
         catch (JsonException) { }
         next1:;
-        if (!Kirora.Serialization.ContractValidator.MatchesUnionVariant("JourneyStepWaitUntilStepEventWhereItemValue", 2, element)) goto next2;
-        try
-        {
-            return (JourneyStepWaitUntilStepEventWhereItemValue)JsonSerializer.Deserialize(element, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<bool>)options.GetTypeInfo(typeof(bool)))!;
-        }
-        catch (JsonException) { }
-        next2:;
         throw new JsonException("No documented union variant matched.");
     }
     /// <summary>Provides the documented operation.</summary>
-    public override void Write(Utf8JsonWriter writer, JourneyStepWaitUntilStepEventWhereItemValue value, JsonSerializerOptions options)
+    public override void Write(Utf8JsonWriter writer, TemplateSnapshot value, JsonSerializerOptions options)
     {
         switch (value.Value)
         {
-            case string typed: JsonSerializer.Serialize(writer, typed, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<string>)options.GetTypeInfo(typeof(string))); break;
-            case decimal typed: JsonSerializer.Serialize(writer, typed, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<decimal>)options.GetTypeInfo(typeof(decimal))); break;
-            case bool typed: JsonSerializer.Serialize(writer, typed, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<bool>)options.GetTypeInfo(typeof(bool))); break;
-            default: throw new JsonException("Unsupported union value.");
-        }
-    }
-}
-
-internal sealed class JourneyStepBranchStepWhereItemValueConverter : JsonConverter<JourneyStepBranchStepWhereItemValue>
-{
-    /// <summary>Provides the documented operation.</summary>
-    public override JourneyStepBranchStepWhereItemValue? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-    {
-        using var document = JsonDocument.ParseValue(ref reader);
-        var element = document.RootElement;
-        if (!Kirora.Serialization.ContractValidator.MatchesUnionVariant("JourneyStepBranchStepWhereItemValue", 0, element)) goto next0;
-        try
-        {
-            return (JourneyStepBranchStepWhereItemValue)JsonSerializer.Deserialize(element, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<string>)options.GetTypeInfo(typeof(string)))!;
-        }
-        catch (JsonException) { }
-        next0:;
-        if (!Kirora.Serialization.ContractValidator.MatchesUnionVariant("JourneyStepBranchStepWhereItemValue", 1, element)) goto next1;
-        try
-        {
-            return (JourneyStepBranchStepWhereItemValue)JsonSerializer.Deserialize(element, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<decimal>)options.GetTypeInfo(typeof(decimal)))!;
-        }
-        catch (JsonException) { }
-        next1:;
-        if (!Kirora.Serialization.ContractValidator.MatchesUnionVariant("JourneyStepBranchStepWhereItemValue", 2, element)) goto next2;
-        try
-        {
-            return (JourneyStepBranchStepWhereItemValue)JsonSerializer.Deserialize(element, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<bool>)options.GetTypeInfo(typeof(bool)))!;
-        }
-        catch (JsonException) { }
-        next2:;
-        throw new JsonException("No documented union variant matched.");
-    }
-    /// <summary>Provides the documented operation.</summary>
-    public override void Write(Utf8JsonWriter writer, JourneyStepBranchStepWhereItemValue value, JsonSerializerOptions options)
-    {
-        switch (value.Value)
-        {
-            case string typed: JsonSerializer.Serialize(writer, typed, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<string>)options.GetTypeInfo(typeof(string))); break;
-            case decimal typed: JsonSerializer.Serialize(writer, typed, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<decimal>)options.GetTypeInfo(typeof(decimal))); break;
-            case bool typed: JsonSerializer.Serialize(writer, typed, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<bool>)options.GetTypeInfo(typeof(bool))); break;
+            case DesignSnapshot typed: JsonSerializer.Serialize(writer, typed, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<DesignSnapshot>)options.GetTypeInfo(typeof(DesignSnapshot))); break;
+            case HtmlSnapshot typed: JsonSerializer.Serialize(writer, typed, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<HtmlSnapshot>)options.GetTypeInfo(typeof(HtmlSnapshot))); break;
             default: throw new JsonException("Unsupported union value.");
         }
     }
@@ -29540,49 +28397,6 @@ internal sealed class JourneyStepConverter : JsonConverter<JourneyStep>
     }
 }
 
-internal sealed class UpdateJourneyInputExitConditionsItemEventExitWhereItemValueConverter : JsonConverter<UpdateJourneyInputExitConditionsItemEventExitWhereItemValue>
-{
-    /// <summary>Provides the documented operation.</summary>
-    public override UpdateJourneyInputExitConditionsItemEventExitWhereItemValue? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-    {
-        using var document = JsonDocument.ParseValue(ref reader);
-        var element = document.RootElement;
-        if (!Kirora.Serialization.ContractValidator.MatchesUnionVariant("UpdateJourneyInputExitConditionsItemEventExitWhereItemValue", 0, element)) goto next0;
-        try
-        {
-            return (UpdateJourneyInputExitConditionsItemEventExitWhereItemValue)JsonSerializer.Deserialize(element, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<string>)options.GetTypeInfo(typeof(string)))!;
-        }
-        catch (JsonException) { }
-        next0:;
-        if (!Kirora.Serialization.ContractValidator.MatchesUnionVariant("UpdateJourneyInputExitConditionsItemEventExitWhereItemValue", 1, element)) goto next1;
-        try
-        {
-            return (UpdateJourneyInputExitConditionsItemEventExitWhereItemValue)JsonSerializer.Deserialize(element, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<decimal>)options.GetTypeInfo(typeof(decimal)))!;
-        }
-        catch (JsonException) { }
-        next1:;
-        if (!Kirora.Serialization.ContractValidator.MatchesUnionVariant("UpdateJourneyInputExitConditionsItemEventExitWhereItemValue", 2, element)) goto next2;
-        try
-        {
-            return (UpdateJourneyInputExitConditionsItemEventExitWhereItemValue)JsonSerializer.Deserialize(element, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<bool>)options.GetTypeInfo(typeof(bool)))!;
-        }
-        catch (JsonException) { }
-        next2:;
-        throw new JsonException("No documented union variant matched.");
-    }
-    /// <summary>Provides the documented operation.</summary>
-    public override void Write(Utf8JsonWriter writer, UpdateJourneyInputExitConditionsItemEventExitWhereItemValue value, JsonSerializerOptions options)
-    {
-        switch (value.Value)
-        {
-            case string typed: JsonSerializer.Serialize(writer, typed, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<string>)options.GetTypeInfo(typeof(string))); break;
-            case decimal typed: JsonSerializer.Serialize(writer, typed, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<decimal>)options.GetTypeInfo(typeof(decimal))); break;
-            case bool typed: JsonSerializer.Serialize(writer, typed, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<bool>)options.GetTypeInfo(typeof(bool))); break;
-            default: throw new JsonException("Unsupported union value.");
-        }
-    }
-}
-
 internal sealed class UpdateJourneyInputExitConditionsItemConverter : JsonConverter<UpdateJourneyInputExitConditionsItem>
 {
     /// <summary>Provides the documented operation.</summary>
@@ -29618,49 +28432,6 @@ internal sealed class UpdateJourneyInputExitConditionsItemConverter : JsonConver
     }
 }
 
-internal sealed class UpdateJourneyInputStepsItemWaitUntilStepEventWhereItemValueConverter : JsonConverter<UpdateJourneyInputStepsItemWaitUntilStepEventWhereItemValue>
-{
-    /// <summary>Provides the documented operation.</summary>
-    public override UpdateJourneyInputStepsItemWaitUntilStepEventWhereItemValue? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-    {
-        using var document = JsonDocument.ParseValue(ref reader);
-        var element = document.RootElement;
-        if (!Kirora.Serialization.ContractValidator.MatchesUnionVariant("UpdateJourneyInputStepsItemWaitUntilStepEventWhereItemValue", 0, element)) goto next0;
-        try
-        {
-            return (UpdateJourneyInputStepsItemWaitUntilStepEventWhereItemValue)JsonSerializer.Deserialize(element, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<string>)options.GetTypeInfo(typeof(string)))!;
-        }
-        catch (JsonException) { }
-        next0:;
-        if (!Kirora.Serialization.ContractValidator.MatchesUnionVariant("UpdateJourneyInputStepsItemWaitUntilStepEventWhereItemValue", 1, element)) goto next1;
-        try
-        {
-            return (UpdateJourneyInputStepsItemWaitUntilStepEventWhereItemValue)JsonSerializer.Deserialize(element, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<decimal>)options.GetTypeInfo(typeof(decimal)))!;
-        }
-        catch (JsonException) { }
-        next1:;
-        if (!Kirora.Serialization.ContractValidator.MatchesUnionVariant("UpdateJourneyInputStepsItemWaitUntilStepEventWhereItemValue", 2, element)) goto next2;
-        try
-        {
-            return (UpdateJourneyInputStepsItemWaitUntilStepEventWhereItemValue)JsonSerializer.Deserialize(element, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<bool>)options.GetTypeInfo(typeof(bool)))!;
-        }
-        catch (JsonException) { }
-        next2:;
-        throw new JsonException("No documented union variant matched.");
-    }
-    /// <summary>Provides the documented operation.</summary>
-    public override void Write(Utf8JsonWriter writer, UpdateJourneyInputStepsItemWaitUntilStepEventWhereItemValue value, JsonSerializerOptions options)
-    {
-        switch (value.Value)
-        {
-            case string typed: JsonSerializer.Serialize(writer, typed, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<string>)options.GetTypeInfo(typeof(string))); break;
-            case decimal typed: JsonSerializer.Serialize(writer, typed, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<decimal>)options.GetTypeInfo(typeof(decimal))); break;
-            case bool typed: JsonSerializer.Serialize(writer, typed, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<bool>)options.GetTypeInfo(typeof(bool))); break;
-            default: throw new JsonException("Unsupported union value.");
-        }
-    }
-}
-
 internal sealed class UpdateJourneyInputStepsItemVariant4Converter : JsonConverter<UpdateJourneyInputStepsItemVariant4>
 {
     /// <summary>Provides the documented operation.</summary>
@@ -29691,49 +28462,6 @@ internal sealed class UpdateJourneyInputStepsItemVariant4Converter : JsonConvert
         {
             case UpdateJourneyInputStepsItemVariant4EmailSendStep typed: JsonSerializer.Serialize(writer, typed, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<UpdateJourneyInputStepsItemVariant4EmailSendStep>)options.GetTypeInfo(typeof(UpdateJourneyInputStepsItemVariant4EmailSendStep))); break;
             case UpdateJourneyInputStepsItemVariant4PushSendStep typed: JsonSerializer.Serialize(writer, typed, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<UpdateJourneyInputStepsItemVariant4PushSendStep>)options.GetTypeInfo(typeof(UpdateJourneyInputStepsItemVariant4PushSendStep))); break;
-            default: throw new JsonException("Unsupported union value.");
-        }
-    }
-}
-
-internal sealed class UpdateJourneyInputStepsItemBranchStepWhereItemValueConverter : JsonConverter<UpdateJourneyInputStepsItemBranchStepWhereItemValue>
-{
-    /// <summary>Provides the documented operation.</summary>
-    public override UpdateJourneyInputStepsItemBranchStepWhereItemValue? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-    {
-        using var document = JsonDocument.ParseValue(ref reader);
-        var element = document.RootElement;
-        if (!Kirora.Serialization.ContractValidator.MatchesUnionVariant("UpdateJourneyInputStepsItemBranchStepWhereItemValue", 0, element)) goto next0;
-        try
-        {
-            return (UpdateJourneyInputStepsItemBranchStepWhereItemValue)JsonSerializer.Deserialize(element, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<string>)options.GetTypeInfo(typeof(string)))!;
-        }
-        catch (JsonException) { }
-        next0:;
-        if (!Kirora.Serialization.ContractValidator.MatchesUnionVariant("UpdateJourneyInputStepsItemBranchStepWhereItemValue", 1, element)) goto next1;
-        try
-        {
-            return (UpdateJourneyInputStepsItemBranchStepWhereItemValue)JsonSerializer.Deserialize(element, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<decimal>)options.GetTypeInfo(typeof(decimal)))!;
-        }
-        catch (JsonException) { }
-        next1:;
-        if (!Kirora.Serialization.ContractValidator.MatchesUnionVariant("UpdateJourneyInputStepsItemBranchStepWhereItemValue", 2, element)) goto next2;
-        try
-        {
-            return (UpdateJourneyInputStepsItemBranchStepWhereItemValue)JsonSerializer.Deserialize(element, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<bool>)options.GetTypeInfo(typeof(bool)))!;
-        }
-        catch (JsonException) { }
-        next2:;
-        throw new JsonException("No documented union variant matched.");
-    }
-    /// <summary>Provides the documented operation.</summary>
-    public override void Write(Utf8JsonWriter writer, UpdateJourneyInputStepsItemBranchStepWhereItemValue value, JsonSerializerOptions options)
-    {
-        switch (value.Value)
-        {
-            case string typed: JsonSerializer.Serialize(writer, typed, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<string>)options.GetTypeInfo(typeof(string))); break;
-            case decimal typed: JsonSerializer.Serialize(writer, typed, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<decimal>)options.GetTypeInfo(typeof(decimal))); break;
-            case bool typed: JsonSerializer.Serialize(writer, typed, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<bool>)options.GetTypeInfo(typeof(bool))); break;
             default: throw new JsonException("Unsupported union value.");
         }
     }
@@ -29975,49 +28703,6 @@ internal sealed class UpdateJourneyInputStepsItemConverter : JsonConverter<Updat
     }
 }
 
-internal sealed class EndedJourneyExitConditionsItemEventExitWhereItemValueConverter : JsonConverter<EndedJourneyExitConditionsItemEventExitWhereItemValue>
-{
-    /// <summary>Provides the documented operation.</summary>
-    public override EndedJourneyExitConditionsItemEventExitWhereItemValue? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-    {
-        using var document = JsonDocument.ParseValue(ref reader);
-        var element = document.RootElement;
-        if (!Kirora.Serialization.ContractValidator.MatchesUnionVariant("EndedJourneyExitConditionsItemEventExitWhereItemValue", 0, element)) goto next0;
-        try
-        {
-            return (EndedJourneyExitConditionsItemEventExitWhereItemValue)JsonSerializer.Deserialize(element, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<string>)options.GetTypeInfo(typeof(string)))!;
-        }
-        catch (JsonException) { }
-        next0:;
-        if (!Kirora.Serialization.ContractValidator.MatchesUnionVariant("EndedJourneyExitConditionsItemEventExitWhereItemValue", 1, element)) goto next1;
-        try
-        {
-            return (EndedJourneyExitConditionsItemEventExitWhereItemValue)JsonSerializer.Deserialize(element, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<decimal>)options.GetTypeInfo(typeof(decimal)))!;
-        }
-        catch (JsonException) { }
-        next1:;
-        if (!Kirora.Serialization.ContractValidator.MatchesUnionVariant("EndedJourneyExitConditionsItemEventExitWhereItemValue", 2, element)) goto next2;
-        try
-        {
-            return (EndedJourneyExitConditionsItemEventExitWhereItemValue)JsonSerializer.Deserialize(element, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<bool>)options.GetTypeInfo(typeof(bool)))!;
-        }
-        catch (JsonException) { }
-        next2:;
-        throw new JsonException("No documented union variant matched.");
-    }
-    /// <summary>Provides the documented operation.</summary>
-    public override void Write(Utf8JsonWriter writer, EndedJourneyExitConditionsItemEventExitWhereItemValue value, JsonSerializerOptions options)
-    {
-        switch (value.Value)
-        {
-            case string typed: JsonSerializer.Serialize(writer, typed, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<string>)options.GetTypeInfo(typeof(string))); break;
-            case decimal typed: JsonSerializer.Serialize(writer, typed, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<decimal>)options.GetTypeInfo(typeof(decimal))); break;
-            case bool typed: JsonSerializer.Serialize(writer, typed, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<bool>)options.GetTypeInfo(typeof(bool))); break;
-            default: throw new JsonException("Unsupported union value.");
-        }
-    }
-}
-
 internal sealed class EndedJourneyExitConditionsItemConverter : JsonConverter<EndedJourneyExitConditionsItem>
 {
     /// <summary>Provides the documented operation.</summary>
@@ -30053,122 +28738,176 @@ internal sealed class EndedJourneyExitConditionsItemConverter : JsonConverter<En
     }
 }
 
-internal sealed class ConversionGoalWhereItemValueConverter : JsonConverter<ConversionGoalWhereItemValue>
+internal sealed class CreateTemplateInputConverter : JsonConverter<CreateTemplateInput>
 {
     /// <summary>Provides the documented operation.</summary>
-    public override ConversionGoalWhereItemValue? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+    public override CreateTemplateInput? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {
         using var document = JsonDocument.ParseValue(ref reader);
         var element = document.RootElement;
-        if (!Kirora.Serialization.ContractValidator.MatchesUnionVariant("ConversionGoalWhereItemValue", 0, element)) goto next0;
+        if (!Kirora.Serialization.ContractValidator.MatchesUnionVariant("CreateTemplateInput", 0, element)) goto next0;
         try
         {
-            return (ConversionGoalWhereItemValue)JsonSerializer.Deserialize(element, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<string>)options.GetTypeInfo(typeof(string)))!;
+            return (CreateTemplateInput)JsonSerializer.Deserialize(element, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<CreateDesignTemplateInput>)options.GetTypeInfo(typeof(CreateDesignTemplateInput)))!;
         }
         catch (JsonException) { }
         next0:;
-        if (!Kirora.Serialization.ContractValidator.MatchesUnionVariant("ConversionGoalWhereItemValue", 1, element)) goto next1;
+        if (!Kirora.Serialization.ContractValidator.MatchesUnionVariant("CreateTemplateInput", 1, element)) goto next1;
         try
         {
-            return (ConversionGoalWhereItemValue)JsonSerializer.Deserialize(element, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<decimal>)options.GetTypeInfo(typeof(decimal)))!;
+            return (CreateTemplateInput)JsonSerializer.Deserialize(element, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<CreateHtmlTemplateInput>)options.GetTypeInfo(typeof(CreateHtmlTemplateInput)))!;
         }
         catch (JsonException) { }
         next1:;
-        if (!Kirora.Serialization.ContractValidator.MatchesUnionVariant("ConversionGoalWhereItemValue", 2, element)) goto next2;
-        try
-        {
-            return (ConversionGoalWhereItemValue)JsonSerializer.Deserialize(element, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<bool>)options.GetTypeInfo(typeof(bool)))!;
-        }
-        catch (JsonException) { }
-        next2:;
         throw new JsonException("No documented union variant matched.");
     }
     /// <summary>Provides the documented operation.</summary>
-    public override void Write(Utf8JsonWriter writer, ConversionGoalWhereItemValue value, JsonSerializerOptions options)
+    public override void Write(Utf8JsonWriter writer, CreateTemplateInput value, JsonSerializerOptions options)
     {
         switch (value.Value)
         {
-            case string typed: JsonSerializer.Serialize(writer, typed, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<string>)options.GetTypeInfo(typeof(string))); break;
-            case decimal typed: JsonSerializer.Serialize(writer, typed, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<decimal>)options.GetTypeInfo(typeof(decimal))); break;
-            case bool typed: JsonSerializer.Serialize(writer, typed, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<bool>)options.GetTypeInfo(typeof(bool))); break;
+            case CreateDesignTemplateInput typed: JsonSerializer.Serialize(writer, typed, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<CreateDesignTemplateInput>)options.GetTypeInfo(typeof(CreateDesignTemplateInput))); break;
+            case CreateHtmlTemplateInput typed: JsonSerializer.Serialize(writer, typed, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<CreateHtmlTemplateInput>)options.GetTypeInfo(typeof(CreateHtmlTemplateInput))); break;
             default: throw new JsonException("Unsupported union value.");
         }
     }
 }
 
-internal sealed class CreateConversionGoalInputWhereItemValueConverter : JsonConverter<CreateConversionGoalInputWhereItemValue>
+internal sealed class TemplateConverter : JsonConverter<Template>
 {
     /// <summary>Provides the documented operation.</summary>
-    public override CreateConversionGoalInputWhereItemValue? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+    public override Template? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {
         using var document = JsonDocument.ParseValue(ref reader);
         var element = document.RootElement;
-        if (!Kirora.Serialization.ContractValidator.MatchesUnionVariant("CreateConversionGoalInputWhereItemValue", 0, element)) goto next0;
+        if (!Kirora.Serialization.ContractValidator.MatchesUnionVariant("Template", 0, element)) goto next0;
         try
         {
-            return (CreateConversionGoalInputWhereItemValue)JsonSerializer.Deserialize(element, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<string>)options.GetTypeInfo(typeof(string)))!;
+            return (Template)JsonSerializer.Deserialize(element, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<DesignTemplate>)options.GetTypeInfo(typeof(DesignTemplate)))!;
         }
         catch (JsonException) { }
         next0:;
-        if (!Kirora.Serialization.ContractValidator.MatchesUnionVariant("CreateConversionGoalInputWhereItemValue", 1, element)) goto next1;
+        if (!Kirora.Serialization.ContractValidator.MatchesUnionVariant("Template", 1, element)) goto next1;
         try
         {
-            return (CreateConversionGoalInputWhereItemValue)JsonSerializer.Deserialize(element, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<decimal>)options.GetTypeInfo(typeof(decimal)))!;
+            return (Template)JsonSerializer.Deserialize(element, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<HtmlTemplate>)options.GetTypeInfo(typeof(HtmlTemplate)))!;
         }
         catch (JsonException) { }
         next1:;
-        if (!Kirora.Serialization.ContractValidator.MatchesUnionVariant("CreateConversionGoalInputWhereItemValue", 2, element)) goto next2;
-        try
-        {
-            return (CreateConversionGoalInputWhereItemValue)JsonSerializer.Deserialize(element, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<bool>)options.GetTypeInfo(typeof(bool)))!;
-        }
-        catch (JsonException) { }
-        next2:;
         throw new JsonException("No documented union variant matched.");
     }
     /// <summary>Provides the documented operation.</summary>
-    public override void Write(Utf8JsonWriter writer, CreateConversionGoalInputWhereItemValue value, JsonSerializerOptions options)
+    public override void Write(Utf8JsonWriter writer, Template value, JsonSerializerOptions options)
     {
         switch (value.Value)
         {
-            case string typed: JsonSerializer.Serialize(writer, typed, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<string>)options.GetTypeInfo(typeof(string))); break;
-            case decimal typed: JsonSerializer.Serialize(writer, typed, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<decimal>)options.GetTypeInfo(typeof(decimal))); break;
-            case bool typed: JsonSerializer.Serialize(writer, typed, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<bool>)options.GetTypeInfo(typeof(bool))); break;
+            case DesignTemplate typed: JsonSerializer.Serialize(writer, typed, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<DesignTemplate>)options.GetTypeInfo(typeof(DesignTemplate))); break;
+            case HtmlTemplate typed: JsonSerializer.Serialize(writer, typed, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<HtmlTemplate>)options.GetTypeInfo(typeof(HtmlTemplate))); break;
             default: throw new JsonException("Unsupported union value.");
         }
     }
 }
 
-internal sealed class RenderTemplateInputVersionConverter : JsonConverter<RenderTemplateInputVersion>
+internal sealed class RenderTemplateContentInputConverter : JsonConverter<RenderTemplateContentInput>
 {
     /// <summary>Provides the documented operation.</summary>
-    public override RenderTemplateInputVersion? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+    public override RenderTemplateContentInput? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {
         using var document = JsonDocument.ParseValue(ref reader);
         var element = document.RootElement;
-        if (!Kirora.Serialization.ContractValidator.MatchesUnionVariant("RenderTemplateInputVersion", 0, element)) goto next0;
+        if (!Kirora.Serialization.ContractValidator.MatchesUnionVariant("RenderTemplateContentInput", 0, element)) goto next0;
         try
         {
-            return (RenderTemplateInputVersion)JsonSerializer.Deserialize(element, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<string>)options.GetTypeInfo(typeof(string)))!;
+            return (RenderTemplateContentInput)JsonSerializer.Deserialize(element, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<RenderDesignContentInput>)options.GetTypeInfo(typeof(RenderDesignContentInput)))!;
         }
         catch (JsonException) { }
         next0:;
-        if (!Kirora.Serialization.ContractValidator.MatchesUnionVariant("RenderTemplateInputVersion", 1, element)) goto next1;
+        if (!Kirora.Serialization.ContractValidator.MatchesUnionVariant("RenderTemplateContentInput", 1, element)) goto next1;
         try
         {
-            return (RenderTemplateInputVersion)JsonSerializer.Deserialize(element, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<long>)options.GetTypeInfo(typeof(long)))!;
+            return (RenderTemplateContentInput)JsonSerializer.Deserialize(element, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<RenderHtmlContentInput>)options.GetTypeInfo(typeof(RenderHtmlContentInput)))!;
         }
         catch (JsonException) { }
         next1:;
         throw new JsonException("No documented union variant matched.");
     }
     /// <summary>Provides the documented operation.</summary>
-    public override void Write(Utf8JsonWriter writer, RenderTemplateInputVersion value, JsonSerializerOptions options)
+    public override void Write(Utf8JsonWriter writer, RenderTemplateContentInput value, JsonSerializerOptions options)
     {
         switch (value.Value)
         {
-            case string typed: JsonSerializer.Serialize(writer, typed, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<string>)options.GetTypeInfo(typeof(string))); break;
-            case long typed: JsonSerializer.Serialize(writer, typed, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<long>)options.GetTypeInfo(typeof(long))); break;
+            case RenderDesignContentInput typed: JsonSerializer.Serialize(writer, typed, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<RenderDesignContentInput>)options.GetTypeInfo(typeof(RenderDesignContentInput))); break;
+            case RenderHtmlContentInput typed: JsonSerializer.Serialize(writer, typed, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<RenderHtmlContentInput>)options.GetTypeInfo(typeof(RenderHtmlContentInput))); break;
+            default: throw new JsonException("Unsupported union value.");
+        }
+    }
+}
+
+internal sealed class SendTemplateTestInputConverter : JsonConverter<SendTemplateTestInput>
+{
+    /// <summary>Provides the documented operation.</summary>
+    public override SendTemplateTestInput? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+    {
+        using var document = JsonDocument.ParseValue(ref reader);
+        var element = document.RootElement;
+        if (!Kirora.Serialization.ContractValidator.MatchesUnionVariant("SendTemplateTestInput", 0, element)) goto next0;
+        try
+        {
+            return (SendTemplateTestInput)JsonSerializer.Deserialize(element, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<SendDesignTemplateTestInput>)options.GetTypeInfo(typeof(SendDesignTemplateTestInput)))!;
+        }
+        catch (JsonException) { }
+        next0:;
+        if (!Kirora.Serialization.ContractValidator.MatchesUnionVariant("SendTemplateTestInput", 1, element)) goto next1;
+        try
+        {
+            return (SendTemplateTestInput)JsonSerializer.Deserialize(element, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<SendHtmlTemplateTestInput>)options.GetTypeInfo(typeof(SendHtmlTemplateTestInput)))!;
+        }
+        catch (JsonException) { }
+        next1:;
+        throw new JsonException("No documented union variant matched.");
+    }
+    /// <summary>Provides the documented operation.</summary>
+    public override void Write(Utf8JsonWriter writer, SendTemplateTestInput value, JsonSerializerOptions options)
+    {
+        switch (value.Value)
+        {
+            case SendDesignTemplateTestInput typed: JsonSerializer.Serialize(writer, typed, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<SendDesignTemplateTestInput>)options.GetTypeInfo(typeof(SendDesignTemplateTestInput))); break;
+            case SendHtmlTemplateTestInput typed: JsonSerializer.Serialize(writer, typed, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<SendHtmlTemplateTestInput>)options.GetTypeInfo(typeof(SendHtmlTemplateTestInput))); break;
+            default: throw new JsonException("Unsupported union value.");
+        }
+    }
+}
+
+internal sealed class TemplateVersionConverter : JsonConverter<TemplateVersion>
+{
+    /// <summary>Provides the documented operation.</summary>
+    public override TemplateVersion? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+    {
+        using var document = JsonDocument.ParseValue(ref reader);
+        var element = document.RootElement;
+        if (!Kirora.Serialization.ContractValidator.MatchesUnionVariant("TemplateVersion", 0, element)) goto next0;
+        try
+        {
+            return (TemplateVersion)JsonSerializer.Deserialize(element, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<DesignTemplateVersion>)options.GetTypeInfo(typeof(DesignTemplateVersion)))!;
+        }
+        catch (JsonException) { }
+        next0:;
+        if (!Kirora.Serialization.ContractValidator.MatchesUnionVariant("TemplateVersion", 1, element)) goto next1;
+        try
+        {
+            return (TemplateVersion)JsonSerializer.Deserialize(element, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<HtmlTemplateVersion>)options.GetTypeInfo(typeof(HtmlTemplateVersion)))!;
+        }
+        catch (JsonException) { }
+        next1:;
+        throw new JsonException("No documented union variant matched.");
+    }
+    /// <summary>Provides the documented operation.</summary>
+    public override void Write(Utf8JsonWriter writer, TemplateVersion value, JsonSerializerOptions options)
+    {
+        switch (value.Value)
+        {
+            case DesignTemplateVersion typed: JsonSerializer.Serialize(writer, typed, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<DesignTemplateVersion>)options.GetTypeInfo(typeof(DesignTemplateVersion))); break;
+            case HtmlTemplateVersion typed: JsonSerializer.Serialize(writer, typed, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<HtmlTemplateVersion>)options.GetTypeInfo(typeof(HtmlTemplateVersion))); break;
             default: throw new JsonException("Unsupported union value.");
         }
     }
@@ -30209,71 +28948,36 @@ internal sealed class FormListItemCaptchaConverter : JsonConverter<FormListItemC
     }
 }
 
-internal sealed class CreateFormInputHiddenFieldsValueConverter : JsonConverter<CreateFormInputHiddenFieldsValue>
+internal sealed class FormHiddenValueInputConverter : JsonConverter<FormHiddenValueInput>
 {
     /// <summary>Provides the documented operation.</summary>
-    public override CreateFormInputHiddenFieldsValue? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+    public override FormHiddenValueInput? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {
         using var document = JsonDocument.ParseValue(ref reader);
         var element = document.RootElement;
-        if (!Kirora.Serialization.ContractValidator.MatchesUnionVariant("CreateFormInputHiddenFieldsValue", 0, element)) goto next0;
+        if (!Kirora.Serialization.ContractValidator.MatchesUnionVariant("FormHiddenValueInput", 0, element)) goto next0;
         try
         {
-            return (CreateFormInputHiddenFieldsValue)JsonSerializer.Deserialize(element, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<string>)options.GetTypeInfo(typeof(string)))!;
+            return (FormHiddenValueInput)JsonSerializer.Deserialize(element, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<FormHiddenValueInputVariant1>)options.GetTypeInfo(typeof(FormHiddenValueInputVariant1)))!;
         }
         catch (JsonException) { }
         next0:;
-        if (!Kirora.Serialization.ContractValidator.MatchesUnionVariant("CreateFormInputHiddenFieldsValue", 1, element)) goto next1;
+        if (!Kirora.Serialization.ContractValidator.MatchesUnionVariant("FormHiddenValueInput", 1, element)) goto next1;
         try
         {
-            return (CreateFormInputHiddenFieldsValue)JsonSerializer.Deserialize(element, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<CreateFormInputHiddenFieldsValueVariant2>)options.GetTypeInfo(typeof(CreateFormInputHiddenFieldsValueVariant2)))!;
+            return (FormHiddenValueInput)JsonSerializer.Deserialize(element, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<FormHiddenValueInputVariant2>)options.GetTypeInfo(typeof(FormHiddenValueInputVariant2)))!;
         }
         catch (JsonException) { }
         next1:;
         throw new JsonException("No documented union variant matched.");
     }
     /// <summary>Provides the documented operation.</summary>
-    public override void Write(Utf8JsonWriter writer, CreateFormInputHiddenFieldsValue value, JsonSerializerOptions options)
+    public override void Write(Utf8JsonWriter writer, FormHiddenValueInput value, JsonSerializerOptions options)
     {
         switch (value.Value)
         {
-            case string typed: JsonSerializer.Serialize(writer, typed, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<string>)options.GetTypeInfo(typeof(string))); break;
-            case CreateFormInputHiddenFieldsValueVariant2 typed: JsonSerializer.Serialize(writer, typed, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<CreateFormInputHiddenFieldsValueVariant2>)options.GetTypeInfo(typeof(CreateFormInputHiddenFieldsValueVariant2))); break;
-            default: throw new JsonException("Unsupported union value.");
-        }
-    }
-}
-
-internal sealed class FormThemeInputInputsWidthConverter : JsonConverter<FormThemeInputInputsWidth>
-{
-    /// <summary>Provides the documented operation.</summary>
-    public override FormThemeInputInputsWidth? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-    {
-        using var document = JsonDocument.ParseValue(ref reader);
-        var element = document.RootElement;
-        if (!Kirora.Serialization.ContractValidator.MatchesUnionVariant("FormThemeInputInputsWidth", 0, element)) goto next0;
-        try
-        {
-            return (FormThemeInputInputsWidth)JsonSerializer.Deserialize(element, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<string>)options.GetTypeInfo(typeof(string)))!;
-        }
-        catch (JsonException) { }
-        next0:;
-        if (!Kirora.Serialization.ContractValidator.MatchesUnionVariant("FormThemeInputInputsWidth", 1, element)) goto next1;
-        try
-        {
-            return (FormThemeInputInputsWidth)JsonSerializer.Deserialize(element, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<long>)options.GetTypeInfo(typeof(long)))!;
-        }
-        catch (JsonException) { }
-        next1:;
-        throw new JsonException("No documented union variant matched.");
-    }
-    /// <summary>Provides the documented operation.</summary>
-    public override void Write(Utf8JsonWriter writer, FormThemeInputInputsWidth value, JsonSerializerOptions options)
-    {
-        switch (value.Value)
-        {
-            case string typed: JsonSerializer.Serialize(writer, typed, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<string>)options.GetTypeInfo(typeof(string))); break;
-            case long typed: JsonSerializer.Serialize(writer, typed, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<long>)options.GetTypeInfo(typeof(long))); break;
+            case FormHiddenValueInputVariant1 typed: JsonSerializer.Serialize(writer, typed, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<FormHiddenValueInputVariant1>)options.GetTypeInfo(typeof(FormHiddenValueInputVariant1))); break;
+            case FormHiddenValueInputVariant2 typed: JsonSerializer.Serialize(writer, typed, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<FormHiddenValueInputVariant2>)options.GetTypeInfo(typeof(FormHiddenValueInputVariant2))); break;
             default: throw new JsonException("Unsupported union value.");
         }
     }
@@ -30384,71 +29088,36 @@ internal sealed class CreateFormInputSuccessConverter : JsonConverter<CreateForm
     }
 }
 
-internal sealed class FormHiddenFieldsValueConverter : JsonConverter<FormHiddenFieldsValue>
+internal sealed class FormHiddenValueConverter : JsonConverter<FormHiddenValue>
 {
     /// <summary>Provides the documented operation.</summary>
-    public override FormHiddenFieldsValue? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+    public override FormHiddenValue? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {
         using var document = JsonDocument.ParseValue(ref reader);
         var element = document.RootElement;
-        if (!Kirora.Serialization.ContractValidator.MatchesUnionVariant("FormHiddenFieldsValue", 0, element)) goto next0;
+        if (!Kirora.Serialization.ContractValidator.MatchesUnionVariant("FormHiddenValue", 0, element)) goto next0;
         try
         {
-            return (FormHiddenFieldsValue)JsonSerializer.Deserialize(element, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<string>)options.GetTypeInfo(typeof(string)))!;
+            return (FormHiddenValue)JsonSerializer.Deserialize(element, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<FormHiddenValueVariant1>)options.GetTypeInfo(typeof(FormHiddenValueVariant1)))!;
         }
         catch (JsonException) { }
         next0:;
-        if (!Kirora.Serialization.ContractValidator.MatchesUnionVariant("FormHiddenFieldsValue", 1, element)) goto next1;
+        if (!Kirora.Serialization.ContractValidator.MatchesUnionVariant("FormHiddenValue", 1, element)) goto next1;
         try
         {
-            return (FormHiddenFieldsValue)JsonSerializer.Deserialize(element, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<FormHiddenFieldsValueVariant2>)options.GetTypeInfo(typeof(FormHiddenFieldsValueVariant2)))!;
+            return (FormHiddenValue)JsonSerializer.Deserialize(element, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<FormHiddenValueVariant2>)options.GetTypeInfo(typeof(FormHiddenValueVariant2)))!;
         }
         catch (JsonException) { }
         next1:;
         throw new JsonException("No documented union variant matched.");
     }
     /// <summary>Provides the documented operation.</summary>
-    public override void Write(Utf8JsonWriter writer, FormHiddenFieldsValue value, JsonSerializerOptions options)
+    public override void Write(Utf8JsonWriter writer, FormHiddenValue value, JsonSerializerOptions options)
     {
         switch (value.Value)
         {
-            case string typed: JsonSerializer.Serialize(writer, typed, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<string>)options.GetTypeInfo(typeof(string))); break;
-            case FormHiddenFieldsValueVariant2 typed: JsonSerializer.Serialize(writer, typed, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<FormHiddenFieldsValueVariant2>)options.GetTypeInfo(typeof(FormHiddenFieldsValueVariant2))); break;
-            default: throw new JsonException("Unsupported union value.");
-        }
-    }
-}
-
-internal sealed class FormThemeInputsWidthConverter : JsonConverter<FormThemeInputsWidth>
-{
-    /// <summary>Provides the documented operation.</summary>
-    public override FormThemeInputsWidth? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-    {
-        using var document = JsonDocument.ParseValue(ref reader);
-        var element = document.RootElement;
-        if (!Kirora.Serialization.ContractValidator.MatchesUnionVariant("FormThemeInputsWidth", 0, element)) goto next0;
-        try
-        {
-            return (FormThemeInputsWidth)JsonSerializer.Deserialize(element, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<string>)options.GetTypeInfo(typeof(string)))!;
-        }
-        catch (JsonException) { }
-        next0:;
-        if (!Kirora.Serialization.ContractValidator.MatchesUnionVariant("FormThemeInputsWidth", 1, element)) goto next1;
-        try
-        {
-            return (FormThemeInputsWidth)JsonSerializer.Deserialize(element, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<long>)options.GetTypeInfo(typeof(long)))!;
-        }
-        catch (JsonException) { }
-        next1:;
-        throw new JsonException("No documented union variant matched.");
-    }
-    /// <summary>Provides the documented operation.</summary>
-    public override void Write(Utf8JsonWriter writer, FormThemeInputsWidth value, JsonSerializerOptions options)
-    {
-        switch (value.Value)
-        {
-            case string typed: JsonSerializer.Serialize(writer, typed, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<string>)options.GetTypeInfo(typeof(string))); break;
-            case long typed: JsonSerializer.Serialize(writer, typed, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<long>)options.GetTypeInfo(typeof(long))); break;
+            case FormHiddenValueVariant1 typed: JsonSerializer.Serialize(writer, typed, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<FormHiddenValueVariant1>)options.GetTypeInfo(typeof(FormHiddenValueVariant1))); break;
+            case FormHiddenValueVariant2 typed: JsonSerializer.Serialize(writer, typed, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<FormHiddenValueVariant2>)options.GetTypeInfo(typeof(FormHiddenValueVariant2))); break;
             default: throw new JsonException("Unsupported union value.");
         }
     }
@@ -30559,41 +29228,6 @@ internal sealed class FormSuccessConverter : JsonConverter<FormSuccess>
     }
 }
 
-internal sealed class UpdateFormInputHiddenFieldsValueConverter : JsonConverter<UpdateFormInputHiddenFieldsValue>
-{
-    /// <summary>Provides the documented operation.</summary>
-    public override UpdateFormInputHiddenFieldsValue? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-    {
-        using var document = JsonDocument.ParseValue(ref reader);
-        var element = document.RootElement;
-        if (!Kirora.Serialization.ContractValidator.MatchesUnionVariant("UpdateFormInputHiddenFieldsValue", 0, element)) goto next0;
-        try
-        {
-            return (UpdateFormInputHiddenFieldsValue)JsonSerializer.Deserialize(element, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<string>)options.GetTypeInfo(typeof(string)))!;
-        }
-        catch (JsonException) { }
-        next0:;
-        if (!Kirora.Serialization.ContractValidator.MatchesUnionVariant("UpdateFormInputHiddenFieldsValue", 1, element)) goto next1;
-        try
-        {
-            return (UpdateFormInputHiddenFieldsValue)JsonSerializer.Deserialize(element, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<UpdateFormInputHiddenFieldsValueVariant2>)options.GetTypeInfo(typeof(UpdateFormInputHiddenFieldsValueVariant2)))!;
-        }
-        catch (JsonException) { }
-        next1:;
-        throw new JsonException("No documented union variant matched.");
-    }
-    /// <summary>Provides the documented operation.</summary>
-    public override void Write(Utf8JsonWriter writer, UpdateFormInputHiddenFieldsValue value, JsonSerializerOptions options)
-    {
-        switch (value.Value)
-        {
-            case string typed: JsonSerializer.Serialize(writer, typed, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<string>)options.GetTypeInfo(typeof(string))); break;
-            case UpdateFormInputHiddenFieldsValueVariant2 typed: JsonSerializer.Serialize(writer, typed, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<UpdateFormInputHiddenFieldsValueVariant2>)options.GetTypeInfo(typeof(UpdateFormInputHiddenFieldsValueVariant2))); break;
-            default: throw new JsonException("Unsupported union value.");
-        }
-    }
-}
-
 internal sealed class UpdateFormInputCaptchaConverter : JsonConverter<UpdateFormInputCaptcha>
 {
     /// <summary>Provides the documented operation.</summary>
@@ -30664,41 +29298,6 @@ internal sealed class UpdateFormInputSuccessConverter : JsonConverter<UpdateForm
     }
 }
 
-internal sealed class SubmitFormInputFieldsValueConverter : JsonConverter<SubmitFormInputFieldsValue>
-{
-    /// <summary>Provides the documented operation.</summary>
-    public override SubmitFormInputFieldsValue? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-    {
-        using var document = JsonDocument.ParseValue(ref reader);
-        var element = document.RootElement;
-        if (!Kirora.Serialization.ContractValidator.MatchesUnionVariant("SubmitFormInputFieldsValue", 0, element)) goto next0;
-        try
-        {
-            return (SubmitFormInputFieldsValue)JsonSerializer.Deserialize(element, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<string>)options.GetTypeInfo(typeof(string)))!;
-        }
-        catch (JsonException) { }
-        next0:;
-        if (!Kirora.Serialization.ContractValidator.MatchesUnionVariant("SubmitFormInputFieldsValue", 1, element)) goto next1;
-        try
-        {
-            return (SubmitFormInputFieldsValue)JsonSerializer.Deserialize(element, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<string[]>)options.GetTypeInfo(typeof(string[])))!;
-        }
-        catch (JsonException) { }
-        next1:;
-        throw new JsonException("No documented union variant matched.");
-    }
-    /// <summary>Provides the documented operation.</summary>
-    public override void Write(Utf8JsonWriter writer, SubmitFormInputFieldsValue value, JsonSerializerOptions options)
-    {
-        switch (value.Value)
-        {
-            case string typed: JsonSerializer.Serialize(writer, typed, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<string>)options.GetTypeInfo(typeof(string))); break;
-            case string[] typed: JsonSerializer.Serialize(writer, typed, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<string[]>)options.GetTypeInfo(typeof(string[]))); break;
-            default: throw new JsonException("Unsupported union value.");
-        }
-    }
-}
-
 internal sealed class PushCredentialConverter : JsonConverter<PushCredential>
 {
     /// <summary>Provides the documented operation.</summary>
@@ -30729,49 +29328,6 @@ internal sealed class PushCredentialConverter : JsonConverter<PushCredential>
         {
             case PushCredentialAPNsIOS typed: JsonSerializer.Serialize(writer, typed, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<PushCredentialAPNsIOS>)options.GetTypeInfo(typeof(PushCredentialAPNsIOS))); break;
             case PushCredentialFCMAndroid typed: JsonSerializer.Serialize(writer, typed, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<PushCredentialFCMAndroid>)options.GetTypeInfo(typeof(PushCredentialFCMAndroid))); break;
-            default: throw new JsonException("Unsupported union value.");
-        }
-    }
-}
-
-internal sealed class FunnelDefinitionInputStepsItemWhereItemValueConverter : JsonConverter<FunnelDefinitionInputStepsItemWhereItemValue>
-{
-    /// <summary>Provides the documented operation.</summary>
-    public override FunnelDefinitionInputStepsItemWhereItemValue? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-    {
-        using var document = JsonDocument.ParseValue(ref reader);
-        var element = document.RootElement;
-        if (!Kirora.Serialization.ContractValidator.MatchesUnionVariant("FunnelDefinitionInputStepsItemWhereItemValue", 0, element)) goto next0;
-        try
-        {
-            return (FunnelDefinitionInputStepsItemWhereItemValue)JsonSerializer.Deserialize(element, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<string>)options.GetTypeInfo(typeof(string)))!;
-        }
-        catch (JsonException) { }
-        next0:;
-        if (!Kirora.Serialization.ContractValidator.MatchesUnionVariant("FunnelDefinitionInputStepsItemWhereItemValue", 1, element)) goto next1;
-        try
-        {
-            return (FunnelDefinitionInputStepsItemWhereItemValue)JsonSerializer.Deserialize(element, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<decimal>)options.GetTypeInfo(typeof(decimal)))!;
-        }
-        catch (JsonException) { }
-        next1:;
-        if (!Kirora.Serialization.ContractValidator.MatchesUnionVariant("FunnelDefinitionInputStepsItemWhereItemValue", 2, element)) goto next2;
-        try
-        {
-            return (FunnelDefinitionInputStepsItemWhereItemValue)JsonSerializer.Deserialize(element, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<bool>)options.GetTypeInfo(typeof(bool)))!;
-        }
-        catch (JsonException) { }
-        next2:;
-        throw new JsonException("No documented union variant matched.");
-    }
-    /// <summary>Provides the documented operation.</summary>
-    public override void Write(Utf8JsonWriter writer, FunnelDefinitionInputStepsItemWhereItemValue value, JsonSerializerOptions options)
-    {
-        switch (value.Value)
-        {
-            case string typed: JsonSerializer.Serialize(writer, typed, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<string>)options.GetTypeInfo(typeof(string))); break;
-            case decimal typed: JsonSerializer.Serialize(writer, typed, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<decimal>)options.GetTypeInfo(typeof(decimal))); break;
-            case bool typed: JsonSerializer.Serialize(writer, typed, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<bool>)options.GetTypeInfo(typeof(bool))); break;
             default: throw new JsonException("Unsupported union value.");
         }
     }

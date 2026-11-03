@@ -21,6 +21,13 @@ for op in ops:
   if query[name] is None:query[name]='2026-10-01' if shape.get('format')=='date' or name=='day' else 'SDK Example'
  pathValues={p:('1' if p=='version' else 'SDK Example' if p=='name' else 'plan' if p=='key' else 'tenant-1' if p=='externalId' else '0192f3a1-7c2e-7d4b-9a10-3e5f6a7b8c9d') for p in op['paths']}
  success={k:v for k,v in o['responses'].items() if k.startswith('2')}
+ # Read operations can document multiple response variants (for example design/HTML templates).
+ # Exercise every official success example instead of silently covering only the first one.
+ if examples=={'noBody':{'value':None}}:
+  status,response=next(iter(success.items()))
+  content=response.get('content',{}).get('text/csv' if op['csv'] else 'application/json',{})
+  samples=content.get('examples',{})
+  if samples:examples={name:{'value':None} for name in samples}
  for example,data in examples.items():
   status,response=next(iter(success.items()));content=response.get('content',{}).get('text/csv' if op['csv'] else 'application/json',{});samples=content.get('examples',{})
   output=samples.get(example,next(iter(samples.values()),{})).get('value')

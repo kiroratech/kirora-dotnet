@@ -57,7 +57,8 @@ public sealed class PhaseThreeApiTests
                     _ => string.Empty
                 }))).ToHashSet(StringComparer.Ordinal);
         MigrationApiAssertions.HistoricalDelta("public-api-phase3.txt", File.ReadAllLines(Path.Combine(AppContext.BaseDirectory, "Fixtures/public-api-phase3.txt")), current);
-        Assert.Equal(File.ReadAllLines(Path.Combine(AppContext.BaseDirectory, "Fixtures/public-api-upstream-30043317.txt")).Order(StringComparer.Ordinal), current.Where(s => s.Length > 0).Order(StringComparer.Ordinal));
+        MigrationApiAssertions.HistoricalDelta("public-api-upstream-30043317.txt", File.ReadAllLines(Path.Combine(AppContext.BaseDirectory, "Fixtures/public-api-upstream-30043317.txt")), current);
+        Assert.Equal(File.ReadAllLines(Path.Combine(AppContext.BaseDirectory, "Fixtures/public-api-upstream-80060d50.txt")).Order(StringComparer.Ordinal), current.Where(s => s.Length > 0).Order(StringComparer.Ordinal));
     }
 }
 
@@ -65,7 +66,7 @@ internal static class MigrationApiAssertions
 {
     internal static void HistoricalDelta(string baseline, IEnumerable<string> historical, IEnumerable<string> current)
     {
-        using var report = System.Text.Json.JsonDocument.Parse(File.ReadAllText(Path.Combine(AppContext.BaseDirectory, "Fixtures/migration-api-changes.json")));
+        using var report = System.Text.Json.JsonDocument.Parse(File.ReadAllText(Path.Combine(AppContext.BaseDirectory, "Fixtures/migration-20261103-api-changes.json")));
         var documented = report.RootElement.GetProperty("removedSignatures").GetProperty(baseline).EnumerateArray().Select(v => v.GetString()!).Order(StringComparer.Ordinal);
         Assert.Equal(documented, historical.Except(current).Order(StringComparer.Ordinal));
     }
