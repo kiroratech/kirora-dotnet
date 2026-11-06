@@ -1,10 +1,17 @@
 # Kirora .NET SDK
 
-A typed, asynchronous SDK for Kirora's contacts, lists, events, messaging and engagement APIs. Targets **.NET 8 (`net8.0`)** and uses `HttpClient` and `System.Text.Json`. All **184 operations** in the [pinned official specification](spec/source.json) have typed methods and cancellation support.
+Use the Kirora API from .NET to manage contacts and lists, track events, and send campaigns and transactional messages.
 
-This repository is an **unpublished alpha candidate**. Package licensing/ownership and release approval remain open; local validation does not mean a version is available on NuGet.org.
+[API documentation](https://kirora.io/docs/api) · [API reference](https://kirora.io/docs/api/reference) · [Usage guide](docs/SDK-USAGE.md) · [Examples](examples)
 
-## Install
+- Targets **.NET 8 (`net8.0`)**, using `HttpClient` and `System.Text.Json`.
+- Strongly typed asynchronous APIs with `CancellationToken` support.
+- Automatic pagination and retries, with idempotency keys for supported operations.
+- ASP.NET Core dependency injection through `IHttpClientFactory`.
+
+This SDK is currently an **unpublished alpha candidate**. See [local installation](docs/GETTING-STARTED.md#local-package-installation) to try it before the first NuGet release.
+
+## Installation
 
 **Before publication:** clone this repository, build the local package, and configure its output folder as an application-local NuGet feed alongside nuget.org. See [local installation](docs/GETTING-STARTED.md#local-package-installation).
 
@@ -18,15 +25,11 @@ dotnet pack src/Kirora/Kirora.csproj --configuration Release
 dotnet add package Kirora --version 0.1.0-alpha.1
 ```
 
-## Configure and connect
+## Quickstart
 
-Provide `KIRORA_API_KEY` through your process environment or a secret store. Never put it in source or log it. For the currently approved staging environment:
+Create an API key in the Kirora dashboard and provide it through `KIRORA_API_KEY` in your server environment or a secret store. Never put it in source or log it.
 
-```sh
-export KIRORA_BASE_URL='https://kirora-staging-backend.brimble.app'
-```
-
-The examples apply this optional variable through `KiroraOptions.BaseAddress`; the SDK does not read environment variables itself. Use an HTTPS origin only, without `/v1`. Unset it to retain the SDK's production default, `https://api.kirora.io/`. Kirora has confirmed that production DNS is not configured yet; use the staging backend until that changes. Use credentials for the intended workspace.
+The SDK connects to **`https://api.kirora.io`** by default. Optional custom endpoints can be configured through `KiroraOptions.BaseAddress`; the examples below apply `KIRORA_BASE_URL` when supplied. Use an HTTPS origin without `/v1`.
 
 A complete console example (only a read-only authentication request):
 
@@ -55,7 +58,7 @@ var caller = await kirora.GetMeAsync(deadline.Token);
 Console.WriteLine($"Connected to workspace {caller.Workspace.Id}.");
 ```
 
-Run it with `dotnet run --project examples/Kirora.Examples` only when a live read is authorized. An exported terminal variable is inherited by `dotnet run`; VS Code debugging uses its own process configuration. See [environment setup and troubleshooting](docs/GETTING-STARTED.md).
+Run it with `dotnet run --project examples/Kirora.Examples`. This sends an authentication request to your configured workspace. An exported terminal variable is inherited by `dotnet run`; VS Code debugging uses its own process configuration. See [environment setup and troubleshooting](docs/GETTING-STARTED.md).
 
 ## ASP.NET Core
 
@@ -82,9 +85,9 @@ app.MapGet("/kirora/check", async (KiroraClient kirora, CancellationToken token)
 app.Run();
 ```
 
-## Common operations
+## Usage
 
-With a configured `kirora` client and `CancellationToken token`, the following examples **create data and send a message**. Use an authorized test workspace, an approved test recipient, and a verified sender supplied by `KIRORA_TEST_FROM`.
+The following examples use a configured `kirora` client and `CancellationToken token`. They create or update a contact, manage list membership, track an event, and send an email. Replace the sample identifiers with your own values and complete your workspace’s email sending setup. Supply a verified sender through `KIRORA_TEST_FROM`.
 
 <!-- example: resources -->
 ```csharp
@@ -108,7 +111,7 @@ SendTransactionalInputEmail email = new SendTransactionalInputEmailInlineContent
 {
     From = Environment.GetEnvironmentVariable("KIRORA_TEST_FROM")
         ?? throw new InvalidOperationException("Configure a verified sender."),
-    Subject = "SDK test", Html = "<p>Your explicitly approved SDK test.</p>"
+    Subject = "Welcome", Html = "<p>Welcome to our application.</p>"
 };
 await kirora.Transactional.SendAsync(new SendTransactionalInput
 {
@@ -117,7 +120,7 @@ await kirora.Transactional.SendAsync(new SendTransactionalInput
 }, new KiroraRequestOptions { IdempotencyKey = "sdk-demo-email-v1" }, token);
 ```
 
-The example.com recipient is a documented nondelivering test address; normal send checks still apply. Replace demo identifiers only deliberately, and never reuse an idempotency key with a different body. More examples include [push and stored templates](examples/Kirora.Examples/CoreResourceExamples.cs), [extended resources](examples/Kirora.Examples/ExtendedResourceExamples.cs), and a [background worker](examples/Kirora.Worker).
+Use a recipient you control when checking delivery. Never reuse an idempotency key with a different body. More examples include [push and stored templates](examples/Kirora.Examples/CoreResourceExamples.cs), [extended resources](examples/Kirora.Examples/ExtendedResourceExamples.cs), and a [background worker](examples/Kirora.Worker).
 
 ## Errors, retries and pagination
 
@@ -149,7 +152,7 @@ catch (KiroraTransportException)
 ## More
 
 - [Official API reference](https://kirora.io/docs/api/reference) · [SDK repository](https://github.com/kiroratech/kirora-dotnet)
-- [Coverage matrix](docs/API-COVERAGE.md) · [current breaking-change assessment](docs/OPENAPI-20261103-ASSESSMENT.md) · [migration details](docs/OPENAPI-20261103-MIGRATION.md)
-- [Troubleshooting](docs/TROUBLESHOOTING.md) · [opt-in live tests](docs/INTEGRATION-TESTS.md) · [release checklist](docs/RELEASE-CHECKLIST.md)
+- [Usage guide](docs/SDK-USAGE.md) · [Examples](examples)
+- [Troubleshooting](docs/TROUBLESHOOTING.md) · [Report an SDK issue](https://github.com/kiroratech/kirora-dotnet/issues)
 
-The OpenAPI pin is `80060d50bfa80f3c82b89a363a229c5b1c39506a`. Its MIT attribution is retained in `spec/LICENSE` and `THIRD-PARTY-NOTICES.txt`; that does not assign a license to the SDK itself. No examples or tests are authorization to send live traffic.
+When reporting an issue, include your SDK and .NET versions and a minimal reproduction. Remove API keys, tokens, and personal data from logs.

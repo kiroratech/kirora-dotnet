@@ -28,7 +28,7 @@ internal static class ReadmeExamples
         {
             From = Environment.GetEnvironmentVariable("KIRORA_TEST_FROM")
                 ?? throw new InvalidOperationException("Configure a verified sender."),
-            Subject = "SDK test", Html = "<p>Your explicitly approved SDK test.</p>"
+            Subject = "Welcome", Html = "<p>Welcome to our application.</p>"
         };
         await kirora.Transactional.SendAsync(new SendTransactionalInput
         {
